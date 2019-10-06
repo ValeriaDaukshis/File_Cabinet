@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -18,6 +19,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -25,6 +27,7 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
         };
 
         public static void Main(string[] args)
@@ -104,6 +107,52 @@ namespace FileCabinetApp
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            Console.Write("First name: ");
+            string firstName = CheckStringInput();
+            Console.Write("Last name: ");
+            string lastName = CheckStringInput();
+            Console.Write("Date of birth(mm/dd/yyyy): ");
+            DateTime dateOfBirth = CheckDateInput();
+
+            var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
+            Console.WriteLine($"Record #{recordNumber} is created.");
+        }
+
+        private static string CheckStringInput()
+        {
+            bool success;
+            string parameters;
+            do
+            {
+                parameters = Console.ReadLine();
+                success = !string.IsNullOrEmpty(parameters) ? true : false;
+            }
+            while (!success);
+
+            return parameters;
+        }
+
+        private static DateTime CheckDateInput()
+        {
+            bool success;
+            string parameters;
+            DateTime date = default(DateTime);
+            do
+            {
+                parameters = Console.ReadLine();
+                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                if (success)
+                {
+                    success = DateTime.TryParse(parameters, new CultureInfo("en-US"), DateTimeStyles.None, out date);
+                }
+            }
+            while (!success);
+
+            return date;
         }
     }
 }
