@@ -20,7 +20,7 @@ namespace FileCabinetApp
 
         public int GetStat()
         {
-            return 0;
+            return this.list.Count;
         }
     }
 }
