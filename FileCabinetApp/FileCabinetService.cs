@@ -9,19 +9,17 @@ namespace FileCabinetApp
 
         public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
         {
-            // TODO: добавьте реализацию метода
+            this.list.Add(new FileCabinetRecord { FirstName = firstName, LastName = lastName, DateOfBirth = dateOfBirth });
             return 0;
         }
 
-        public FileCabinetRecord[] GetRecords()
+        public static FileCabinetRecord[] GetRecords()
         {
-            // TODO: добавьте реализацию метода
-            return new FileCabinetRecord[] { };
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public int GetStat()
         {
-            // TODO: добавьте реализацию метода
             return 0;
         }
     }
