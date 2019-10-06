@@ -22,9 +22,12 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        public static FileCabinetRecord[] GetRecords()
+        public FileCabinetRecord[] GetRecords()
         {
-            return Array.Empty<FileCabinetRecord>();
+            if (this.list.Count == 0)
+                return Array.Empty<FileCabinetRecord>();
+
+            return this.list.ToArray();
         }
 
         public int GetStat()

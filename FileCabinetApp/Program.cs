@@ -20,6 +20,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("get", Get),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -28,6 +29,7 @@ namespace FileCabinetApp
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "get", "get all record", "The 'get' command get all record." },
         };
 
         public static void Main(string[] args)
@@ -107,6 +109,27 @@ namespace FileCabinetApp
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Get(string parameters)
+        {
+            var records = Program.fileCabinetService.GetRecords();
+            if(records.Length == 0)
+            {
+                Console.WriteLine("There is no records.");
+            }
+            else
+            {
+                for (int i = 0; i < records.Length; i++)
+                {
+                    Console.WriteLine($"#{records[i].Id}, {records[i].FirstName}, {records[i].LastName}, {records[i].DateOfBirth:yyyy-MMMM-dd}");
+
+// Console.WriteLine($"Id: {records[i].Id}");
+//                    Console.WriteLine($"\tFirst name: {records[i].FirstName}");
+//                    Console.WriteLine($"\tLast name: {records[i].LastName}");
+//                    Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
+                }
+            }
         }
 
         private static void Create(string parameters)
