@@ -7,7 +7,7 @@ namespace FileCabinetApp
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
 
-        public int CreateRecord(string firstName, string lastName, DateTime dateOfBirth)
+        public int CreateRecord(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             var record = new FileCabinetRecord
             {
@@ -15,6 +15,9 @@ namespace FileCabinetApp
                 FirstName = firstName,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth,
+                Gender = gender,
+                CreditSum = credit,
+                Duration = duration,
             };
 
             this.list.Add(record);
@@ -25,7 +28,9 @@ namespace FileCabinetApp
         public FileCabinetRecord[] GetRecords()
         {
             if (this.list.Count == 0)
+            {
                 return Array.Empty<FileCabinetRecord>();
+            }
 
             return this.list.ToArray();
         }

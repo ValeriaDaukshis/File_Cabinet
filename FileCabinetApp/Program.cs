@@ -114,7 +114,7 @@ namespace FileCabinetApp
         private static void Get(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
-            if(records.Length == 0)
+            if (records.Length == 0)
             {
                 Console.WriteLine("There is no records.");
             }
@@ -122,12 +122,14 @@ namespace FileCabinetApp
             {
                 for (int i = 0; i < records.Length; i++)
                 {
-                    Console.WriteLine($"#{records[i].Id}, {records[i].FirstName}, {records[i].LastName}, {records[i].DateOfBirth:yyyy-MMMM-dd}");
-
-// Console.WriteLine($"Id: {records[i].Id}");
-//                    Console.WriteLine($"\tFirst name: {records[i].FirstName}");
-//                    Console.WriteLine($"\tLast name: {records[i].LastName}");
-//                    Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
+                    // Console.WriteLine($"#{records[i].Id}, {records[i].FirstName}, {records[i].LastName}, {records[i].DateOfBirth:yyyy-MMMM-dd}");fg
+                    Console.WriteLine($"Id: {records[i].Id}");
+                    Console.WriteLine($"\tFirst name: {records[i].FirstName}");
+                    Console.WriteLine($"\tLast name: {records[i].LastName}");
+                    Console.WriteLine($"\tGender: {records[i].Gender}");
+                    Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
+                    Console.WriteLine($"\tCredit sum: {records[i].CreditSum}");
+                    Console.WriteLine($"\tCredit duration: {records[i].Duration}");
                 }
             }
         }
@@ -138,10 +140,16 @@ namespace FileCabinetApp
             string firstName = CheckStringInput();
             Console.Write("Last name: ");
             string lastName = CheckStringInput();
+            Console.Write("Gender(M/F): ");
+            char gender = CheckCharInput();
             Console.Write("Date of birth(mm/dd/yyyy): ");
             DateTime dateOfBirth = CheckDateInput();
+            Console.Write("Credit sum(bel rub): ");
+            decimal credit = CheckDecimalInput();
+            Console.Write("Credit duration(month): ");
+            short duration = CheckShortInput();
 
-            var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth);
+            var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
             Console.WriteLine($"Record #{recordNumber} is created.");
         }
 
@@ -153,6 +161,68 @@ namespace FileCabinetApp
             {
                 parameters = Console.ReadLine();
                 success = !string.IsNullOrEmpty(parameters) ? true : false;
+            }
+            while (!success);
+
+            return parameters;
+        }
+
+        private static short CheckShortInput()
+        {
+            bool success;
+            short value = 0;
+            do
+            {
+                var parameters = Console.ReadLine();
+                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                if (success)
+                {
+                    if (!short.TryParse(parameters, out value))
+                    {
+                        success = false;
+                    }
+                }
+            }
+            while (!success);
+
+            return value;
+        }
+
+        private static decimal CheckDecimalInput()
+        {
+            bool success;
+            decimal sum = 0;
+            do
+            {
+                var parameters = Console.ReadLine();
+                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                if (success)
+                {
+                    if (!decimal.TryParse(parameters, out sum))
+                    {
+                        success = false;
+                    }
+                }
+            }
+            while (!success);
+
+            return sum;
+        }
+
+        private static char CheckCharInput()
+        {
+            bool success;
+            char parameters;
+            do
+            {
+                success = char.TryParse(Console.ReadLine()?.ToUpper(CultureInfo.CurrentCulture), out parameters) ? true : false;
+                if (success)
+                {
+                    if (parameters != 'M' && parameters != 'F' && parameters != 'm' && parameters != 'f')
+                    {
+                        success = false;
+                    }
+                }
             }
             while (!success);
 
