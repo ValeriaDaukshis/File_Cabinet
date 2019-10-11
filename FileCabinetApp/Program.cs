@@ -161,6 +161,13 @@ namespace FileCabinetApp
             {
                 parameters = Console.ReadLine();
                 success = !string.IsNullOrEmpty(parameters) ? true : false;
+                if (success)
+                {
+                    if (parameters.Trim().Length == 0)
+                    {
+                        success = false;
+                    }
+                }
             }
             while (!success);
 
@@ -215,14 +222,16 @@ namespace FileCabinetApp
             char parameters;
             do
             {
-                success = char.TryParse(Console.ReadLine()?.ToUpper(CultureInfo.CurrentCulture), out parameters) ? true : false;
-                if (success)
-                {
-                    if (parameters != 'M' && parameters != 'F' && parameters != 'm' && parameters != 'f')
-                    {
-                        success = false;
-                    }
-                }
+                string input = Console.ReadLine()?.Trim();
+                success = char.TryParse(input?.ToUpper(CultureInfo.CurrentCulture), out parameters) ? true : false;
+
+// if (success)
+//                {
+//                    if (parameters != 'M' && parameters != 'F')
+//                    {
+//                        success = false;
+//                    }
+//                }
             }
             while (!success);
 
