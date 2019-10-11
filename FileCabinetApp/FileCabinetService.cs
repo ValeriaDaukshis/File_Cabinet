@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace FileCabinetApp
 {
@@ -39,6 +38,25 @@ namespace FileCabinetApp
         public void EditRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             FileCabinetRecord record = this.list.Find(x => x.Id == id);
+
+            if (firstName != record.FirstName)
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+                this.AddValueToDictionary(firstName, this.firstNameDictionary, record);
+            }
+
+            if (lastName != record.LastName)
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+                this.AddValueToDictionary(lastName, this.lastNameDictionary, record);
+            }
+
+            if (dateOfBirth != record.DateOfBirth)
+            {
+                this.RemoveValueFromDictionary( record.DateOfBirth, this.dateOfBirthDictionary, record);
+                this.AddValueToDictionary(dateOfBirth, this.dateOfBirthDictionary, record);
+            }
+
             record.FirstName = firstName;
             record.LastName = lastName;
             record.DateOfBirth = dateOfBirth;
@@ -117,6 +135,14 @@ namespace FileCabinetApp
             {
                 dictionary.Add(value, new List<FileCabinetRecord>());
                 dictionary[value].Add(record);
+            }
+        }
+
+        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Remove(record);
             }
         }
 
