@@ -6,6 +6,9 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         public int CreateRecord(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
@@ -22,6 +25,9 @@ namespace FileCabinetApp
                     Duration = duration,
                 };
                 this.list.Add(record);
+                this.AddValueToDictionary(firstName, this.firstNameDictionary, record);
+                this.AddValueToDictionary(lastName, this.lastNameDictionary, record);
+                this.AddValueToDictionary(dateOfBirth, this.dateOfBirthDictionary, record);
 
                 return record.Id;
             }
@@ -32,12 +38,76 @@ namespace FileCabinetApp
         public void EditRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             FileCabinetRecord record = this.list.Find(x => x.Id == id);
+
+            if (firstName != record.FirstName)
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+                this.AddValueToDictionary(firstName, this.firstNameDictionary, record);
+            }
+
+            if (lastName != record.LastName)
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+                this.AddValueToDictionary(lastName, this.lastNameDictionary, record);
+            }
+
+            if (dateOfBirth != record.DateOfBirth)
+            {
+                this.RemoveValueFromDictionary( record.DateOfBirth, this.dateOfBirthDictionary, record);
+                this.AddValueToDictionary(dateOfBirth, this.dateOfBirthDictionary, record);
+            }
+
             record.FirstName = firstName;
             record.LastName = lastName;
             record.DateOfBirth = dateOfBirth;
             record.Gender = gender;
             record.CreditSum = credit;
             record.Duration = duration;
+        }
+
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            if (this.firstNameDictionary.Count == 0)
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                return this.firstNameDictionary[firstName].ToArray();
+            }
+
+            return Array.Empty<FileCabinetRecord>();
+        }
+
+        public FileCabinetRecord[] FindByLastName(string lastName)
+        {
+            if (this.lastNameDictionary.Count == 0)
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                return this.lastNameDictionary[lastName].ToArray();
+            }
+
+            return Array.Empty<FileCabinetRecord>();
+        }
+
+        public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
+        {
+            if (this.dateOfBirthDictionary.Count == 0)
+            {
+                return Array.Empty<FileCabinetRecord>();
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                return this.dateOfBirthDictionary[dateOfBirth].ToArray();
+            }
+
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public FileCabinetRecord[] GetRecords()
@@ -53,6 +123,27 @@ namespace FileCabinetApp
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Add(record);
+            }
+            else
+            {
+                dictionary.Add(value, new List<FileCabinetRecord>());
+                dictionary[value].Add(record);
+            }
+        }
+
+        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Remove(record);
+            }
         }
 
         private bool CheckInput(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)

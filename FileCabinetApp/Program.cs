@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("get", Get),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,7 +32,12 @@ namespace FileCabinetApp
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "get", "get all record", "The 'get' command get all record." },
-            new string[] { "edit", "edit record", "The 'edit' command edit record by id." },
+            new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
+            new string[]
+            {
+                "find", "find record by firstname/lastname/dateofbirth",
+                "The 'find' command find record by firstname/lastname/dateofbirth.",
+            },
         };
 
         public static void Main(string[] args)
@@ -107,6 +113,55 @@ namespace FileCabinetApp
             isRunning = false;
         }
 
+        private static void Find(string parameters)
+        {
+            parameters = parameters?.Trim().ToLower(CultureInfo.CurrentCulture);
+            var firstIndex = 0;
+
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                if (parameters[i] == '"')
+                {
+                    firstIndex = i;
+                    break;
+                }
+            }
+
+            if (firstIndex != 0)
+            {
+                string value = parameters.Substring(firstIndex + 1, parameters.Length - 2 - firstIndex);
+                string field = parameters.Substring(0, firstIndex - 1).Trim();
+                FileCabinetRecord[] foundResult = Array.Empty<FileCabinetRecord>();
+
+                if (field == "firstname")
+                {
+                    foundResult = Program.fileCabinetService.FindByFirstName(value);
+                }
+                else if (field == "lastname")
+                {
+                    foundResult = Program.fileCabinetService.FindByLastName(value);
+                }
+                else if (field == "dateofbirth")
+                {
+                    DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out var date);
+                    foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
+                }
+                else
+                {
+                    Console.WriteLine($"{field} is not found");
+                }
+
+                if (foundResult.Length > 0)
+                {
+                    PrintRecords(foundResult);
+                }
+            }
+            else
+            {
+                Console.WriteLine($"The search text must be in '' ");
+            }
+        }
+
         private static void Edit(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
@@ -158,6 +213,11 @@ namespace FileCabinetApp
                 return;
             }
 
+            PrintRecords(records);
+        }
+
+        private static void PrintRecords(FileCabinetRecord[] records)
+        {
             for (int i = 0; i < records.Length; i++)
             {
                 Console.WriteLine($"Id: {records[i].Id}");
@@ -206,7 +266,7 @@ namespace FileCabinetApp
                 success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
-                    success = parameters.Trim().Length == 0;
+                    success = parameters.Trim().Length != 0;
                 }
             }
             while (!success);
