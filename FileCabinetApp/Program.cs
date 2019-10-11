@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("get", Get),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,6 +31,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "get", "get all record", "The 'get' command get all record." },
+            new string[] { "edit", "edit record", "The 'edit' command edit record by id." },
         };
 
         public static void Main(string[] args)
@@ -105,6 +107,42 @@ namespace FileCabinetApp
             isRunning = false;
         }
 
+        private static void Edit(string parameters)
+        {
+            var records = Program.fileCabinetService.GetRecords();
+            if (records.Length == 0)
+            {
+                Console.WriteLine("There is no records.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("Write a record number");
+                return;
+            }
+
+            parameters = parameters.Trim();
+
+            bool isNumber = int.TryParse(parameters, out var number);
+
+            if (isNumber)
+            {
+                foreach (var rec in records)
+                {
+                    if (rec.Id == number)
+                    {
+                        ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                        Program.fileCabinetService.EditRecord(number, firstName, lastName, gender, dateOfBirth, credit, duration);
+                        Console.WriteLine($"Record #{parameters} is updated");
+                        return;
+                    }
+                }
+            }
+
+            throw new ArgumentException($"#{parameters} record is not found");
+        }
+
         private static void Stat(string parameters)
         {
             var recordsCount = Program.fileCabinetService.GetStat();
@@ -117,40 +155,45 @@ namespace FileCabinetApp
             if (records.Length == 0)
             {
                 Console.WriteLine("There is no records.");
+                return;
             }
-            else
+
+            for (int i = 0; i < records.Length; i++)
             {
-                for (int i = 0; i < records.Length; i++)
-                {
-                    // Console.WriteLine($"#{records[i].Id}, {records[i].FirstName}, {records[i].LastName}, {records[i].DateOfBirth:yyyy-MMMM-dd}");fg
-                    Console.WriteLine($"Id: {records[i].Id}");
-                    Console.WriteLine($"\tFirst name: {records[i].FirstName}");
-                    Console.WriteLine($"\tLast name: {records[i].LastName}");
-                    Console.WriteLine($"\tGender: {records[i].Gender}");
-                    Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
-                    Console.WriteLine($"\tCredit sum: {records[i].CreditSum}");
-                    Console.WriteLine($"\tCredit duration: {records[i].Duration}");
-                }
+                Console.WriteLine($"Id: {records[i].Id}");
+                Console.WriteLine($"\tFirst name: {records[i].FirstName}");
+                Console.WriteLine($"\tLast name: {records[i].LastName}");
+                Console.WriteLine($"\tGender: {records[i].Gender}");
+                Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
+                Console.WriteLine($"\tCredit sum: {records[i].CreditSum}");
+                Console.WriteLine($"\tCredit duration: {records[i].Duration}");
             }
         }
 
         private static void Create(string parameters)
         {
-            Console.Write("First name: ");
-            string firstName = CheckStringInput();
-            Console.Write("Last name: ");
-            string lastName = CheckStringInput();
-            Console.Write("Gender(M/F): ");
-            char gender = CheckCharInput();
-            Console.Write("Date of birth(mm/dd/yyyy): ");
-            DateTime dateOfBirth = CheckDateInput();
-            Console.Write("Credit sum(bel rub): ");
-            decimal credit = CheckDecimalInput();
-            Console.Write("Credit duration(month): ");
-            short duration = CheckShortInput();
-
+            ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
             var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-            Console.WriteLine($"Record #{recordNumber} is created.");
+            if (recordNumber != -1)
+            {
+                Console.WriteLine($"Record #{recordNumber} is created.");
+            }
+        }
+
+        private static void ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        {
+            Console.Write("First name: ");
+            firstName = CheckStringInput();
+            Console.Write("Last name: ");
+            lastName = CheckStringInput();
+            Console.Write("Gender(M/F): ");
+            gender = CheckCharInput();
+            Console.Write("Date of birth(mm/dd/yyyy): ");
+            dateOfBirth = CheckDateInput();
+            Console.Write("Credit sum(bel rub): ");
+            credit = CheckDecimalInput();
+            Console.Write("Credit duration(month): ");
+            duration = CheckShortInput();
         }
 
         private static string CheckStringInput()
@@ -160,13 +203,10 @@ namespace FileCabinetApp
             do
             {
                 parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
-                    if (parameters.Trim().Length == 0)
-                    {
-                        success = false;
-                    }
+                    success = parameters.Trim().Length == 0;
                 }
             }
             while (!success);
@@ -181,13 +221,10 @@ namespace FileCabinetApp
             do
             {
                 var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
-                    if (!short.TryParse(parameters, out value))
-                    {
-                        success = false;
-                    }
+                    success = short.TryParse(parameters, out value);
                 }
             }
             while (!success);
@@ -202,13 +239,10 @@ namespace FileCabinetApp
             do
             {
                 var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
-                    if (!decimal.TryParse(parameters, out sum))
-                    {
-                        success = false;
-                    }
+                    success = decimal.TryParse(parameters, out sum);
                 }
             }
             while (!success);
@@ -223,15 +257,7 @@ namespace FileCabinetApp
             do
             {
                 string input = Console.ReadLine()?.Trim();
-                success = char.TryParse(input?.ToUpper(CultureInfo.CurrentCulture), out parameters) ? true : false;
-
-// if (success)
-//                {
-//                    if (parameters != 'M' && parameters != 'F')
-//                    {
-//                        success = false;
-//                    }
-//                }
+                success = char.TryParse(input?.ToUpper(CultureInfo.CurrentCulture), out parameters);
             }
             while (!success);
 
@@ -241,12 +267,11 @@ namespace FileCabinetApp
         private static DateTime CheckDateInput()
         {
             bool success;
-            string parameters;
             DateTime date = default(DateTime);
             do
             {
-                parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters) ? true : false;
+                var parameters = Console.ReadLine();
+                success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
                     success = DateTime.TryParse(parameters, new CultureInfo("en-US"), DateTimeStyles.None, out date);
