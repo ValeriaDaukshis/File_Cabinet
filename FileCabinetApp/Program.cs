@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -15,7 +16,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
 
         /// <summary>
         /// The commands.
@@ -268,7 +269,6 @@ namespace FileCabinetApp
             try
             {
                 var recordNumber =
-                   // Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
                     Program.fileCabinetService.CreateRecord(new FileCabinetRecord
                         { FirstName = firstName, LastName = lastName, Gender = gender, DateOfBirth = dateOfBirth, Duration = duration, CreditSum = credit });
                 Console.WriteLine($"Record #{recordNumber} is created.");

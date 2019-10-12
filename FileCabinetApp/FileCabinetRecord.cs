@@ -3,7 +3,7 @@ using System;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// FileCabinetRecord
+    /// FileCabinetRecord.
     /// </summary>
     public class FileCabinetRecord
     {

@@ -6,7 +6,7 @@
     <members>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
-            FileCabinetRecord
+            FileCabinetRecord.
             </summary>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
@@ -116,6 +116,12 @@
             </summary>
             <returns>count of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the parameters.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Enter point.
@@ -136,6 +142,30 @@
             Defines the entry point of the application.
             </summary>
             <param name="args">The arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FileCabinetCustomService">
+            <summary>
+            FileCabinetCustomService.
+            </summary>
+            <seealso cref="T:FileCabinetApp.FileCabinetService" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the methods.
+            </summary>
+            <param name="record">The record.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.FileCabinetDefaultService">
+            <summary>
+            FileCabinetDefaultService.
+            </summary>
+            <seealso cref="T:FileCabinetApp.FileCabinetService" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the methods.
+            </summary>
+            <param name="record">The record.</param>
         </member>
     </members>
 </doc>

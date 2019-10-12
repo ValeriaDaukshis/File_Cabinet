@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// FileCabinetService.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -20,8 +20,7 @@ namespace FileCabinetApp
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            CheckInput(fileCabinetRecord.FirstName, fileCabinetRecord.LastName, fileCabinetRecord.Gender, fileCabinetRecord.DateOfBirth, fileCabinetRecord.CreditSum, fileCabinetRecord.Duration);
-
+            this.ValidateParameters(fileCabinetRecord);
             var record = new FileCabinetRecord
                 {
                     Id = this.list.Count + 1,
@@ -46,8 +45,7 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
-            CheckInput(fileCabinetRecord.FirstName, fileCabinetRecord.LastName, fileCabinetRecord.Gender, fileCabinetRecord.DateOfBirth, fileCabinetRecord.CreditSum, fileCabinetRecord.Duration);
-
+            this.ValidateParameters(fileCabinetRecord);
             FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
 
             if (fileCabinetRecord.FirstName != record.FirstName)
@@ -159,53 +157,11 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        private static void CheckInput(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
-        {
-            if (string.IsNullOrEmpty(firstName))
-            {
-                throw new ArgumentNullException($"{nameof(firstName)}: First name is null");
-            }
-
-            if (string.IsNullOrEmpty(lastName))
-            {
-                throw new ArgumentNullException($"{nameof(lastName)}: Last name is null");
-            }
-
-            if (firstName.Length < 2 || firstName.Length > 60)
-            {
-                throw new ArgumentException($"{nameof(firstName)}: First name length is upper than 60 or under than 2 symbols");
-            }
-
-            if (lastName.Length < 2 || lastName.Length > 60)
-            {
-                throw new ArgumentException($"{nameof(lastName)}: Last name length is upper than 60 or under than 2 symbols");
-            }
-
-            if (gender != 'M' && gender != 'F')
-            {
-                throw new ArgumentException($"{nameof(gender)}: Indefinite gender");
-            }
-
-            if (dateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException($"{nameof(dateOfBirth)}: Date of birth is upper than today's date");
-            }
-
-            if (dateOfBirth < new DateTime(1950, 01, 01))
-            {
-                throw new ArgumentException($"{nameof(dateOfBirth)}: Date of birth is under than 01-Jan-1950");
-            }
-
-            if (credit > 5000 || credit < 10)
-            {
-                throw new ArgumentException($"{nameof(credit)}: Credit sum is upper than 5000 or under than 10 BYN");
-            }
-
-            if (duration > 120 || duration < 6)
-            {
-                throw new ArgumentException($"{nameof(duration)}: Credit duration is upper than 120 or under than 6 weeks");
-            }
-        }
+        /// <summary>
+        /// Validates the parameters.
+        /// </summary>
+        /// <param name="fileCabinetRecord">The file cabinet record.</param>
+        protected abstract void ValidateParameters(FileCabinetRecord fileCabinetRecord);
 
         private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
         {
