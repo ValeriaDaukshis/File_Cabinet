@@ -115,50 +115,58 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            parameters = parameters?.Trim().ToLower(CultureInfo.CurrentCulture);
-            var firstIndex = 0;
-
-            for (int i = 0; i < parameters.Length; i++)
+            if (string.IsNullOrEmpty(parameters))
             {
-                if (parameters[i] == '"')
+                throw new ArgumentException("No parameters after command 'edit'");
+            }
+
+            parameters = parameters.Trim().ToLower(CultureInfo.CurrentCulture);
+            string[] inputParameters = parameters.Split(' ', ' ');
+
+            if (inputParameters.Length < 2)
+            {
+                throw new ArgumentException("Not enough parameters after command 'edit'");
+            }
+
+            string field = inputParameters[0];
+            string value = string.Empty;
+            for (int i = 1; i < inputParameters.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(inputParameters[i]))
                 {
-                    firstIndex = i;
+                    value = inputParameters[i];
                     break;
                 }
             }
 
-            if (firstIndex != 0)
+            if (value[0] == '"')
             {
-                string value = parameters.Substring(firstIndex + 1, parameters.Length - 2 - firstIndex);
-                string field = parameters.Substring(0, firstIndex - 1).Trim();
-                FileCabinetRecord[] foundResult = Array.Empty<FileCabinetRecord>();
+                value = value.Substring(1, value.Length - 2);
+            }
 
-                if (field == "firstname")
-                {
-                    foundResult = Program.fileCabinetService.FindByFirstName(value);
-                }
-                else if (field == "lastname")
-                {
-                    foundResult = Program.fileCabinetService.FindByLastName(value);
-                }
-                else if (field == "dateofbirth")
-                {
-                    DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out var date);
-                    foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
-                }
-                else
-                {
-                    Console.WriteLine($"{field} is not found");
-                }
+            FileCabinetRecord[] foundResult = Array.Empty<FileCabinetRecord>();
 
-                if (foundResult.Length > 0)
-                {
-                    PrintRecords(foundResult);
-                }
+            if (field == "firstname")
+            {
+                foundResult = Program.fileCabinetService.FindByFirstName(value);
+            }
+            else if (field == "lastname")
+            {
+                foundResult = Program.fileCabinetService.FindByLastName(value);
+            }
+            else if (field == "dateofbirth")
+            {
+                DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out var date);
+                foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
             }
             else
             {
-                Console.WriteLine($"The search text must be in '' ");
+                Console.WriteLine($"{field} is not found");
+            }
+
+            if (foundResult.Length > 0)
+            {
+                PrintRecords(foundResult);
             }
         }
 
@@ -177,25 +185,35 @@ namespace FileCabinetApp
                 return;
             }
 
-            parameters = parameters.Trim();
-
-            bool isNumber = int.TryParse(parameters, out var number);
-
-            if (isNumber)
+            if (!int.TryParse(parameters.Trim(), out var number))
             {
-                foreach (var rec in records)
+                Console.WriteLine($"#{parameters} record is not found");
+                return;
+            }
+
+            foreach (var rec in records)
+            {
+                if (rec.Id == number)
                 {
-                    if (rec.Id == number)
+                    try
                     {
-                        ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                        PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                         Program.fileCabinetService.EditRecord(number, firstName, lastName, gender, dateOfBirth, credit, duration);
                         Console.WriteLine($"Record #{parameters} is updated");
                         return;
                     }
+                    catch (ArgumentNullException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"Record #{parameters} is not updated ");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"Record #{parameters} is not updated");
+                    }
                 }
             }
-
-            throw new ArgumentException($"#{parameters} record is not found");
         }
 
         private static void Stat(string parameters)
@@ -232,31 +250,42 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-            var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-            if (recordNumber != -1)
+            PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+            try
             {
+                var recordNumber =
+                    Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
                 Console.WriteLine($"Record #{recordNumber} is created.");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record is not created ");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record is not created ");
             }
         }
 
-        private static void ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private static void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             Console.Write("First name: ");
-            firstName = CheckStringInput();
+            firstName = CheckStringValue();
             Console.Write("Last name: ");
-            lastName = CheckStringInput();
+            lastName = CheckStringValue();
             Console.Write("Gender(M/F): ");
-            gender = CheckCharInput();
+            gender = CheckCharValue();
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = CheckDateInput();
+            dateOfBirth = CheckDateTimeValue();
             Console.Write("Credit sum(bel rub): ");
-            credit = CheckDecimalInput();
+            credit = CheckDecimalValue();
             Console.Write("Credit duration(month): ");
-            duration = CheckShortInput();
+            duration = CheckShortValue();
         }
 
-        private static string CheckStringInput()
+        private static string CheckStringValue()
         {
             bool success;
             string parameters;
@@ -274,7 +303,7 @@ namespace FileCabinetApp
             return parameters;
         }
 
-        private static short CheckShortInput()
+        private static short CheckShortValue()
         {
             bool success;
             short value = 0;
@@ -292,7 +321,7 @@ namespace FileCabinetApp
             return value;
         }
 
-        private static decimal CheckDecimalInput()
+        private static decimal CheckDecimalValue()
         {
             bool success;
             decimal sum = 0;
@@ -310,7 +339,7 @@ namespace FileCabinetApp
             return sum;
         }
 
-        private static char CheckCharInput()
+        private static char CheckCharValue()
         {
             bool success;
             char parameters;
@@ -324,7 +353,7 @@ namespace FileCabinetApp
             return parameters;
         }
 
-        private static DateTime CheckDateInput()
+        private static DateTime CheckDateTimeValue()
         {
             bool success;
             DateTime date = default(DateTime);
