@@ -16,31 +16,26 @@ namespace FileCabinetApp
         /// <summary>
         /// Creates the record.
         /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="gender">The gender.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <param name="credit">The credit.</param>
-        /// <param name="duration">The duration.</param>
-        /// <returns>record Id.</returns>
-        public int CreateRecord(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
+        /// <param name="fileCabinetRecord">The file cabinet record.</param>
+        /// <returns>id of created record.</returns>
+        public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            CheckInput(firstName, lastName, gender, dateOfBirth, credit, duration);
+            CheckInput(fileCabinetRecord.FirstName, fileCabinetRecord.LastName, fileCabinetRecord.Gender, fileCabinetRecord.DateOfBirth, fileCabinetRecord.CreditSum, fileCabinetRecord.Duration);
 
             var record = new FileCabinetRecord
                 {
                     Id = this.list.Count + 1,
-                    FirstName = firstName,
-                    LastName = lastName,
-                    DateOfBirth = dateOfBirth,
-                    Gender = gender,
-                    CreditSum = credit,
-                    Duration = duration,
+                    FirstName = fileCabinetRecord.FirstName,
+                    LastName = fileCabinetRecord.LastName,
+                    DateOfBirth = fileCabinetRecord.DateOfBirth,
+                    Gender = fileCabinetRecord.Gender,
+                    CreditSum = fileCabinetRecord.CreditSum,
+                    Duration = fileCabinetRecord.Duration,
                 };
             this.list.Add(record);
-            this.AddValueToDictionary(firstName, this.firstNameDictionary, record);
-            this.AddValueToDictionary(lastName, this.lastNameDictionary, record);
-            this.AddValueToDictionary(dateOfBirth, this.dateOfBirthDictionary, record);
+            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
+            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
+            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
 
             return record.Id;
         }
@@ -48,42 +43,37 @@ namespace FileCabinetApp
         /// <summary>
         /// Edits the record.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="gender">The gender.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <param name="credit">The credit.</param>
-        /// <param name="duration">The duration.</param>
-        public void EditRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
+        /// <param name="fileCabinetRecord">The file cabinet record.</param>
+        public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
-            CheckInput(firstName, lastName, gender, dateOfBirth, credit, duration);
-            FileCabinetRecord record = this.list.Find(x => x.Id == id);
+            CheckInput(fileCabinetRecord.FirstName, fileCabinetRecord.LastName, fileCabinetRecord.Gender, fileCabinetRecord.DateOfBirth, fileCabinetRecord.CreditSum, fileCabinetRecord.Duration);
 
-            if (firstName != record.FirstName)
+            FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
+
+            if (fileCabinetRecord.FirstName != record.FirstName)
             {
                 this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
-                this.AddValueToDictionary(firstName, this.firstNameDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
             }
 
-            if (lastName != record.LastName)
+            if (fileCabinetRecord.LastName != record.LastName)
             {
                 this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
-                this.AddValueToDictionary(lastName, this.lastNameDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
             }
 
-            if (dateOfBirth != record.DateOfBirth)
+            if (fileCabinetRecord.DateOfBirth != record.DateOfBirth)
             {
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
-                this.AddValueToDictionary(dateOfBirth, this.dateOfBirthDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
             }
 
-            record.FirstName = firstName;
-            record.LastName = lastName;
-            record.DateOfBirth = dateOfBirth;
-            record.Gender = gender;
-            record.CreditSum = credit;
-            record.Duration = duration;
+            record.FirstName = fileCabinetRecord.FirstName;
+            record.LastName = fileCabinetRecord.LastName;
+            record.DateOfBirth = fileCabinetRecord.DateOfBirth;
+            record.Gender = fileCabinetRecord.Gender;
+            record.CreditSum = fileCabinetRecord.CreditSum;
+            record.Duration = fileCabinetRecord.Duration;
         }
 
         /// <summary>

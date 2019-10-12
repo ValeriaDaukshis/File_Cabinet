@@ -70,29 +70,18 @@
             FileCabinetService.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Creates the record.
             </summary>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="gender">The gender.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <param name="credit">The credit.</param>
-            <param name="duration">The duration.</param>
-            <returns>record Id.</returns>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>id of created record.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Edits the record.
             </summary>
-            <param name="id">The identifier.</param>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="gender">The gender.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <param name="credit">The credit.</param>
-            <param name="duration">The duration.</param>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
             <summary>
