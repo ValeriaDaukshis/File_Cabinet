@@ -4,5 +4,149 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            FileCabinetRecord
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+            <value>
+            The identifier.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets the first name.
+            </summary>
+            <value>
+            The first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets the last name.
+            </summary>
+            <value>
+            The last name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth.
+            </summary>
+            <value>
+            The date of birth.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets or sets the gender.
+            </summary>
+            <value>
+            The gender.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
+            <summary>
+            Gets or sets the duration.
+            </summary>
+            <value>
+            The duration.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
+            <summary>
+            Gets or sets the credit sum.
+            </summary>
+            <value>
+            The credit sum.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            FileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Creates the record.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+            <returns>record Id.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Edits the record.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds the first name of the by.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds the last name of the by.
+            </summary>
+            <param name="lastName">The last name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds the by date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Gets the records.
+            </summary>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Gets the stat.
+            </summary>
+            <returns>count of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Enter point.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.commands">
+            <summary>
+            The commands.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.helpMessages">
+            <summary>
+            The help messages.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Defines the entry point of the application.
+            </summary>
+            <param name="args">The arguments.</param>
+        </member>
     </members>
 </doc>

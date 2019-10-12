@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// FileCabinetService.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -10,6 +13,16 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Creates the record.
+        /// </summary>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="credit">The credit.</param>
+        /// <param name="duration">The duration.</param>
+        /// <returns>record Id.</returns>
         public int CreateRecord(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             CheckInput(firstName, lastName, gender, dateOfBirth, credit, duration);
@@ -32,6 +45,16 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Edits the record.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="credit">The credit.</param>
+        /// <param name="duration">The duration.</param>
         public void EditRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             CheckInput(firstName, lastName, gender, dateOfBirth, credit, duration);
@@ -63,6 +86,11 @@ namespace FileCabinetApp
             record.Duration = duration;
         }
 
+        /// <summary>
+        /// Finds the first name of the by.
+        /// </summary>
+        /// <param name="firstName">The first name.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.Count == 0)
@@ -78,6 +106,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds the last name of the by.
+        /// </summary>
+        /// <param name="lastName">The last name.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.Count == 0)
@@ -93,6 +126,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds the by date of birth.
+        /// </summary>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.Count == 0)
@@ -108,6 +146,10 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Gets the records.
+        /// </summary>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             if (this.list.Count == 0)
@@ -118,6 +160,10 @@ namespace FileCabinetApp
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Gets the stat.
+        /// </summary>
+        /// <returns>count of records.</returns>
         public int GetStat()
         {
             return this.list.Count;

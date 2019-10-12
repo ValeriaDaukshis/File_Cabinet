@@ -3,6 +3,9 @@ using System.Globalization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Enter point.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Valeria Daukshis";
@@ -14,6 +17,9 @@ namespace FileCabinetApp
         private static bool isRunning = true;
         private static FileCabinetService fileCabinetService = new FileCabinetService();
 
+        /// <summary>
+        /// The commands.
+        /// </summary>
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -25,6 +31,9 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
+        /// <summary>
+        /// The help messages.
+        /// </summary>
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
@@ -40,6 +49,10 @@ namespace FileCabinetApp
             },
         };
 
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
