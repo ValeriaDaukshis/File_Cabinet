@@ -4,5 +4,325 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            FileCabinetRecord.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="firstName">first name.</param>
+            <param name="lastName">last name.</param>
+            <param name="gender">gender.</param>
+            <param name="dateOfBirth">date of birth.</param>
+            <param name="credit">credit sum.</param>
+            <param name="duration">duration.</param>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+            <value>
+            The identifier.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets the first name.
+            </summary>
+            <value>
+            The first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets the last name.
+            </summary>
+            <value>
+            The last name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets the date of birth.
+            </summary>
+            <value>
+            The date of birth.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets the gender.
+            </summary>
+            <value>
+            The gender.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
+            <summary>
+            Gets duration.
+            </summary>
+            <value>
+            The duration.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
+            <summary>
+            Gets credit sum.
+            </summary>
+            <value>
+            Credit sum.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Enter point.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.commands">
+            <summary>
+            The commands.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.Program.helpMessages">
+            <summary>
+            The help messages.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Defines the entry point of the application.
+            </summary>
+            <param name="args">The arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.Service.FileCabinetService">
+            <summary>
+            FileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Creates the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Edits the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds the first name of the by.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds the last name of the by.
+            </summary>
+            <param name="lastName">The last name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds the by date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.GetRecords">
+            <summary>
+            Gets the records.
+            </summary>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetService.GetStat">
+            <summary>
+            Gets the stat.
+            </summary>
+            <returns>count of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Service.IFileCabinetService">
+            <summary>
+            IFileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Creates the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>Id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Edits the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.GetStat">
+            <summary>
+            Gets the stat.
+            </summary>
+            <returns>number of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.GetRecords">
+            <summary>
+            Gets the records.
+            </summary>
+            <returns>All records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds the by date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds the last name of the by.
+            </summary>
+            <param name="lastName">The last name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds the first name of the by.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomValidator">
+            <summary>
+            CustomValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateFirstName(System.String)">
+            <summary>
+            Validates the first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateLastName(System.String)">
+            <summary>
+            Validates the last name.
+            </summary>
+            <param name="lastName">The last name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateGender(System.Char)">
+            <summary>
+            Validates the gender.
+            </summary>
+            <param name="gender">The gender.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Validates the date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDuration(System.Int16)">
+            <summary>
+            Validates the duration.
+            </summary>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateCreditSum(System.Decimal)">
+            <summary>
+            Validates the credit sum.
+            </summary>
+            <param name="creditSum">The credit sum.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultValidator">
+            <summary>
+            DefaultValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateFirstName(System.String)">
+            <summary>
+            Validates the first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateLastName(System.String)">
+            <summary>
+            Validates the last name.
+            </summary>
+            <param name="lastName">The last name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateGender(System.Char)">
+            <summary>
+            Validates the gender.
+            </summary>
+            <param name="gender">The gender.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Validates the date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDuration(System.Int16)">
+            <summary>
+            Validates the duration.
+            </summary>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateCreditSum(System.Decimal)">
+            <summary>
+            Validates the credit sum.
+            </summary>
+            <param name="creditSum">The credit sum.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.IRecordValidator">
+            <summary>
+            IRecordValidator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateFirstName(System.String)">
+            <summary>
+            Validates the first name.
+            </summary>
+            <param name="firstName">The first name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateLastName(System.String)">
+            <summary>
+            Validates the last name.
+            </summary>
+            <param name="lastName">The last name.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateCreditSum(System.Decimal)">
+            <summary>
+            Validates the credit sum.
+            </summary>
+            <param name="creditSum">The credit sum.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateDuration(System.Int16)">
+            <summary>
+            Validates the duration.
+            </summary>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Validates the date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateGender(System.Char)">
+            <summary>
+            Validates the gender.
+            </summary>
+            <param name="gender">The gender.</param>
+        </member>
     </members>
 </doc>

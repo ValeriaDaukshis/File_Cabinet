@@ -1,8 +1,15 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
+using FileCabinetApp.Service;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Enter point.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Valeria Daukshis";
@@ -10,10 +17,16 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static IRecordValidator recordValidator = new DefaultValidator();
+        private static IFileCabinetService fileCabinetService;
 
+        /// <summary>
+        /// The commands.
+        /// </summary>
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
@@ -25,6 +38,9 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
         };
 
+        /// <summary>
+        /// The help messages.
+        /// </summary>
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
@@ -40,8 +56,14 @@ namespace FileCabinetApp
             },
         };
 
+        /// <summary>
+        /// Defines the entry point of the application.
+        /// </summary>
+        /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            ReadValidationRules(args);
+            fileCabinetService = new FileCabinetService();
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -72,6 +94,25 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void ReadValidationRules(string[] arguments)
+        {
+            if (arguments.Length > 0 && arguments.Contains("-v"))
+            {
+                if (arguments[1].ToLower(Culture) == "custom")
+                {
+                    recordValidator = new CustomValidator();
+                }
+            }
+            else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
+            {
+                string rule = arguments[0].Split('=')[1];
+                if (rule.ToLower(Culture) == "custom")
+                {
+                    recordValidator = new CustomValidator();
+                }
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -115,57 +156,75 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            parameters = parameters?.Trim().ToLower(CultureInfo.CurrentCulture);
-            var firstIndex = 0;
-
-            for (int i = 0; i < parameters.Length; i++)
+            string[] inputParameters;
+            try
             {
-                if (parameters[i] == '"')
+                if (string.IsNullOrEmpty(parameters))
                 {
-                    firstIndex = i;
+                    throw new ArgumentException("No parameters after command 'find'");
+                }
+
+                parameters = parameters.Trim().ToLower(Culture);
+                inputParameters = parameters.Split(' ', ' ');
+
+                if (inputParameters.Length < 2)
+                {
+                    throw new ArgumentException("Not enough parameters after command 'find'");
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            string field = inputParameters[0];
+            string value = string.Empty;
+            for (int i = 1; i < inputParameters.Length; i++)
+            {
+                if (!string.IsNullOrEmpty(inputParameters[i]))
+                {
+                    value = inputParameters[i];
                     break;
                 }
             }
 
-            if (firstIndex != 0)
+            if (value[0] == '"')
             {
-                string value = parameters.Substring(firstIndex + 1, parameters.Length - 2 - firstIndex);
-                string field = parameters.Substring(0, firstIndex - 1).Trim();
-                FileCabinetRecord[] foundResult = Array.Empty<FileCabinetRecord>();
-
-                if (field == "firstname")
-                {
-                    foundResult = Program.fileCabinetService.FindByFirstName(value);
-                }
-                else if (field == "lastname")
-                {
-                    foundResult = Program.fileCabinetService.FindByLastName(value);
-                }
-                else if (field == "dateofbirth")
-                {
-                    DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out var date);
-                    foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
-                }
-                else
-                {
-                    Console.WriteLine($"{field} is not found");
-                }
-
-                if (foundResult.Length > 0)
-                {
-                    PrintRecords(foundResult);
-                }
+                value = value.Substring(1, value.Length - 2);
             }
-            else
+
+            ReadOnlyCollection<FileCabinetRecord> foundResult = new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+
+            if (field == "firstname")
             {
-                Console.WriteLine($"The search text must be in '' ");
+                foundResult = Program.fileCabinetService.FindByFirstName(value);
+            }
+            else if (field == "lastname")
+            {
+                foundResult = Program.fileCabinetService.FindByLastName(value);
+            }
+            else if (field == "dateofbirth")
+            {
+                DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
+                foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
+            }
+
+            if (foundResult.Count > 0)
+            {
+                PrintRecords(foundResult);
+            }
+
+            if (foundResult.Count == 0)
+            {
+                Console.WriteLine($"{value} is not found");
             }
         }
 
         private static void Edit(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");
                 return;
@@ -177,25 +236,35 @@ namespace FileCabinetApp
                 return;
             }
 
-            parameters = parameters.Trim();
-
-            bool isNumber = int.TryParse(parameters, out var number);
-
-            if (isNumber)
+            if (!int.TryParse(parameters.Trim(), out var id))
             {
-                foreach (var rec in records)
+                Console.WriteLine($"#{parameters} record is not found");
+                return;
+            }
+
+            foreach (var rec in records)
+            {
+                if (rec.Id == id)
                 {
-                    if (rec.Id == number)
+                    try
                     {
-                        ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                        Program.fileCabinetService.EditRecord(number, firstName, lastName, gender, dateOfBirth, credit, duration);
+                        PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                        Program.fileCabinetService.EditRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
                         Console.WriteLine($"Record #{parameters} is updated");
                         return;
                     }
+                    catch (ArgumentNullException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"Record #{parameters} is not updated ");
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                        Console.WriteLine($"Record #{parameters} is not updated");
+                    }
                 }
             }
-
-            throw new ArgumentException($"#{parameters} record is not found");
         }
 
         private static void Stat(string parameters)
@@ -207,7 +276,7 @@ namespace FileCabinetApp
         private static void Get(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");
                 return;
@@ -216,130 +285,210 @@ namespace FileCabinetApp
             PrintRecords(records);
         }
 
-        private static void PrintRecords(FileCabinetRecord[] records)
+        private static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
         {
-            for (int i = 0; i < records.Length; i++)
+            foreach (var rec in records)
             {
-                Console.WriteLine($"Id: {records[i].Id}");
-                Console.WriteLine($"\tFirst name: {records[i].FirstName}");
-                Console.WriteLine($"\tLast name: {records[i].LastName}");
-                Console.WriteLine($"\tGender: {records[i].Gender}");
-                Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
-                Console.WriteLine($"\tCredit sum: {records[i].CreditSum}");
-                Console.WriteLine($"\tCredit duration: {records[i].Duration}");
+                Console.WriteLine($"Id: {rec.Id}");
+                Console.WriteLine($"\tFirst name: {rec.FirstName}");
+                Console.WriteLine($"\tLast name: {rec.LastName}");
+                Console.WriteLine($"\tGender: {rec.Gender}");
+                Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
+                Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
+                Console.WriteLine($"\tCredit duration: {rec.Duration}");
             }
         }
 
         private static void Create(string parameters)
         {
-            ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-            var recordNumber = Program.fileCabinetService.CreateRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-            if (recordNumber != -1)
+            PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+            try
             {
+                var recordNumber =
+                    Program.fileCabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record is not created ");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record is not created ");
+            }
         }
 
-        private static void ReadInputData(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private static void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             Console.Write("First name: ");
-            firstName = CheckStringInput();
+            firstName = ReadInput(stringConverter, firstNameValidator);
             Console.Write("Last name: ");
-            lastName = CheckStringInput();
+            lastName = ReadInput(stringConverter, lastNameValidator);
             Console.Write("Gender(M/F): ");
-            gender = CheckCharInput();
+            gender = ReadInput(charConverter, genderValidator);
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = CheckDateInput();
+            dateOfBirth = ReadInput(dateTimeConverter, dateOfBirthValidator);
             Console.Write("Credit sum(bel rub): ");
-            credit = CheckDecimalInput();
+            credit = ReadInput(decimalConverter, creditSumValidator);
             Console.Write("Credit duration(month): ");
-            duration = CheckShortInput();
+            duration = ReadInput(shortConverter, durationValidator);
         }
 
-        private static string CheckStringInput()
+        private static Func<string, Tuple<bool, string, string>> stringConverter = input =>
         {
-            bool success;
-            string parameters;
+            bool success = !string.IsNullOrEmpty(input) && input.Trim().Length != 0;
+            return new Tuple<bool, string, string>(success, input, input.Trim());
+        };
+
+        private static Func<string, Tuple<bool, string, char>> charConverter = input =>
+        {
+            var result = default(char);
+            bool success = char.TryParse(input?.Trim().ToUpper(Culture), out result);
+            return new Tuple<bool, string, char>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, DateTime>> dateTimeConverter = input =>
+        {
+            var result = default(DateTime);
+            bool success = !string.IsNullOrEmpty(input) && DateTime.TryParse(input, DateTimeCulture, DateTimeStyles.None, out result);
+            return new Tuple<bool, string, DateTime>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, decimal>> decimalConverter = input =>
+        {
+            var result = default(decimal);
+            bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, out result);
+            return new Tuple<bool, string, decimal>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, short>> shortConverter = input =>
+        {
+            var result = default(short);
+            bool success = !string.IsNullOrEmpty(input) && short.TryParse(input, out result);
+            return new Tuple<bool, string, short>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string>> firstNameValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateFirstName(input);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input);
+        };
+
+        private static Func<string, Tuple<bool, string>> lastNameValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateLastName(input);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input);
+        };
+
+        private static Func<char, Tuple<bool, string>> genderValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateGender(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateCreditSum(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateDateOfBirth(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<short, Tuple<bool, string>> durationValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateDuration(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
             do
             {
-                parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
                 {
-                    success = parameters.Trim().Length != 0;
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
                 }
-            }
-            while (!success);
 
-            return parameters;
-        }
+                value = conversionResult.Item3;
 
-        private static short CheckShortInput()
-        {
-            bool success;
-            short value = 0;
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
                 {
-                    success = short.TryParse(parameters, out value);
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
                 }
+
+                return value;
             }
-            while (!success);
-
-            return value;
-        }
-
-        private static decimal CheckDecimalInput()
-        {
-            bool success;
-            decimal sum = 0;
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
-                {
-                    success = decimal.TryParse(parameters, out sum);
-                }
-            }
-            while (!success);
-
-            return sum;
-        }
-
-        private static char CheckCharInput()
-        {
-            bool success;
-            char parameters;
-            do
-            {
-                string input = Console.ReadLine()?.Trim();
-                success = char.TryParse(input?.ToUpper(CultureInfo.CurrentCulture), out parameters);
-            }
-            while (!success);
-
-            return parameters;
-        }
-
-        private static DateTime CheckDateInput()
-        {
-            bool success;
-            DateTime date = default(DateTime);
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
-                {
-                    success = DateTime.TryParse(parameters, new CultureInfo("en-US"), DateTimeStyles.None, out date);
-                }
-            }
-            while (!success);
-
-            return date;
+            while (true);
         }
     }
 }
