@@ -70,6 +70,12 @@
             FileCabinetService.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+            <param name="validator">validator.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Creates the record.
@@ -115,12 +121,6 @@
             Gets the stat.
             </summary>
             <returns>count of records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
-            <summary>
-            Validates the parameters.
-            </summary>
-            <returns>Validator class.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -173,11 +173,11 @@
             </summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.CreateValidator">
+        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.#ctor">
             <summary>
-            Validates the parameters.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FileCabinetCustomService"/> class.
             </summary>
-            <returns>validator class.</returns>
+            <param name="validator">validator.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.FileCabinetDefaultService">
             <summary>
@@ -185,11 +185,10 @@
             </summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.CreateValidator">
+        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.#ctor">
             <summary>
-            Validates the parameters.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FileCabinetDefaultService"/> class.
             </summary>
-            <returns>validator class.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
