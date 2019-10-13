@@ -167,29 +167,6 @@
             </summary>
             <param name="record">The record.</param>
         </member>
-        <member name="T:FileCabinetApp.Validators.FileCabinetCustomService">
-            <summary>
-            FileCabinetCustomService.
-            </summary>
-            <seealso cref="T:FileCabinetApp.FileCabinetService" />
-        </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FileCabinetCustomService"/> class.
-            </summary>
-            <param name="validator">validator.</param>
-        </member>
-        <member name="T:FileCabinetApp.Validators.FileCabinetDefaultService">
-            <summary>
-            FileCabinetDefaultService.
-            </summary>
-            <seealso cref="T:FileCabinetApp.FileCabinetService" />
-        </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FileCabinetDefaultService"/> class.
-            </summary>
-        </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
             IRecordValidator.

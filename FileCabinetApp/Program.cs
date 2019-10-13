@@ -19,7 +19,8 @@ namespace FileCabinetApp
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static IRecordValidator validator = new DefaultValidator();
+        private static FileCabinetService fileCabinetService;
 
         /// <summary>
         /// The commands.
@@ -60,6 +61,7 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             ReadValidationRules(args);
+            fileCabinetService = new FileCabinetService(validator);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -98,7 +100,7 @@ namespace FileCabinetApp
             {
                 if (arguments[1].ToLower(Culture) == "custom")
                 {
-                    fileCabinetService = new FileCabinetCustomService();
+                    validator = new CustomValidator();
                 }
             }
             else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
@@ -106,7 +108,7 @@ namespace FileCabinetApp
                 string rule = arguments[0].Split('=')[1];
                 if (rule.ToLower(Culture) == "custom")
                 {
-                    fileCabinetService = new FileCabinetCustomService();
+                    validator = new CustomValidator();
                 }
             }
         }
