@@ -9,59 +9,89 @@ namespace FileCabinetApp.Validators
     public class CustomValidator : IRecordValidator
     {
         /// <summary>
-        /// Validates the parameters.
+        /// Validates the first name.
         /// </summary>
-        /// <param name="record">The record.</param>
-        public void ValidateParameters(FileCabinetRecord record)
+        /// <param name="firstName">The first name.</param>
+        public void ValidateFirstName(string firstName)
         {
-            if (record == null)
+            if (string.IsNullOrEmpty(firstName))
             {
-                throw new ArgumentNullException($"{nameof(record)}: record is null");
+                throw new ArgumentNullException($"{nameof(firstName)}: First name is null");
             }
 
-            if (string.IsNullOrEmpty(record.FirstName))
+            if (firstName.Length < 4 || firstName.Length > 60)
             {
-                throw new ArgumentNullException($"{nameof(record.FirstName)}: First name is null");
+                throw new ArgumentException($"{nameof(firstName)}: First name length is upper than 60 or under than 4 symbols");
+            }
+        }
+
+        /// <summary>
+        /// Validates the last name.
+        /// </summary>
+        /// <param name="lastName">The last name.</param>
+        public void ValidateLastName(string lastName)
+        {
+            if (string.IsNullOrEmpty(lastName))
+            {
+                throw new ArgumentNullException($"{nameof(lastName)}: First name is null");
             }
 
-            if (string.IsNullOrEmpty(record.LastName))
+            if (lastName.Length < 4 || lastName.Length > 60)
             {
-                throw new ArgumentNullException($"{nameof(record.LastName)}: Last name is null");
+                throw new ArgumentException($"{nameof(lastName)}: First name length is upper than 60 or under than 4 symbols");
+            }
+        }
+
+        /// <summary>
+        /// Validates the gender.
+        /// </summary>
+        /// <param name="gender">The gender.</param>
+        public void ValidateGender(char gender)
+        {
+            if (gender != 'M' && gender != 'F')
+            {
+                throw new ArgumentException($"{nameof(gender)}: Indefinite gender");
+            }
+        }
+
+        /// <summary>
+        /// Validates the date of birth.
+        /// </summary>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        public void ValidateDateOfBirth(DateTime dateOfBirth)
+        {
+            if (dateOfBirth > DateTime.Now)
+            {
+                throw new ArgumentException($"{nameof(dateOfBirth)}: Date of birth is upper than today's date");
             }
 
-            if (record.FirstName.Length < 4 || record.FirstName.Length > 60)
+            if (dateOfBirth < new DateTime(1930, 01, 01))
             {
-                throw new ArgumentException($"{nameof(record.FirstName)}: First name length is upper than 60 or under than 4 symbols");
+                throw new ArgumentException($"{nameof(dateOfBirth)}: Date of birth is under than 01-Jan-1950");
             }
+        }
 
-            if (record.LastName.Length < 4 || record.LastName.Length > 60)
+        /// <summary>
+        /// Validates the duration.
+        /// </summary>
+        /// <param name="duration">The duration.</param>
+        public void ValidateDuration(short duration)
+        {
+            if (duration > 500 || duration < 12)
             {
-                throw new ArgumentException($"{nameof(record.LastName)}: Last name length is upper than 60 or under than 4 symbols");
+                throw new ArgumentException($"{nameof(duration)}: Credit duration is upper than 120 or under than 6 weeks");
             }
+        }
 
-            if (record.Gender != 'M' && record.Gender != 'F')
+        /// <summary>
+        /// Validates the credit sum.
+        /// </summary>
+        /// <param name="creditSum">The credit sum.</param>
+        public void ValidateCreditSum(decimal creditSum)
+        {
+            if (creditSum > 5000 || creditSum < 10)
             {
-                throw new ArgumentException($"{nameof(record.Gender)}: Indefinite gender");
-            }
-
-            if (record.DateOfBirth > DateTime.Now)
-            {
-                throw new ArgumentException($"{nameof(record.DateOfBirth)}: Date of birth is upper than today's date");
-            }
-
-            if (record.DateOfBirth < new DateTime(1930, 01, 01))
-            {
-                throw new ArgumentException($"{nameof(record.DateOfBirth)}: Date of birth is under than 01-Jan-1930");
-            }
-
-            if (record.CreditSum > 5000 || record.CreditSum < 10)
-            {
-                throw new ArgumentException($"{nameof(record.CreditSum)}: Credit sum is upper than 5000 or under than 10 BYN");
-            }
-
-            if (record.Duration > 500 || record.Duration < 12)
-            {
-                throw new ArgumentException($"{nameof(record.Duration)}: Credit duration is upper than 500 or under than 12 weeks");
+                throw new ArgumentException($"{nameof(creditSum)}: Credit sum is upper than 5000 or under than 10 BYN");
             }
         }
     }

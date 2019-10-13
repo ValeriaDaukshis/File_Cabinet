@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
@@ -20,7 +21,7 @@ namespace FileCabinetApp
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
-        private static IRecordValidator validator = new DefaultValidator();
+        private static IRecordValidator recordValidator = new DefaultValidator();
         private static IFileCabinetService fileCabinetService;
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             ReadValidationRules(args);
-            fileCabinetService = new FileCabinetService(validator);
+            fileCabinetService = new FileCabinetService();
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -101,7 +102,7 @@ namespace FileCabinetApp
             {
                 if (arguments[1].ToLower(Culture) == "custom")
                 {
-                    validator = new CustomValidator();
+                    recordValidator = new CustomValidator();
                 }
             }
             else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
@@ -109,7 +110,7 @@ namespace FileCabinetApp
                 string rule = arguments[0].Split('=')[1];
                 if (rule.ToLower(Culture) == "custom")
                 {
-                    validator = new CustomValidator();
+                    recordValidator = new CustomValidator();
                 }
             }
         }
@@ -305,7 +306,6 @@ namespace FileCabinetApp
             {
                 var recordNumber =
                     Program.fileCabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
-                       // { FirstName = firstName, LastName = lastName, Gender = gender, DateOfBirth = dateOfBirth, Duration = duration, CreditSum = credit });
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
@@ -323,103 +323,172 @@ namespace FileCabinetApp
         private static void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             Console.Write("First name: ");
-            firstName = CheckStringValue();
+            firstName = ReadInput(stringConverter, firstNameValidator);
             Console.Write("Last name: ");
-            lastName = CheckStringValue();
+            lastName = ReadInput(stringConverter, lastNameValidator);
             Console.Write("Gender(M/F): ");
-            gender = CheckCharValue();
+            gender = ReadInput(charConverter, genderValidator);
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = CheckDateTimeValue();
+            dateOfBirth = ReadInput(dateTimeConverter, dateOfBirthValidator);
             Console.Write("Credit sum(bel rub): ");
-            credit = CheckDecimalValue();
+            credit = ReadInput(decimalConverter, creditSumValidator);
             Console.Write("Credit duration(month): ");
-            duration = CheckShortValue();
+            duration = ReadInput(shortConverter, durationValidator);
         }
 
-        private static string CheckStringValue()
+        private static Func<string, Tuple<bool, string, string>> stringConverter = input =>
         {
-            bool success;
-            string parameters;
+            bool success = !string.IsNullOrEmpty(input) && input.Trim().Length != 0;
+            return new Tuple<bool, string, string>(success, input, input.Trim());
+        };
+
+        private static Func<string, Tuple<bool, string, char>> charConverter = input =>
+        {
+            var result = default(char);
+            bool success = char.TryParse(input?.Trim().ToUpper(Culture), out result);
+            return new Tuple<bool, string, char>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, DateTime>> dateTimeConverter = input =>
+        {
+            var result = default(DateTime);
+            bool success = !string.IsNullOrEmpty(input) && DateTime.TryParse(input, DateTimeCulture, DateTimeStyles.None, out result);
+            return new Tuple<bool, string, DateTime>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, decimal>> decimalConverter = input =>
+        {
+            var result = default(decimal);
+            bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, out result);
+            return new Tuple<bool, string, decimal>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string, short>> shortConverter = input =>
+        {
+            var result = default(short);
+            bool success = !string.IsNullOrEmpty(input) && short.TryParse(input, out result);
+            return new Tuple<bool, string, short>(success, input, result);
+        };
+
+        private static Func<string, Tuple<bool, string>> firstNameValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateFirstName(input);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input);
+        };
+
+        private static Func<string, Tuple<bool, string>> lastNameValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateLastName(input);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input);
+        };
+
+        private static Func<char, Tuple<bool, string>> genderValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateGender(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateCreditSum(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateDateOfBirth(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static Func<short, Tuple<bool, string>> durationValidator = input =>
+        {
+            try
+            {
+                recordValidator.ValidateDuration(input);
+            }
+            catch (ArgumentException ex)
+            {
+                return new Tuple<bool, string>(false, ex.Message);
+            }
+
+            return new Tuple<bool, string>(true, input.ToString());
+        };
+
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
             do
             {
-                parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
+                T value;
+
+                var input = Console.ReadLine();
+                var conversionResult = converter(input);
+
+                if (!conversionResult.Item1)
                 {
-                    success = parameters.Trim().Length != 0;
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
                 }
-            }
-            while (!success);
 
-            return parameters;
-        }
+                value = conversionResult.Item3;
 
-        private static short CheckShortValue()
-        {
-            bool success;
-            short value = 0;
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
                 {
-                    success = short.TryParse(parameters, out value);
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
                 }
+
+                return value;
             }
-            while (!success);
-
-            return value;
-        }
-
-        private static decimal CheckDecimalValue()
-        {
-            bool success;
-            decimal sum = 0;
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
-                {
-                    success = decimal.TryParse(parameters, out sum);
-                }
-            }
-            while (!success);
-
-            return sum;
-        }
-
-        private static char CheckCharValue()
-        {
-            bool success;
-            char parameters;
-            do
-            {
-                string input = Console.ReadLine()?.Trim();
-                success = char.TryParse(input?.ToUpper(Culture), out parameters);
-            }
-            while (!success);
-
-            return parameters;
-        }
-
-        private static DateTime CheckDateTimeValue()
-        {
-            bool success;
-            DateTime date = default(DateTime);
-            do
-            {
-                var parameters = Console.ReadLine();
-                success = !string.IsNullOrEmpty(parameters);
-                if (success)
-                {
-                    success = DateTime.TryParse(parameters, DateTimeCulture, DateTimeStyles.None, out date);
-                }
-            }
-            while (!success);
-
-            return date;
+            while (true);
         }
     }
 }
