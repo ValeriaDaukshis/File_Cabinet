@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
@@ -16,7 +17,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
 
         private static bool isRunning = true;
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         /// <summary>
         /// The commands.
@@ -56,6 +57,7 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            ReadValidationRules(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -86,6 +88,25 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void ReadValidationRules(string[] arguments)
+        {
+            if (arguments.Length > 0 && arguments.Contains("-v"))
+            {
+                if (arguments[1].ToLower() == "custom")
+                {
+                    fileCabinetService = new FileCabinetCustomService();
+                }
+            }
+            else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
+            {
+                string rule = arguments[0].Split('=')[1];
+                if (rule.ToLower() == "custom")
+                {
+                    fileCabinetService = new FileCabinetCustomService();
+                }
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
