@@ -15,6 +15,8 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
         private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
@@ -94,7 +96,7 @@ namespace FileCabinetApp
         {
             if (arguments.Length > 0 && arguments.Contains("-v"))
             {
-                if (arguments[1].ToLower() == "custom")
+                if (arguments[1].ToLower(Culture) == "custom")
                 {
                     fileCabinetService = new FileCabinetCustomService();
                 }
@@ -102,7 +104,7 @@ namespace FileCabinetApp
             else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
             {
                 string rule = arguments[0].Split('=')[1];
-                if (rule.ToLower() == "custom")
+                if (rule.ToLower(Culture) == "custom")
                 {
                     fileCabinetService = new FileCabinetCustomService();
                 }
@@ -155,7 +157,7 @@ namespace FileCabinetApp
                 throw new ArgumentException("No parameters after command 'edit'");
             }
 
-            parameters = parameters.Trim().ToLower(CultureInfo.CurrentCulture);
+            parameters = parameters.Trim().ToLower(Culture);
             string[] inputParameters = parameters.Split(' ', ' ');
 
             if (inputParameters.Length < 2)
@@ -191,7 +193,7 @@ namespace FileCabinetApp
             }
             else if (field == "dateofbirth")
             {
-                DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out var date);
+                DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
                 foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
             }
             else
@@ -383,7 +385,7 @@ namespace FileCabinetApp
             do
             {
                 string input = Console.ReadLine()?.Trim();
-                success = char.TryParse(input?.ToUpper(CultureInfo.CurrentCulture), out parameters);
+                success = char.TryParse(input?.ToUpper(Culture), out parameters);
             }
             while (!success);
 
@@ -400,7 +402,7 @@ namespace FileCabinetApp
                 success = !string.IsNullOrEmpty(parameters);
                 if (success)
                 {
-                    success = DateTime.TryParse(parameters, new CultureInfo("en-US"), DateTimeStyles.None, out date);
+                    success = DateTime.TryParse(parameters, DateTimeCulture, DateTimeStyles.None, out date);
                 }
             }
             while (!success);

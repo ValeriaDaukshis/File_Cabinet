@@ -116,11 +116,11 @@
             </summary>
             <returns>count of records.</returns>
         </member>
-        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FileCabinetService.CreateValidator">
             <summary>
             Validates the parameters.
             </summary>
-            <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>Validator class.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
@@ -143,17 +143,41 @@
             </summary>
             <param name="args">The arguments.</param>
         </member>
+        <member name="T:FileCabinetApp.Validators.CustomValidator">
+            <summary>
+            CustomValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the parameters.
+            </summary>
+            <param name="record">The record.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultValidator">
+            <summary>
+            DefaultValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the parameters.
+            </summary>
+            <param name="record">The record.</param>
+        </member>
         <member name="T:FileCabinetApp.Validators.FileCabinetCustomService">
             <summary>
             FileCabinetCustomService.
             </summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Validators.FileCabinetCustomService.CreateValidator">
             <summary>
-            Validates the methods.
+            Validates the parameters.
             </summary>
-            <param name="record">The record.</param>
+            <returns>validator class.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.FileCabinetDefaultService">
             <summary>
@@ -161,9 +185,20 @@
             </summary>
             <seealso cref="T:FileCabinetApp.FileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.Validators.FileCabinetDefaultService.CreateValidator">
             <summary>
-            Validates the methods.
+            Validates the parameters.
+            </summary>
+            <returns>validator class.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.IRecordValidator">
+            <summary>
+            IRecordValidator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Validates the parameters.
             </summary>
             <param name="record">The record.</param>
         </member>

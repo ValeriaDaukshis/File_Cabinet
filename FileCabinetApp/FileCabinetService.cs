@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -20,7 +21,7 @@ namespace FileCabinetApp
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            this.ValidateParameters(fileCabinetRecord);
+            this.CreateValidator().ValidateParameters(fileCabinetRecord);
             var record = new FileCabinetRecord
                 {
                     Id = this.list.Count + 1,
@@ -45,7 +46,7 @@ namespace FileCabinetApp
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
-            this.ValidateParameters(fileCabinetRecord);
+            this.CreateValidator().ValidateParameters(fileCabinetRecord);
             FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
 
             if (fileCabinetRecord.FirstName != record.FirstName)
@@ -160,8 +161,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Validates the parameters.
         /// </summary>
-        /// <param name="fileCabinetRecord">The file cabinet record.</param>
-        protected abstract void ValidateParameters(FileCabinetRecord fileCabinetRecord);
+        /// <returns>Validator class.</returns>
+        protected abstract IRecordValidator CreateValidator();
 
         private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
         {
