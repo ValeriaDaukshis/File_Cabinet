@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using FileCabinetApp.Validators;
@@ -154,17 +155,26 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            if (string.IsNullOrEmpty(parameters))
+            string[] inputParameters = Array.Empty<string>();
+            try
             {
-                throw new ArgumentException("No parameters after command 'edit'");
+                if (string.IsNullOrEmpty(parameters))
+                {
+                    throw new ArgumentException("No parameters after command 'find'");
+                }
+
+                parameters = parameters.Trim().ToLower(Culture);
+                inputParameters = parameters.Split(' ', ' ');
+
+                if (inputParameters.Length < 2)
+                {
+                    throw new ArgumentException("Not enough parameters after command 'find'");
+                }
             }
-
-            parameters = parameters.Trim().ToLower(Culture);
-            string[] inputParameters = parameters.Split(' ', ' ');
-
-            if (inputParameters.Length < 2)
+            catch (ArgumentException ex)
             {
-                throw new ArgumentException("Not enough parameters after command 'edit'");
+                Console.WriteLine(ex.Message);
+                return;
             }
 
             string field = inputParameters[0];
@@ -183,7 +193,7 @@ namespace FileCabinetApp
                 value = value.Substring(1, value.Length - 2);
             }
 
-            FileCabinetRecord[] foundResult = Array.Empty<FileCabinetRecord>();
+            ReadOnlyCollection<FileCabinetRecord> foundResult = new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
 
             if (field == "firstname")
             {
@@ -203,7 +213,7 @@ namespace FileCabinetApp
                 Console.WriteLine($"{field} is not found");
             }
 
-            if (foundResult.Length > 0)
+            if (foundResult.Count > 0)
             {
                 PrintRecords(foundResult);
             }
@@ -212,7 +222,7 @@ namespace FileCabinetApp
         private static void Edit(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");
                 return;
@@ -265,7 +275,7 @@ namespace FileCabinetApp
         private static void Get(string parameters)
         {
             var records = Program.fileCabinetService.GetRecords();
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");
                 return;
@@ -274,17 +284,17 @@ namespace FileCabinetApp
             PrintRecords(records);
         }
 
-        private static void PrintRecords(FileCabinetRecord[] records)
+        private static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
         {
-            for (int i = 0; i < records.Length; i++)
+            foreach (var rec in records)
             {
-                Console.WriteLine($"Id: {records[i].Id}");
-                Console.WriteLine($"\tFirst name: {records[i].FirstName}");
-                Console.WriteLine($"\tLast name: {records[i].LastName}");
-                Console.WriteLine($"\tGender: {records[i].Gender}");
-                Console.WriteLine($"\tDate of birth: {records[i].DateOfBirth:yyyy-MMMM-dd}");
-                Console.WriteLine($"\tCredit sum: {records[i].CreditSum}");
-                Console.WriteLine($"\tCredit duration: {records[i].Duration}");
+                Console.WriteLine($"Id: {rec.Id}");
+                Console.WriteLine($"\tFirst name: {rec.FirstName}");
+                Console.WriteLine($"\tLast name: {rec.LastName}");
+                Console.WriteLine($"\tGender: {rec.Gender}");
+                Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
+                Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
+                Console.WriteLine($"\tCredit duration: {rec.Duration}");
             }
         }
 
