@@ -9,6 +9,17 @@
             FileCabinetRecord.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="firstName">first name.</param>
+            <param name="lastName">last name.</param>
+            <param name="gender">gender.</param>
+            <param name="dateOfBirth">date of birth.</param>
+            <param name="credit">credit sum.</param>
+            <param name="duration">duration.</param>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
             Gets or sets the identifier.
@@ -19,7 +30,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
             <summary>
-            Gets or sets the first name.
+            Gets the first name.
             </summary>
             <value>
             The first name.
@@ -27,7 +38,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
             <summary>
-            Gets or sets the last name.
+            Gets the last name.
             </summary>
             <value>
             The last name.
@@ -35,7 +46,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
-            Gets or sets the date of birth.
+            Gets the date of birth.
             </summary>
             <value>
             The date of birth.
@@ -43,7 +54,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
             <summary>
-            Gets or sets the gender.
+            Gets the gender.
             </summary>
             <value>
             The gender.
@@ -51,7 +62,7 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
             <summary>
-            Gets or sets the duration.
+            Gets duration.
             </summary>
             <value>
             The duration.
@@ -59,10 +70,10 @@
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
             <summary>
-            Gets or sets the credit sum.
+            Gets credit sum.
             </summary>
             <value>
-            The credit sum.
+            Credit sum.
             </value>
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">

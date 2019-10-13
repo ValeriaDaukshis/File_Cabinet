@@ -33,16 +33,8 @@ namespace FileCabinetApp
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
             this.validator.ValidateParameters(fileCabinetRecord);
-            var record = new FileCabinetRecord
-                {
-                    Id = this.list.Count + 1,
-                    FirstName = fileCabinetRecord.FirstName,
-                    LastName = fileCabinetRecord.LastName,
-                    DateOfBirth = fileCabinetRecord.DateOfBirth,
-                    Gender = fileCabinetRecord.Gender,
-                    CreditSum = fileCabinetRecord.CreditSum,
-                    Duration = fileCabinetRecord.Duration,
-                };
+            var record = fileCabinetRecord;
+            fileCabinetRecord.Id = this.list.Count + 1;
             this.list.Add(record);
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
@@ -77,13 +69,6 @@ namespace FileCabinetApp
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
                 this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
             }
-
-            record.FirstName = fileCabinetRecord.FirstName;
-            record.LastName = fileCabinetRecord.LastName;
-            record.DateOfBirth = fileCabinetRecord.DateOfBirth;
-            record.Gender = fileCabinetRecord.Gender;
-            record.CreditSum = fileCabinetRecord.CreditSum;
-            record.Duration = fileCabinetRecord.Duration;
         }
 
         /// <summary>

@@ -248,8 +248,7 @@ namespace FileCabinetApp
                     try
                     {
                         PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                        Program.fileCabinetService.EditRecord(new FileCabinetRecord
-                            { Id = id, FirstName = firstName, LastName = lastName, Gender = gender, DateOfBirth = dateOfBirth, Duration = duration, CreditSum = credit });
+                        Program.fileCabinetService.EditRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
                         Console.WriteLine($"Record #{parameters} is updated");
                         return;
                     }
@@ -305,8 +304,8 @@ namespace FileCabinetApp
             try
             {
                 var recordNumber =
-                    Program.fileCabinetService.CreateRecord(new FileCabinetRecord
-                        { FirstName = firstName, LastName = lastName, Gender = gender, DateOfBirth = dateOfBirth, Duration = duration, CreditSum = credit });
+                    Program.fileCabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
+                       // { FirstName = firstName, LastName = lastName, Gender = gender, DateOfBirth = dateOfBirth, Duration = duration, CreditSum = credit });
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
