@@ -21,7 +21,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
         private static IRecordValidator validator = new DefaultValidator();
-        private static FileCabinetService fileCabinetService;
+        private static IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// The commands.
@@ -155,7 +155,7 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            string[] inputParameters = Array.Empty<string>();
+            string[] inputParameters;
             try
             {
                 if (string.IsNullOrEmpty(parameters))
@@ -208,14 +208,15 @@ namespace FileCabinetApp
                 DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
                 foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
             }
-            else
-            {
-                Console.WriteLine($"{field} is not found");
-            }
 
             if (foundResult.Count > 0)
             {
                 PrintRecords(foundResult);
+            }
+
+            if (foundResult.Count == 0)
+            {
+                Console.WriteLine($"{value} is not found");
             }
         }
 

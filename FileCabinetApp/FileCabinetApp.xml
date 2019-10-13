@@ -122,6 +122,57 @@
             </summary>
             <returns>count of records.</returns>
         </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            IFileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Creates the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>Id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Edits the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
+            <summary>
+            Gets the stat.
+            </summary>
+            <returns>number of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Gets the records.
+            </summary>
+            <returns>All records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds the by date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds the last name of the by.
+            </summary>
+            <param name="lastName">The last name.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds the first name of the by.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>Array of records.</returns>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Enter point.
