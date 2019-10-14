@@ -4,6 +4,29 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CSV.FileCabinetRecordCsvWriter">
+            <summary>
+            FileCabinetRecordCsvWriter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CSV.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.WriteFields(System.Reflection.PropertyInfo[])">
+            <summary>
+            Writes the fields.
+            </summary>
+            <param name="info">The information.</param>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes the specified record.
+            </summary>
+            <param name="record">The record.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             FileCabinetRecord.
@@ -147,6 +170,29 @@
             Gets the stat.
             </summary>
             <returns>count of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Service.FileCabinetServiceSnapshot">
+            <summary>
+            FileCabinetServiceSnapshot.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.#ctor(FileCabinetApp.FileCabinetRecord[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">The records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.MakeSnapshot">
+            <summary>
+            Makes the snapshot.
+            </summary>
+            <returns>snapshot.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Saves to CSV.
+            </summary>
+            <param name="writer">The writer.</param>
         </member>
         <member name="T:FileCabinetApp.Service.IFileCabinetService">
             <summary>

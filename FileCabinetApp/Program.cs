@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
@@ -36,6 +37,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("get", Get),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", ExportToCsv),
         };
 
         /// <summary>
@@ -49,6 +51,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "get", "get all record", "The 'get' command get all record." },
             new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
+            new string[] { "export", "export data to csv file", "The 'export' command export data to csv file." },
             new string[]
             {
                 "find", "find record by firstname/lastname/dateofbirth",
@@ -94,6 +97,42 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static void ExportToCsv(string parameters)
+        {
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("No parameters after command 'export'");
+                return;
+            }
+
+            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+            if (inputParameters.Length < 2)
+            {
+                Console.WriteLine("Not enough parameters after command 'find'");
+                return;
+            }
+
+            string importFile = inputParameters[0].ToLower(Culture);
+            string path = inputParameters[1];
+            try
+            {
+                using (StreamWriter stream = new StreamWriter(path))
+                {
+                    FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
+                    snapshot.SaveToCsv(stream);
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private static void ReadValidationRules(string[] arguments)
@@ -156,38 +195,23 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            string[] inputParameters;
-            try
+            if (string.IsNullOrEmpty(parameters))
             {
-                if (string.IsNullOrEmpty(parameters))
-                {
-                    throw new ArgumentException("No parameters after command 'find'");
-                }
-
-                parameters = parameters.Trim().ToLower(Culture);
-                inputParameters = parameters.Split(' ', ' ');
-
-                if (inputParameters.Length < 2)
-                {
-                    throw new ArgumentException("Not enough parameters after command 'find'");
-                }
+                Console.WriteLine("No parameters after command 'find'");
+                return;
             }
-            catch (ArgumentException ex)
+
+            parameters = parameters.ToLower(Culture);
+            string[] inputParameters = parameters.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+            if (inputParameters.Length < 2)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Not enough parameters after command 'find'");
                 return;
             }
 
             string field = inputParameters[0];
-            string value = string.Empty;
-            for (int i = 1; i < inputParameters.Length; i++)
-            {
-                if (!string.IsNullOrEmpty(inputParameters[i]))
-                {
-                    value = inputParameters[i];
-                    break;
-                }
-            }
+            string value = inputParameters[1];
 
             if (value[0] == '"')
             {
@@ -445,7 +469,7 @@ namespace FileCabinetApp
                 return new Tuple<bool, string>(false, ex.Message);
             }
 
-            return new Tuple<bool, string>(true, input.ToString());
+            return new Tuple<bool, string>(true, input.ToString("yyyy-MM-dd"));
         };
 
         private static Func<short, Tuple<bool, string>> durationValidator = input =>
