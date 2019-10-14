@@ -27,7 +27,7 @@ namespace FileCabinetApp.Service
         /// <returns>snapshot.</returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(records);
+            return new FileCabinetServiceSnapshot(this.records);
         }
 
         /// <summary>
@@ -40,10 +40,26 @@ namespace FileCabinetApp.Service
             Type t = typeof(FileCabinetRecord);
             PropertyInfo[] info = t.GetProperties();
             writeToFile.WriteFields(info);
-            foreach (var record in records)
+            foreach (var record in this.records)
             {
                 writeToFile.Write(record);
             }
+        }
+
+        /// <summary>
+        /// Saves to XML.
+        /// </summary>
+        /// <param name="writer">The writer.</param>
+        public void SaveToXml(StreamWriter writer)
+        {
+            FileCabinetRecordXmlWriter writeToFile = new FileCabinetRecordXmlWriter(writer);
+            writeToFile.WriteHeader();
+            foreach (var record in this.records)
+            {
+                writeToFile.Write(record);
+            }
+
+            writeToFile.WriteFooter();
         }
     }
 }

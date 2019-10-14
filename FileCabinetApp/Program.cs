@@ -121,8 +121,21 @@ namespace FileCabinetApp
             {
                 using (StreamWriter stream = new StreamWriter(path))
                 {
-                    FileCabinetServiceSnapshot snapshot = fileCabinetService.MakeSnapshot();
-                    snapshot.SaveToCsv(stream);
+                    FileCabinetServiceSnapshot snapshot;
+                    if (importFile == "csv")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToCsv(stream);
+                    }
+                    else if (importFile == "xml")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToXml(stream);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{importFile} writer is not found");
+                    }
                 }
             }
             catch (IOException ex)
@@ -441,7 +454,7 @@ namespace FileCabinetApp
                 return new Tuple<bool, string>(false, ex.Message);
             }
 
-            return new Tuple<bool, string>(true, input.ToString());
+            return new Tuple<bool, string>(true, $"{input}");
         };
 
         private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
@@ -455,7 +468,7 @@ namespace FileCabinetApp
                 return new Tuple<bool, string>(false, ex.Message);
             }
 
-            return new Tuple<bool, string>(true, input.ToString());
+            return new Tuple<bool, string>(true, $"{input}");
         };
 
         private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
@@ -469,7 +482,7 @@ namespace FileCabinetApp
                 return new Tuple<bool, string>(false, ex.Message);
             }
 
-            return new Tuple<bool, string>(true, input.ToString("yyyy-MM-dd"));
+            return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");
         };
 
         private static Func<short, Tuple<bool, string>> durationValidator = input =>
@@ -483,7 +496,7 @@ namespace FileCabinetApp
                 return new Tuple<bool, string>(false, ex.Message);
             }
 
-            return new Tuple<bool, string>(true, input.ToString());
+            return new Tuple<bool, string>(true, $"{input}");
         };
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)

@@ -27,6 +27,33 @@
             </summary>
             <param name="record">The record.</param>
         </member>
+        <member name="T:FileCabinetApp.CSV.FileCabinetRecordXmlWriter">
+            <summary>
+            FileCabinetRecordXmlWriter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CSV.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.WriteHeader">
+            <summary>
+            Writes the header.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes the specified record.
+            </summary>
+            <param name="record">The record.</param>
+        </member>
+        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.WriteFooter">
+            <summary>
+            Writes the footer.
+            </summary>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             FileCabinetRecord.
@@ -194,6 +221,12 @@
             </summary>
             <param name="writer">The writer.</param>
         </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.SaveToXml(System.IO.StreamWriter)">
+            <summary>
+            Saves to XML.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
         <member name="T:FileCabinetApp.Service.IFileCabinetService">
             <summary>
             IFileCabinetService.
@@ -244,6 +277,12 @@
             </summary>
             <param name="firstName">The first name.</param>
             <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Makes the snapshot.
+            </summary>
+            <returns>FileCabinetServiceSnapshot.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

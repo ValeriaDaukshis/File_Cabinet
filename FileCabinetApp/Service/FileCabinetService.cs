@@ -132,6 +132,12 @@ namespace FileCabinetApp.Service
             return this.list.AsReadOnly();
         }
 
+        /// <summary>
+        /// Makes the snapshot.
+        /// </summary>
+        /// <returns>
+        /// FileCabinetServiceSnapshot.
+        /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());

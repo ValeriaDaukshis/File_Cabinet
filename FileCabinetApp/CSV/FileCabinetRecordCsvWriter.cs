@@ -39,9 +39,7 @@ namespace FileCabinetApp.CSV
         /// <param name="record">The record.</param>
         public void Write(FileCabinetRecord record)
         {
-            string usersData = string.Format("{0},{1},{2},{3},{4},{5},{6}", record.Id, record.FirstName,
-                record.LastName, record.Gender, record.DateOfBirth.ToString("mm/dd/yyyy"), record.CreditSum, record.Duration);
-            this.writer.WriteLine(usersData);
+            this.writer.WriteLine($"{record.Id},{record.FirstName},{record.LastName},{record.Gender},{record.DateOfBirth:yyyy-MMMM-dd},{record.CreditSum},{record.Duration}");
         }
     }
 }

@@ -54,6 +54,10 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
 
+        /// <summary>
+        /// Makes the snapshot.
+        /// </summary>
+        /// <returns>FileCabinetServiceSnapshot.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
     }
 }
