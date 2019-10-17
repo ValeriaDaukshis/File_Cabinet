@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using CommandLine;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -18,13 +18,15 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private const string ServiceStorageFile = "cabinet-records.db";
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
-        private static IRecordValidator recordValidator = new DefaultValidator();
+        private static IRecordValidator recordValidator;
         private static IFileCabinetService fileCabinetService;
         private static FileCabinetServiceSnapshot snapshot;
+        private static FileStream serviceStorageFileStream;
 
         /// <summary>
         /// The commands.
@@ -60,14 +62,43 @@ namespace FileCabinetApp
             },
         };
 
+        private class CommandLineOptions
+        {
+            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
+            public IRecordValidator ValidationRules { get; set; }
+
+            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
+            public IFileCabinetService Storage { get; set; }
+        }
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            ReadValidationRules(args);
-            fileCabinetService = new FileCabinetService();
+            Parser.Default.ParseArguments<CommandLineOptions>(args)
+                .WithParsed(o =>
+                {
+                    if (o.ValidationRules != null && o.ValidationRules.ToString().ToLower(Culture) == "custom")
+                    {
+                        recordValidator = new CustomValidator();
+                    }
+                    else
+                    {
+                        recordValidator = new DefaultValidator();
+                    }
+
+                    if (o.Storage != null && o.Storage.ToString().ToLower(Culture) == "file")
+                    {
+                        serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
+                        fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
+                    }
+                    else
+                    {
+                        fileCabinetService = new FileCabinetMemoryService();
+                    }
+                });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -150,21 +181,23 @@ namespace FileCabinetApp
 
         private static void ReadValidationRules(string[] arguments)
         {
-            if (arguments.Length > 0 && arguments.Contains("-v"))
-            {
-                if (arguments[1].ToLower(Culture) == "custom")
-                {
-                    recordValidator = new CustomValidator();
-                }
-            }
-            else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
-            {
-                string rule = arguments[0].Split('=')[1];
-                if (rule.ToLower(Culture) == "custom")
-                {
-                    recordValidator = new CustomValidator();
-                }
-            }
+            
+            
+//            if (arguments.Length > 0 && arguments.Contains("-v"))
+//            {
+//                if (arguments[1].ToLower(Culture) == "custom")
+//                {
+//                    recordValidator = new CustomValidator();
+//                }
+//            }
+//            else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
+//            {
+//                string rule = arguments[0].Split('=')[1];
+//                if (rule.ToLower(Culture) == "custom")
+//                {
+//                    recordValidator = new CustomValidator();
+//                }
+//            }
         }
 
         private static void PrintMissedCommandInfo(string command)
