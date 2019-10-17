@@ -24,6 +24,7 @@ namespace FileCabinetApp
         private static bool isRunning = true;
         private static IRecordValidator recordValidator = new DefaultValidator();
         private static IFileCabinetService fileCabinetService;
+        private static FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
         /// The commands.
@@ -121,7 +122,6 @@ namespace FileCabinetApp
             {
                 using (StreamWriter stream = new StreamWriter(path))
                 {
-                    FileCabinetServiceSnapshot snapshot;
                     if (importFile == "csv")
                     {
                         snapshot = fileCabinetService.MakeSnapshot();
