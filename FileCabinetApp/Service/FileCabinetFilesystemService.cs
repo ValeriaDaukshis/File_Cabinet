@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Text;
 
 namespace FileCabinetApp.Service
 {
@@ -11,6 +13,8 @@ namespace FileCabinetApp.Service
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private readonly FileStream fileStream;
+        private int countOfRecords;
+        private readonly string path = @"C:\Users\dauks\Dop Task Epam\example.txt";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -19,6 +23,7 @@ namespace FileCabinetApp.Service
         public FileCabinetFilesystemService(FileStream fileStream)
         {
             this.fileStream = fileStream;
+            this.countOfRecords = 0;
         }
 
         /// <summary>
@@ -30,7 +35,23 @@ namespace FileCabinetApp.Service
         /// </returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            throw new NotImplementedException();
+            fileCabinetRecord.Id = this.countOfRecords + 1;
+            this.countOfRecords++;
+            using (BinaryWriter writer = new BinaryWriter(this.fileStream))
+            {
+                writer.Write(default(short));
+                writer.Write(fileCabinetRecord.Id);
+                writer.Write(Encoding.UTF8.GetBytes(fileCabinetRecord.FirstName));
+                writer.Write(Encoding.UTF8.GetBytes(fileCabinetRecord.LastName));
+                writer.Write(fileCabinetRecord.DateOfBirth.Year);
+                writer.Write(fileCabinetRecord.DateOfBirth.Month);
+                writer.Write(fileCabinetRecord.DateOfBirth.Day);
+                writer.Write(fileCabinetRecord.Gender);
+                writer.Write(fileCabinetRecord.CreditSum);
+                writer.Write(fileCabinetRecord.Duration);
+            }
+
+            return fileCabinetRecord.Id;
         }
 
         /// <summary>

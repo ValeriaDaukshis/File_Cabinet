@@ -18,7 +18,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private const string ServiceStorageFile = "cabinet-records.db";
+        private const string ServiceStorageFile = @"C:\Users\dauks\Dop Task Epam\cabinet-records.db";
         private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
@@ -65,10 +65,10 @@ namespace FileCabinetApp
         private class CommandLineOptions
         {
             [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
-            public IRecordValidator ValidationRules { get; set; }
+            public string ValidationRules { get; set; }
 
             [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
-            public IFileCabinetService Storage { get; set; }
+            public string Storage { get; set; }
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace FileCabinetApp
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
-                    if (o.ValidationRules != null && o.ValidationRules.ToString().ToLower(Culture) == "custom")
+                    if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
                         recordValidator = new CustomValidator();
                     }
@@ -89,7 +89,7 @@ namespace FileCabinetApp
                         recordValidator = new DefaultValidator();
                     }
 
-                    if (o.Storage != null && o.Storage.ToString().ToLower(Culture) == "file")
+                    if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
                         serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
@@ -177,27 +177,6 @@ namespace FileCabinetApp
             {
                 Console.WriteLine(ex.Message);
             }
-        }
-
-        private static void ReadValidationRules(string[] arguments)
-        {
-            
-            
-//            if (arguments.Length > 0 && arguments.Contains("-v"))
-//            {
-//                if (arguments[1].ToLower(Culture) == "custom")
-//                {
-//                    recordValidator = new CustomValidator();
-//                }
-//            }
-//            else if (arguments.Length > 0 && arguments.Contains("--validation-rules"))
-//            {
-//                string rule = arguments[0].Split('=')[1];
-//                if (rule.ToLower(Culture) == "custom")
-//                {
-//                    recordValidator = new CustomValidator();
-//                }
-//            }
         }
 
         private static void PrintMissedCommandInfo(string command)
