@@ -62,15 +62,6 @@ namespace FileCabinetApp
             },
         };
 
-        private class CommandLineOptions
-        {
-            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
-            public string ValidationRules { get; set; }
-
-            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
-            public string Storage { get; set; }
-        }
-
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
@@ -129,6 +120,15 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private class CommandLineOptions
+        {
+            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
+            public string ValidationRules { get; set; }
+
+            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
+            public string Storage { get; set; }
         }
 
         private static void ExportToCsv(string parameters)

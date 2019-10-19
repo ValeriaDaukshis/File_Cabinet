@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace FileCabinetApp.CSV
@@ -25,6 +26,11 @@ namespace FileCabinetApp.CSV
         /// <param name="info">The information.</param>
         public void WriteFields(PropertyInfo[] info)
         {
+            if (info is null)
+            {
+                throw new ArgumentNullException($"{nameof(info)} is null");
+            }
+
             for (int i = 0; i < info.Length - 1; i++)
             {
                 this.writer.Write($"{info[i].Name},");
@@ -39,6 +45,10 @@ namespace FileCabinetApp.CSV
         /// <param name="record">The record.</param>
         public void Write(FileCabinetRecord record)
         {
+            if (record is null)
+            {
+                throw new ArgumentNullException($"{nameof(record)} is null");
+            }
             this.writer.WriteLine($"{record.Id},{record.FirstName},{record.LastName},{record.Gender},{record.DateOfBirth:yyyy-MMMM-dd},{record.CreditSum},{record.Duration}");
         }
     }

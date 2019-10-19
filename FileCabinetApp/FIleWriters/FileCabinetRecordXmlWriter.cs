@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Xml;
 
-namespace FileCabinetApp.CSV
+namespace FileCabinetApp.FIleWriters
 {
     /// <summary>
     /// FileCabinetRecordXmlWriter.
@@ -36,6 +37,11 @@ namespace FileCabinetApp.CSV
         /// <param name="record">The record.</param>
         public void Write(FileCabinetRecord record)
         {
+            if (record is null)
+            {
+                throw new ArgumentNullException($"{nameof(record)} is null");
+            }
+
             this.xmlWriter.WriteStartElement("record");
             this.xmlWriter.WriteAttributeString("id",  $"{record.Id}");
             this.xmlWriter.WriteStartElement("name");

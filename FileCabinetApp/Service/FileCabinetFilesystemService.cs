@@ -14,7 +14,6 @@ namespace FileCabinetApp.Service
     {
         private readonly FileStream fileStream;
         private int countOfRecords;
-        private readonly string path = @"C:\Users\dauks\Dop Task Epam\example.txt";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -37,19 +36,23 @@ namespace FileCabinetApp.Service
         {
             fileCabinetRecord.Id = this.countOfRecords + 1;
             this.countOfRecords++;
-            using (BinaryWriter writer = new BinaryWriter(this.fileStream))
-            {
-                writer.Write(default(short));
-                writer.Write(fileCabinetRecord.Id);
-                writer.Write(Encoding.UTF8.GetBytes(fileCabinetRecord.FirstName));
-                writer.Write(Encoding.UTF8.GetBytes(fileCabinetRecord.LastName));
-                writer.Write(fileCabinetRecord.DateOfBirth.Year);
-                writer.Write(fileCabinetRecord.DateOfBirth.Month);
-                writer.Write(fileCabinetRecord.DateOfBirth.Day);
-                writer.Write(fileCabinetRecord.Gender);
-                writer.Write(fileCabinetRecord.CreditSum);
-                writer.Write(fileCabinetRecord.Duration);
-            }
+            BinaryWriter writer = new BinaryWriter(this.fileStream);
+            writer.Write(default(short));
+            writer.Write(fileCabinetRecord.Id);
+
+            var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName));
+            writer.Write(buffer);
+
+            buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.LastName));
+            writer.Write(buffer);
+
+            writer.Write(fileCabinetRecord.Gender);
+            writer.Write(fileCabinetRecord.DateOfBirth.Year);
+            writer.Write(fileCabinetRecord.DateOfBirth.Month);
+            writer.Write(fileCabinetRecord.DateOfBirth.Day);
+            writer.Write(fileCabinetRecord.CreditSum);
+            writer.Write(fileCabinetRecord.Duration);
+            writer.Flush();
 
             return fileCabinetRecord.Id;
         }
@@ -82,7 +85,31 @@ namespace FileCabinetApp.Service
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            BinaryReader reader = new BinaryReader(this.fileStream);
+
+            reader.BaseStream.Position = 0;
+            for (int i = 0; i < this.countOfRecords; i++)
+            {
+                short reserved = reader.ReadInt16();
+                int id = reader.ReadInt32();
+                string firstName = Encoding.Unicode.GetString(reader.ReadBytes(120), 0, 120);
+                string lastName = Encoding.Unicode.GetString(reader.ReadBytes(120), 0, 120);
+                char gender = reader.ReadChar();
+                int year = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+                int month = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+                int day = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+                DateTime dateOfBirth = new DateTime(year, month, day);
+                decimal credit = reader.ReadDecimal();
+                short duration = reader.ReadInt16();
+                var fileCabinetRecord = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
+                fileCabinetRecord.Id = id;
+                list.Add(fileCabinetRecord);
+            }
+
+            reader.Close();
+
+            return list.AsReadOnly();
         }
 
         /// <summary>
@@ -130,6 +157,18 @@ namespace FileCabinetApp.Service
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             throw new NotImplementedException();
+        }
+
+        private string CreateEmptyString(string s)
+        {
+            StringBuilder builder = new StringBuilder(60);
+            builder.Append(s);
+            for (int i = s.Length; i < builder.Capacity; i++)
+            {
+                builder.Append(default(char));
+            }
+
+            return builder.ToString();
         }
     }
 }
