@@ -82,12 +82,13 @@ namespace FileCabinetApp
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
-                        serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
-                        fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
+                        // change
+                        fileCabinetService = new FileCabinetMemoryService();
                     }
                     else
                     {
-                        fileCabinetService = new FileCabinetMemoryService();
+                        serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
+                        fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -298,7 +299,10 @@ namespace FileCabinetApp
                     try
                     {
                         PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                        Program.fileCabinetService.EditRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
+                        FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth,
+                            credit, duration);
+                        record.Id = id;
+                        Program.fileCabinetService.EditRecord(record);
                         Console.WriteLine($"Record #{parameters} is updated");
                         return;
                     }

@@ -14,6 +14,8 @@ namespace FileCabinetApp.Service
     {
         private readonly FileStream fileStream;
         private int countOfRecords;
+        private const int SizeOfStringRecord = 120;
+        private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -37,21 +39,7 @@ namespace FileCabinetApp.Service
             fileCabinetRecord.Id = this.countOfRecords + 1;
             this.countOfRecords++;
             BinaryWriter writer = new BinaryWriter(this.fileStream);
-            writer.Write(default(short));
-            writer.Write(fileCabinetRecord.Id);
-
-            var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName));
-            writer.Write(buffer);
-
-            buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.LastName));
-            writer.Write(buffer);
-
-            writer.Write(fileCabinetRecord.Gender);
-            writer.Write(fileCabinetRecord.DateOfBirth.Year);
-            writer.Write(fileCabinetRecord.DateOfBirth.Month);
-            writer.Write(fileCabinetRecord.DateOfBirth.Day);
-            writer.Write(fileCabinetRecord.CreditSum);
-            writer.Write(fileCabinetRecord.Duration);
+            this.FileWriter(fileCabinetRecord, writer);
             writer.Flush();
 
             return fileCabinetRecord.Id;
@@ -63,7 +51,66 @@ namespace FileCabinetApp.Service
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
-            throw new NotImplementedException();
+            BinaryReader reader = new BinaryReader(this.fileStream);
+            long position = this.GetFileRecordPosition(reader, fileCabinetRecord.Id) ?? throw new NullReferenceException($"No record with {fileCabinetRecord.Id} id");
+            FileCabinetRecord oldRecord = this.FileReader(reader, position);
+            BinaryWriter writer = new BinaryWriter(this.fileStream);
+
+            writer.BaseStream.Position = position + sizeof(short) + sizeof(int);
+            if (fileCabinetRecord.FirstName != oldRecord.FirstName)
+            {
+                var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName, 60));
+                writer.Write(buffer);
+            }
+            else
+            {
+                writer.BaseStream.Position += 120;
+            }
+
+            if (fileCabinetRecord.LastName != oldRecord.LastName)
+            {
+                var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.LastName, 60));
+                writer.Write(buffer);
+            }
+            else
+            {
+                writer.BaseStream.Position += 120;
+            }
+
+            if (fileCabinetRecord.Gender != oldRecord.Gender)
+            {
+                var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.Gender.ToString(), 1));
+                writer.Write(buffer);
+            }
+            else
+            {
+                writer.BaseStream.Position += 2;
+            }
+
+            if (fileCabinetRecord.DateOfBirth != oldRecord.DateOfBirth)
+            {
+                writer.Write(fileCabinetRecord.DateOfBirth.Year);
+                writer.Write(fileCabinetRecord.DateOfBirth.Month);
+                writer.Write(fileCabinetRecord.DateOfBirth.Day);
+            }
+            else
+            {
+                writer.BaseStream.Position += 12;
+            }
+
+            if (fileCabinetRecord.CreditSum != oldRecord.CreditSum)
+            {
+                writer.Write(fileCabinetRecord.CreditSum);
+            }
+            else
+            {
+                writer.BaseStream.Position += 16;
+            }
+
+            if (fileCabinetRecord.Duration != oldRecord.Duration)
+            {
+                writer.Write(fileCabinetRecord.Duration);
+            }
         }
 
         /// <summary>
@@ -89,25 +136,12 @@ namespace FileCabinetApp.Service
             BinaryReader reader = new BinaryReader(this.fileStream);
 
             reader.BaseStream.Position = 0;
+            long position = reader.BaseStream.Position;
             for (int i = 0; i < this.countOfRecords; i++)
             {
-                short reserved = reader.ReadInt16();
-                int id = reader.ReadInt32();
-                string firstName = Encoding.Unicode.GetString(reader.ReadBytes(120), 0, 120);
-                string lastName = Encoding.Unicode.GetString(reader.ReadBytes(120), 0, 120);
-                char gender = reader.ReadChar();
-                int year = BitConverter.ToInt32(reader.ReadBytes(4), 0);
-                int month = BitConverter.ToInt32(reader.ReadBytes(4), 0);
-                int day = BitConverter.ToInt32(reader.ReadBytes(4), 0);
-                DateTime dateOfBirth = new DateTime(year, month, day);
-                decimal credit = reader.ReadDecimal();
-                short duration = reader.ReadInt16();
-                var fileCabinetRecord = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-                fileCabinetRecord.Id = id;
-                list.Add(fileCabinetRecord);
+                list.Add(this.FileReader(reader, position));
+                position += RecordSize;
             }
-
-            reader.Close();
 
             return list.AsReadOnly();
         }
@@ -159,9 +193,9 @@ namespace FileCabinetApp.Service
             throw new NotImplementedException();
         }
 
-        private string CreateEmptyString(string s)
+        private string CreateEmptyString(string s, int capacity)
         {
-            StringBuilder builder = new StringBuilder(60);
+            StringBuilder builder = new StringBuilder(capacity);
             builder.Append(s);
             for (int i = s.Length; i < builder.Capacity; i++)
             {
@@ -169,6 +203,68 @@ namespace FileCabinetApp.Service
             }
 
             return builder.ToString();
+        }
+
+        private long? GetFileRecordPosition(BinaryReader reader, int recordId)
+        {
+            long pointer = 0;
+            reader.BaseStream.Position = 0;
+            while (reader.BaseStream.Position != reader.BaseStream.Length)
+            {
+                pointer = reader.BaseStream.Position;
+                reader.BaseStream.Position += sizeof(short);
+                var id = reader.ReadInt32();
+
+                if (id == recordId)
+                {
+                    return pointer;
+                }
+
+                reader.BaseStream.Position += RecordSize - sizeof(int) - sizeof(short);
+            }
+
+            return null;
+        }
+
+        private FileCabinetRecord FileReader(BinaryReader reader, long pointer)
+        {
+            reader.BaseStream.Position = pointer;
+            short reserved = reader.ReadInt16();
+            int id = reader.ReadInt32();
+            string firstName = Encoding.Unicode.GetString(reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            string lastName = Encoding.Unicode.GetString(reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            char gender = BitConverter.ToChar(reader.ReadBytes(2), 0);
+            int year = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+            int month = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+            int day = BitConverter.ToInt32(reader.ReadBytes(4), 0);
+            DateTime dateOfBirth = new DateTime(year, month, day);
+            decimal credit = reader.ReadDecimal();
+            short duration = reader.ReadInt16();
+            var fileCabinetRecord = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
+            fileCabinetRecord.Id = id;
+
+            return fileCabinetRecord;
+        }
+
+        private void FileWriter(FileCabinetRecord fileCabinetRecord, BinaryWriter writer)
+        {
+            writer.Write(default(short));
+            writer.Write(fileCabinetRecord.Id);
+
+            var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName, 60));
+            writer.Write(buffer);
+
+            buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.LastName, 60));
+            writer.Write(buffer);
+
+            buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.Gender.ToString(), 1));
+            writer.Write(buffer);
+
+            writer.Write(fileCabinetRecord.DateOfBirth.Year);
+            writer.Write(fileCabinetRecord.DateOfBirth.Month);
+            writer.Write(fileCabinetRecord.DateOfBirth.Day);
+            writer.Write(fileCabinetRecord.CreditSum);
+            writer.Write(fileCabinetRecord.Duration);
         }
     }
 }
