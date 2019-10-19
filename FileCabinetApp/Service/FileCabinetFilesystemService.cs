@@ -16,6 +16,9 @@ namespace FileCabinetApp.Service
         private int countOfRecords;
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -42,6 +45,10 @@ namespace FileCabinetApp.Service
             this.FileWriter(fileCabinetRecord, writer);
             writer.Flush();
 
+            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
+
             return fileCabinetRecord.Id;
         }
 
@@ -61,6 +68,8 @@ namespace FileCabinetApp.Service
             {
                 var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName, 60));
                 writer.Write(buffer);
+                this.RemoveValueFromDictionary(oldRecord.FirstName, this.firstNameDictionary, oldRecord);
+                this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             }
             else
             {
@@ -71,6 +80,8 @@ namespace FileCabinetApp.Service
             {
                 var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.LastName, 60));
                 writer.Write(buffer);
+                this.RemoveValueFromDictionary(oldRecord.LastName, this.lastNameDictionary, oldRecord);
+                this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
             }
             else
             {
@@ -92,6 +103,9 @@ namespace FileCabinetApp.Service
                 writer.Write(fileCabinetRecord.DateOfBirth.Year);
                 writer.Write(fileCabinetRecord.DateOfBirth.Month);
                 writer.Write(fileCabinetRecord.DateOfBirth.Day);
+
+                this.RemoveValueFromDictionary(oldRecord.DateOfBirth, this.dateOfBirthDictionary, oldRecord);
+                this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
             }
             else
             {
@@ -155,7 +169,17 @@ namespace FileCabinetApp.Service
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            throw new NotImplementedException();
+            if (this.dateOfBirthDictionary.Count == 0)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -167,7 +191,17 @@ namespace FileCabinetApp.Service
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            if (this.lastNameDictionary.Count == 0)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                return this.lastNameDictionary[lastName].AsReadOnly();
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -179,7 +213,17 @@ namespace FileCabinetApp.Service
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            if (this.firstNameDictionary.Count == 0)
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            }
+
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                return this.firstNameDictionary[firstName].AsReadOnly();
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -265,6 +309,27 @@ namespace FileCabinetApp.Service
             writer.Write(fileCabinetRecord.DateOfBirth.Day);
             writer.Write(fileCabinetRecord.CreditSum);
             writer.Write(fileCabinetRecord.Duration);
+        }
+
+        private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Add(record);
+            }
+            else
+            {
+                dictionary.Add(value, new List<FileCabinetRecord>());
+                dictionary[value].Add(record);
+            }
+        }
+
+        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Remove(record);
+            }
         }
     }
 }

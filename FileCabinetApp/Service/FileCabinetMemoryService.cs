@@ -42,19 +42,19 @@ namespace FileCabinetApp.Service
             if (fileCabinetRecord.FirstName != record.FirstName)
             {
                 this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
-                this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             }
 
             if (fileCabinetRecord.LastName != record.LastName)
             {
                 this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
-                this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
             }
 
             if (fileCabinetRecord.DateOfBirth != record.DateOfBirth)
             {
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
-                this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
+                this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
             }
         }
 
