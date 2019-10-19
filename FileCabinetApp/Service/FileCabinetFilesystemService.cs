@@ -74,7 +74,7 @@ namespace FileCabinetApp.Service
         /// </returns>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return this.countOfRecords;
         }
 
         /// <summary>
