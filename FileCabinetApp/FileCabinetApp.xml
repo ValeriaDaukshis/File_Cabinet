@@ -99,29 +99,29 @@
             </summary>
             <param name="record">The record.</param>
         </member>
-        <member name="T:FileCabinetApp.CSV.FileCabinetRecordXmlWriter">
+        <member name="T:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter">
             <summary>
             FileCabinetRecordXmlWriter.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter.#ctor(System.IO.StreamWriter)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CSV.FileCabinetRecordXmlWriter"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter"/> class.
             </summary>
             <param name="writer">The writer.</param>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.WriteHeader">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter.WriteHeader">
             <summary>
             Writes the header.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Writes the specified record.
             </summary>
             <param name="record">The record.</param>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordXmlWriter.WriteFooter">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordXmlWriter.WriteFooter">
             <summary>
             Writes the footer.
             </summary>

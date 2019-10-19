@@ -8,7 +8,7 @@
 | 4 | Поиск | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 5 | Рефакторинг | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 6 | Экспорт в CSV и XML | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
-| 7 | Хранилище на файловой системе | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
+| 7 | Хранилище на файловой системе | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 8 | Импорт в CSV и XML | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
 | 9 | Удаление записей | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
 | 10| Рефакторинг | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
