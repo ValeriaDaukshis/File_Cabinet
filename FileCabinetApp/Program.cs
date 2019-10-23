@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using CommandLine;
+using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -19,7 +21,7 @@ namespace FileCabinetApp
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private const string ServiceStorageFile = @"C:\Users\dauks\Dop Task Epam\cabinet-records.db";
-        private static readonly CultureInfo Culture = CultureInfo.CurrentCulture;
+        private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
         private static bool isRunning = true;
@@ -27,6 +29,7 @@ namespace FileCabinetApp
         private static IFileCabinetService fileCabinetService;
         private static FileCabinetServiceSnapshot snapshot;
         private static FileStream serviceStorageFileStream;
+        private static IRecordIdValidator RecordIdValidator;
 
         /// <summary>
         /// The commands.
@@ -84,11 +87,13 @@ namespace FileCabinetApp
                     {
                         // change
                         fileCabinetService = new FileCabinetMemoryService();
+                        RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                     else
                     {
                         serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
+                        RecordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -273,13 +278,6 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            var records = Program.fileCabinetService.GetRecords();
-            if (records.Count == 0)
-            {
-                Console.WriteLine("There is no records.");
-                return;
-            }
-
             if (string.IsNullOrEmpty(parameters))
             {
                 Console.WriteLine("Write a record number");
@@ -292,31 +290,31 @@ namespace FileCabinetApp
                 return;
             }
 
-            foreach (var rec in records)
+            try
             {
-                if (rec.Id == id)
+                if (RecordIdValidator.TryGetRecordId(id))
                 {
-                    try
-                    {
-                        PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                        FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth,
-                            credit, duration);
-                        record.Id = id;
-                        Program.fileCabinetService.EditRecord(record);
-                        Console.WriteLine($"Record #{parameters} is updated");
-                        return;
-                    }
-                    catch (ArgumentNullException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine($"Record #{parameters} is not updated ");
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        Console.WriteLine($"Record #{parameters} is not updated");
-                    }
+                    PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                    FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
+                    record.Id = id;
+                    Program.fileCabinetService.EditRecord(record);
+                    Console.WriteLine($"Record #{parameters} is updated");
                 }
+            }
+            catch (FileRecordNotFound ex)
+            {
+                Console.WriteLine($"{ex.Value} was not found");
+                Console.WriteLine($"Record #{parameters} is not updated ");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Record #{parameters} is not updated ");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Record #{parameters} is not updated");
             }
         }
 

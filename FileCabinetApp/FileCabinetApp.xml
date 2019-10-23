@@ -4,6 +4,43 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound">
+            <summary>
+            FileRecordNotFound.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            </summary>
+            <param name="val">value.</param>
+        </member>
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            </summary>
+            <param name="message">message.</param>
+        </member>
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            </summary>
+            <param name="message">message.</param>
+            <param name="innerException">inner Exception.</param>
+        </member>
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ExceptionClasses.FileRecordNotFound.Value">
+            <summary>
+            Gets value.
+            </summary>
+            <value>
+            Value.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             FileCabinetRecord.
@@ -76,24 +113,24 @@
             Credit sum.
             </value>
         </member>
-        <member name="T:FileCabinetApp.CSV.FileCabinetRecordCsvWriter">
+        <member name="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter">
             <summary>
             FileCabinetRecordCsvWriter.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CSV.FileCabinetRecordCsvWriter"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter"/> class.
             </summary>
             <param name="writer">The writer.</param>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.WriteFields(System.Reflection.PropertyInfo[])">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter.WriteFields(System.Reflection.PropertyInfo[])">
             <summary>
             Writes the fields.
             </summary>
             <param name="info">The information.</param>
         </member>
-        <member name="M:FileCabinetApp.CSV.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Writes the specified record.
             </summary>

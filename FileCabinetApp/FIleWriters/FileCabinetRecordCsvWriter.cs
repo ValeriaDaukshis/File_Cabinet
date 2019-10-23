@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
-namespace FileCabinetApp.CSV
+namespace FileCabinetApp.FIleWriters
 {
     /// <summary>
     /// FileCabinetRecordCsvWriter.
@@ -49,7 +51,16 @@ namespace FileCabinetApp.CSV
             {
                 throw new ArgumentNullException($"{nameof(record)} is null");
             }
-            this.writer.WriteLine($"{record.Id},{record.FirstName},{record.LastName},{record.Gender},{record.DateOfBirth:yyyy-MMMM-dd},{record.CreditSum},{record.Duration}");
+
+            var builder = new StringBuilder();
+            builder.Append($"{record.Id},");
+            builder.Append($"{record.FirstName},");
+            builder.Append($"{record.LastName},");
+            builder.Append($"{record.Gender},");
+            builder.Append($"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)},");
+            builder.Append($"{record.CreditSum},");
+            builder.Append($"{record.Duration}");
+            this.writer.WriteLine(builder.ToString());
         }
     }
 }
