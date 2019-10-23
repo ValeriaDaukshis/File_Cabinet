@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+using FileCabinetApp.ExceptionClasses;
 
 namespace FileCabinetApp.Service
 {
@@ -12,10 +13,10 @@ namespace FileCabinetApp.Service
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private readonly FileStream fileStream;
-        private int countOfRecords;
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
+        private readonly FileStream fileStream;
+        private int countOfRecords;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
@@ -59,7 +60,11 @@ namespace FileCabinetApp.Service
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
             BinaryReader reader = new BinaryReader(this.fileStream);
-            long position = this.GetFileRecordPosition(reader, fileCabinetRecord.Id) ?? throw new NullReferenceException($"No record with {fileCabinetRecord.Id} id");
+            if (!this.GetFileRecordPosition(reader, fileCabinetRecord.Id, out long position))
+            {
+                throw new FileRecordNotFound(fileCabinetRecord.Id);
+            }
+
             FileCabinetRecord oldRecord = this.FileReader(reader, position);
             BinaryWriter writer = new BinaryWriter(this.fileStream);
 
@@ -249,25 +254,25 @@ namespace FileCabinetApp.Service
             return builder.ToString();
         }
 
-        private long? GetFileRecordPosition(BinaryReader reader, int recordId)
+        private bool GetFileRecordPosition(BinaryReader reader, int recordId, out long position)
         {
-            long pointer = 0;
+            position = 0;
             reader.BaseStream.Position = 0;
             while (reader.BaseStream.Position != reader.BaseStream.Length)
             {
-                pointer = reader.BaseStream.Position;
+                position = reader.BaseStream.Position;
                 reader.BaseStream.Position += sizeof(short);
                 var id = reader.ReadInt32();
 
                 if (id == recordId)
                 {
-                    return pointer;
+                    return true;
                 }
 
                 reader.BaseStream.Position += RecordSize - sizeof(int) - sizeof(short);
             }
 
-            return null;
+            return false;
         }
 
         private FileCabinetRecord FileReader(BinaryReader reader, long pointer)
