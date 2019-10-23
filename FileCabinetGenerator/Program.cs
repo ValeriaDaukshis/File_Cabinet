@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using CommandLine;
+using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
@@ -11,6 +13,14 @@ namespace FileCabinetGenerator
         private static string _outputFileName;
         private static int _recordsAmount;
         private static int _startId;
+        private static string firstName = "FirstName";
+        private static string lastName = "LastName";
+        private static int durationMinValue = 6;
+        private static int durationMaxValue = 120;
+        private static int creditSumMinValue = 10;
+        private static int creditSumMaxValue = 5000;
+        private static DateTime birthDayMinValue = new DateTime(1950, 01, 01);
+        private static List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private class CommandLineOptions
         {
             [Option('t', "output-type", Required = true, HelpText = "Output format type (csv, xml)")]
@@ -60,6 +70,44 @@ namespace FileCabinetGenerator
                     _recordsAmount = o.RecordsAmount;
                     _startId = o.StartId;
                 });
+            GenerateFileCabinetRecordsFields();
+            Console.WriteLine($"{_recordsAmount} records were written to {_outputFileName}");
+        }
+        
+        private static void GenerateFileCabinetRecordsFields()
+        {
+            int userId = _startId;
+            for (int i = 0; i < _recordsAmount; i++)
+            {
+                GenerateFields(i, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                FileCabinetRecord record = new FileCabinetRecord(userId, firstName, lastName, gender, dateOfBirth, credit, duration);
+                list.Add(record);
+                userId++;
+            }
+        }
+        
+        private static void GenerateFields(int i,out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        {
+            firstName = Program.firstName + i;
+            lastName = Program.lastName + i;
+            gender = RandomGender();
+            dateOfBirth = RandomBirthDay();
+            credit = new Random().Next(creditSumMinValue, creditSumMaxValue);
+            duration = (short)new Random().Next(durationMinValue, durationMaxValue);
+        }
+        private static DateTime RandomBirthDay()
+        {
+            DateTime start = birthDayMinValue;
+            Random rand = new Random();
+            int range = (DateTime.Today - start).Days;
+            return start.AddDays(rand.Next(range)); 
+        }
+
+        private static char RandomGender()
+        {
+            string gender = "MF";
+            Random rand = new Random();
+            return gender[rand.Next(0,1)];
         }
     }
 }

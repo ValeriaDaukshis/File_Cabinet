@@ -57,6 +57,18 @@
             <param name="credit">credit sum.</param>
             <param name="duration">duration.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
             Gets or sets the identifier.
