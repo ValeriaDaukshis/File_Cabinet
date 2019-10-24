@@ -1,14 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Xml.Serialization;
 using CommandLine;
-using FileCabinetApp;
+using FileCabinetGenerator.FileImporters;
 
 namespace FileCabinetGenerator
 {
+    /// <summary>
+    /// Enter point.
+    /// </summary>
     class Program
     {
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
+        private static IFileCabinetSerializer serializer;
         private static string _outputFormat;
         private static string _outputFileName;
         private static int _recordsAmount;
@@ -20,7 +25,10 @@ namespace FileCabinetGenerator
         private static int creditSumMinValue = 10;
         private static int creditSumMaxValue = 5000;
         private static DateTime birthDayMinValue = new DateTime(1950, 01, 01);
-        private static List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        
+        [XmlElement("record")]
+        public decimal CreditSum { get; private set; }
+        private static FileCabinetRecords fileCabinetRecords = new FileCabinetRecords();
         private class CommandLineOptions
         {
             [Option('t', "output-type", Required = true, HelpText = "Output format type (csv, xml)")]
@@ -36,6 +44,10 @@ namespace FileCabinetGenerator
             public int StartId { get; set; }
         }
         
+        /// <summary>
+        /// Main.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<CommandLineOptions>(args)
@@ -71,7 +83,35 @@ namespace FileCabinetGenerator
                     _startId = o.StartId;
                 });
             GenerateFileCabinetRecordsFields();
+            ExportToFile();
             Console.WriteLine($"{_recordsAmount} records were written to {_outputFileName}");
+        }
+        
+        private static void ExportToFile()
+        {
+            try
+            {
+                using (StreamWriter fs = new StreamWriter(_outputFileName))
+                {
+                    if (_outputFormat == "csv")
+                    {
+                        serializer = new ImportToCsv(fs);
+                    }
+                    else if (_outputFormat == "xml")
+                    {
+                        serializer = new ImportToXml(fs);
+                    }
+                    serializer.Serialize(fileCabinetRecords);
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
         
         private static void GenerateFileCabinetRecordsFields()
@@ -80,8 +120,8 @@ namespace FileCabinetGenerator
             for (int i = 0; i < _recordsAmount; i++)
             {
                 GenerateFields(i, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                FileCabinetRecord record = new FileCabinetRecord(userId, firstName, lastName, gender, dateOfBirth, credit, duration);
-                list.Add(record);
+                Record record = new Record(userId, firstName, lastName, gender, dateOfBirth, credit, duration);
+                fileCabinetRecords.Record.Add(record);
                 userId++;
             }
         }
@@ -90,7 +130,7 @@ namespace FileCabinetGenerator
         {
             firstName = Program.firstName + i;
             lastName = Program.lastName + i;
-            gender = RandomGender();
+            gender = i % 5 == 0 ? 'F' : 'M';
             dateOfBirth = RandomBirthDay();
             credit = new Random().Next(creditSumMinValue, creditSumMaxValue);
             duration = (short)new Random().Next(durationMinValue, durationMaxValue);
@@ -101,13 +141,6 @@ namespace FileCabinetGenerator
             Random rand = new Random();
             int range = (DateTime.Today - start).Days;
             return start.AddDays(rand.Next(range)); 
-        }
-
-        private static char RandomGender()
-        {
-            string gender = "MF";
-            Random rand = new Random();
-            return gender[rand.Next(0,1)];
         }
     }
 }

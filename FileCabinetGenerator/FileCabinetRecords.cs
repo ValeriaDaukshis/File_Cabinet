@@ -1,13 +1,53 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Serialization;
+using FileCabinetApp;
 
-namespace FileCabinetApp
+namespace FileCabinetGenerator
 {
     /// <summary>
-    /// FileCabinetRecord.
+    /// FileCabinetRecords.
     /// </summary>
-    [XmlRoot("addressBook")]
-    public class FileCabinetRecord
+    [XmlRoot("records")]
+    public class FileCabinetRecords
+    {
+        /// <summary>
+        /// The record.
+        /// </summary>
+        [XmlElement("record")]
+        public List<Record> Record;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecords"/> class.
+        /// </summary>
+        public FileCabinetRecords()
+        {
+            Record = new List<Record>();
+        }
+    }
+
+    public class Names
+    {
+        /// <summary>
+        /// Gets the first name.
+        /// </summary>
+        /// <value>
+        /// The first name.
+        /// </value>
+        [XmlAttribute("first")]
+        public string FirstName { get; set; }
+
+        /// <summary>
+        /// Gets the last name.
+        /// </summary>
+        /// <value>
+        /// The last name.
+        /// </value>
+        [XmlAttribute("last")]
+        public string LastName { get; set; }
+    }
+
+    public class Record
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
@@ -18,10 +58,9 @@ namespace FileCabinetApp
         /// <param name="dateOfBirth">date of birth.</param>
         /// <param name="credit">credit sum.</param>
         /// <param name="duration">duration.</param>
-        public FileCabinetRecord(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
+        public Record(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
-            this.FirstName = firstName;
-            this.LastName = lastName;
+            this.Name = new Names {FirstName = firstName, LastName = lastName};
             this.DateOfBirth = dateOfBirth;
             this.Gender = gender;
             this.CreditSum = credit;
@@ -38,10 +77,18 @@ namespace FileCabinetApp
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <param name="credit">The credit.</param>
         /// <param name="duration">The duration.</param>
-        public FileCabinetRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
-        : this(firstName, lastName, gender, dateOfBirth, credit, duration)
+        public Record(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
+            : this(firstName, lastName, gender, dateOfBirth, credit, duration)
         {
             this.Id = id;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Record"/> class.
+        /// </summary>
+        public Record()
+        {
+
         }
 
         /// <summary>
@@ -50,26 +97,18 @@ namespace FileCabinetApp
         /// <value>
         /// The identifier.
         /// </value>
-        [XmlElement("records")]
+        [XmlAttribute("id")]
         public int Id { get;  set; }
 
         /// <summary>
-        /// Gets the first name.
+        /// Gets or sets the name.
         /// </summary>
         /// <value>
-        /// The first name.
+        /// The name.
         /// </value>
-        [XmlAttribute("first")]
-        public string FirstName { get; private set; }
+        [XmlElement("name")]
+        public Names Name { get; set; }
 
-        /// <summary>
-        /// Gets the last name.
-        /// </summary>
-        /// <value>
-        /// The last name.
-        /// </value>
-        [XmlAttribute("last")]
-        public string LastName { get; private set; }
 
         /// <summary>
         /// Gets the gender.
@@ -77,8 +116,8 @@ namespace FileCabinetApp
         /// <value>
         /// The gender.
         /// </value>
-        [XmlElement("gender")]
-        public char Gender { get; private set; }
+        [XmlElement(typeof(char), ElementName = "gender")]
+        public char Gender { get;  set; }
 
         /// <summary>
         /// Gets the date of birth.
@@ -86,8 +125,8 @@ namespace FileCabinetApp
         /// <value>
         /// The date of birth.
         /// </value>
-        [XmlElement("dateOfBirth")]
-        public DateTime DateOfBirth { get; private set; }
+        [XmlElement(typeof(DateTime), ElementName = "dateOfBirth")]
+        public DateTime DateOfBirth { get;  set; }
 
         /// <summary>
         /// Gets credit sum.
@@ -96,7 +135,7 @@ namespace FileCabinetApp
         /// Credit sum.
         /// </value>
         [XmlElement("creditSum")]
-        public decimal CreditSum { get; private set; }
+        public decimal CreditSum { get;  set; }
 
         /// <summary>
         /// Gets duration.
@@ -105,6 +144,6 @@ namespace FileCabinetApp
         /// The duration.
         /// </value>
         [XmlElement("duration")]
-        public short Duration { get; private set; }
+        public short Duration { get;  set; }   
     }
 }

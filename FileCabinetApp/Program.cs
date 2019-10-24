@@ -12,6 +12,7 @@ namespace FileCabinetApp
 {
     /// <summary>
     /// Enter point.
+    /// Enter point.
     /// </summary>
     public static class Program
     {

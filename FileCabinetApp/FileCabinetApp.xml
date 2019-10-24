@@ -93,14 +93,6 @@
             The last name.
             </value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
-            <summary>
-            Gets the date of birth.
-            </summary>
-            <value>
-            The date of birth.
-            </value>
-        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
             <summary>
             Gets the gender.
@@ -109,12 +101,12 @@
             The gender.
             </value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
-            Gets duration.
+            Gets the date of birth.
             </summary>
             <value>
-            The duration.
+            The date of birth.
             </value>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
@@ -123,6 +115,14 @@
             </summary>
             <value>
             Credit sum.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
+            <summary>
+            Gets duration.
+            </summary>
+            <value>
+            The duration.
             </value>
         </member>
         <member name="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter">
@@ -177,6 +177,7 @@
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
+            Enter point.
             Enter point.
             </summary>
         </member>
