@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -45,6 +46,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", ExportToCsv),
+            new Tuple<string, Action<string>>("import", ImportToCsv),
         };
 
         /// <summary>
@@ -66,6 +68,15 @@ namespace FileCabinetApp
             },
         };
 
+        private class CommandLineOptions
+        {
+            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
+            public string ValidationRules { get; set; }
+
+            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
+            public string Storage { get; set; }
+        }
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
@@ -86,15 +97,14 @@ namespace FileCabinetApp
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
-                        // change
-                        fileCabinetService = new FileCabinetMemoryService();
-                        RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
-                    }
-                    else
-                    {
                         serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
                         RecordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
+                    }
+                    else
+                    {
+                        fileCabinetService = new FileCabinetMemoryService();
+                        RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -127,63 +137,6 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
-        }
-
-        private class CommandLineOptions
-        {
-            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
-            public string ValidationRules { get; set; }
-
-            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
-            public string Storage { get; set; }
-        }
-
-        private static void ExportToCsv(string parameters)
-        {
-            if (string.IsNullOrEmpty(parameters))
-            {
-                Console.WriteLine("No parameters after command 'export'");
-                return;
-            }
-
-            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-
-            if (inputParameters.Length < 2)
-            {
-                Console.WriteLine("Not enough parameters after command 'find'");
-                return;
-            }
-
-            string importFile = inputParameters[0].ToLower(Culture);
-            string path = inputParameters[1];
-            try
-            {
-                using (StreamWriter stream = new StreamWriter(path))
-                {
-                    if (importFile == "csv")
-                    {
-                        snapshot = fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToCsv(stream);
-                    }
-                    else if (importFile == "xml")
-                    {
-                        snapshot = fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToXml(stream);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{importFile} writer is not found");
-                    }
-                }
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -348,6 +301,101 @@ namespace FileCabinetApp
                 Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
                 Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
                 Console.WriteLine($"\tCredit duration: {rec.Duration}");
+            }
+        }
+
+        private static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
+        {
+            fileFormat = string.Empty;
+            path = string.Empty;
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("No parameters after command 'export'");
+                return false;
+            }
+
+            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+            if (inputParameters.Length < 2)
+            {
+                Console.WriteLine("Not enough parameters after command 'find'");
+                return false;
+            }
+
+            fileFormat = inputParameters[0].ToLower(Culture);
+            path = inputParameters[1];
+            return true;
+        }
+
+        private static void ImportToCsv(string parameters)
+        {
+            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (StreamWriter stream = new StreamWriter(path))
+                {
+                    if (fileFormat == "csv")
+                    {
+                       
+                    }
+                    else if (fileFormat == "xml")
+                    {
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{fileFormat} writer is not found");
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static void ExportToCsv(string parameters)
+        {
+            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (StreamWriter stream = new StreamWriter(path))
+                {
+                    if (fileFormat == "csv")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToCsv(stream);
+                    }
+                    else if (fileFormat == "xml")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToXml(stream);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{fileFormat} writer is not found");
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 
