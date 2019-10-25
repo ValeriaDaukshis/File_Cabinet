@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.FileReaders
@@ -12,18 +13,17 @@ namespace FileCabinetApp.FileReaders
     /// </summary>
     public class FileCabinetRecordXmlReader
     {
-        private readonly StreamReader reader;
+        private readonly StreamReader streamReader;
         private readonly IRecordValidator validator;
-        private XmlReader xmlReader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
         /// </summary>
-        /// <param name="reader">The reader.</param>
+        /// <param name="streamReader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        public FileCabinetRecordXmlReader(StreamReader reader, IRecordValidator validator)
+        public FileCabinetRecordXmlReader(StreamReader streamReader, IRecordValidator validator)
         {
-            this.reader = reader;
+            this.streamReader = streamReader;
             this.validator = validator;
         }
 
@@ -33,60 +33,40 @@ namespace FileCabinetApp.FileReaders
         /// <returns>list of records.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            IList<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            XmlSerializer formatter = new XmlSerializer(typeof(FileCabinetRecords));
 
-            return records;
+            FileCabinetRecords records;
+            using (this.streamReader)
+            {
+                records = (FileCabinetRecords)formatter.Deserialize(this.streamReader);
+            }
+
+            IList<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            foreach (var node in records.Record)
+            {
+                try
+                {
+                    this.ReaderValidator(node);
+                    list.Add(new FileCabinetRecord(node.Id, node.Name.FirstName, node.Name.LastName, node.Gender, node.DateOfBirth, node.CreditSum, node.Duration));
+
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+
+            return list;
         }
 
-        private void ReaderValidator(string[] row, out int id, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private void ReaderValidator(Record record)
         {
-            firstName = string.Empty;
-            lastName = string.Empty;
-            if (!int.TryParse(row[0], out id))
-            {
-                throw new ArgumentException("Id has not digit format");
-            }
-
-            if (string.IsNullOrEmpty(row[1]))
-            {
-                throw new ArgumentException("firstName is null or empty");
-            }
-
-            firstName = row[1];
-
-            if (string.IsNullOrEmpty(row[2]))
-            {
-                throw new ArgumentException("lastName is null or empty");
-            }
-
-            lastName = row[2];
-
-            if (!char.TryParse(row[3], out gender))
-            {
-                throw new ArgumentException("gender is not char");
-            }
-
-            if (!DateTime.TryParse(row[4], CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBirth))
-            {
-                throw new ArgumentException("Incorrect DateTime value");
-            }
-
-            if (!decimal.TryParse(row[5], out credit))
-            {
-                throw new ArgumentException("creditSum has no decimal format");
-            }
-
-            if (!short.TryParse(row[6], out duration))
-            {
-                throw new ArgumentException("duration has not short format");
-            }
-
-            this.validator.ValidateFirstName(firstName);
-            this.validator.ValidateLastName(lastName);
-            this.validator.ValidateCreditSum(credit);
-            this.validator.ValidateDuration(duration);
-            this.validator.ValidateGender(gender);
-            this.validator.ValidateDateOfBirth(dateOfBirth);
+            this.validator.ValidateFirstName(record.Name.FirstName);
+            this.validator.ValidateLastName(record.Name.LastName);
+            this.validator.ValidateCreditSum(record.CreditSum);
+            this.validator.ValidateDuration(record.Duration);
+            this.validator.ValidateGender(record.Gender);
+            this.validator.ValidateDateOfBirth(record.DateOfBirth);
         }
     }
 }

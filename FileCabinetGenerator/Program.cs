@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Xml.Serialization;
 using CommandLine;
+using FileCabinetApp;
 using FileCabinetGenerator.FileImporters;
 
 namespace FileCabinetGenerator

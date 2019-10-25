@@ -1,4 +1,6 @@
 ﻿
+using FileCabinetApp;
+
 namespace FileCabinetGenerator.FileImporters
 {
     /// <summary>

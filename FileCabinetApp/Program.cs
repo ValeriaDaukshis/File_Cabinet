@@ -345,7 +345,10 @@ namespace FileCabinetApp
                     }
                     else if (fileFormat == "xml")
                     {
-
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromXml(stream, recordValidator);
+                        int count = fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else
                     {
