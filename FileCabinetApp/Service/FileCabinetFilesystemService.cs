@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
 
@@ -16,10 +17,11 @@ namespace FileCabinetApp.Service
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
         private readonly FileStream fileStream;
-        private int countOfRecords;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<int, long> recordIndexPosition = new Dictionary<int, long>();
+        private int countOfRecords;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -40,12 +42,13 @@ namespace FileCabinetApp.Service
         /// </returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            fileCabinetRecord.Id = this.countOfRecords + 1;
+            fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
             this.countOfRecords++;
             BinaryWriter writer = new BinaryWriter(this.fileStream);
             this.FileWriter(fileCabinetRecord, writer);
             writer.Flush();
 
+            this.recordIndexPosition.Add(fileCabinetRecord.Id, RecordSize * (this.countOfRecords - 1));
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
@@ -60,11 +63,12 @@ namespace FileCabinetApp.Service
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
             BinaryReader reader = new BinaryReader(this.fileStream);
-            if (!this.GetFileRecordPosition(reader, fileCabinetRecord.Id, out long position))
+            if (!this.recordIndexPosition.ContainsKey(fileCabinetRecord.Id))
             {
-                throw new FileRecordNotFound(fileCabinetRecord.Id);
+                throw new FileRecordNotFoundException(fileCabinetRecord.Id);
             }
 
+            long position = this.recordIndexPosition[fileCabinetRecord.Id];
             FileCabinetRecord oldRecord = this.FileReader(reader, position);
             BinaryWriter writer = new BinaryWriter(this.fileStream);
 
@@ -239,7 +243,26 @@ namespace FileCabinetApp.Service
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+        }
+
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+
+            foreach (var record in readRecords)
+            {
+                if (this.recordIndexPosition.ContainsKey(record.Id))
+                {
+                    this.EditRecord(record);
+                }
+                else
+                {
+                    this.CreateRecord(record);
+                }
+            }
+
+            return readRecords.Count;
         }
 
         private string CreateEmptyString(string s, int capacity)
@@ -252,27 +275,6 @@ namespace FileCabinetApp.Service
             }
 
             return builder.ToString();
-        }
-
-        private bool GetFileRecordPosition(BinaryReader reader, int recordId, out long position)
-        {
-            position = 0;
-            reader.BaseStream.Position = 0;
-            while (reader.BaseStream.Position != reader.BaseStream.Length)
-            {
-                position = reader.BaseStream.Position;
-                reader.BaseStream.Position += sizeof(short);
-                var id = reader.ReadInt32();
-
-                if (id == recordId)
-                {
-                    return true;
-                }
-
-                reader.BaseStream.Position += RecordSize - sizeof(int) - sizeof(short);
-            }
-
-            return false;
         }
 
         private FileCabinetRecord FileReader(BinaryReader reader, long pointer)
@@ -335,6 +337,23 @@ namespace FileCabinetApp.Service
             {
                 dictionary[value].Remove(record);
             }
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
+            {
+                return fileCabinetRecord.Id;
+            }
+
+            var maxId = 0;
+
+            if (this.recordIndexPosition.Count > 0)
+            {
+                maxId = this.recordIndexPosition.Keys.Max(x => x);
+            }
+
+            return maxId + 1;
         }
     }
 }

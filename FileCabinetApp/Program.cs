@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using CommandLine;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Service;
@@ -12,6 +11,7 @@ namespace FileCabinetApp
 {
     /// <summary>
     /// Enter point.
+    /// Enter point.
     /// </summary>
     public static class Program
     {
@@ -20,7 +20,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private const string ServiceStorageFile = @"C:\Users\dauks\Dop Task Epam\cabinet-records.db";
+        private const string ServiceStorageFile = @"C:\Users\dauks\File-Cabinet\cabinet-records.db";
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
@@ -29,7 +29,7 @@ namespace FileCabinetApp
         private static IFileCabinetService fileCabinetService;
         private static FileCabinetServiceSnapshot snapshot;
         private static FileStream serviceStorageFileStream;
-        private static IRecordIdValidator RecordIdValidator;
+        private static IRecordIdValidator recordIdValidator;
 
         /// <summary>
         /// The commands.
@@ -44,6 +44,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", ExportToCsv),
+            new Tuple<string, Action<string>>("import", ImportToCsv),
         };
 
         /// <summary>
@@ -65,6 +66,15 @@ namespace FileCabinetApp
             },
         };
 
+        private class CommandLineOptions
+        {
+            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
+            public string ValidationRules { get; set; }
+
+            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
+            public string Storage { get; set; }
+        }
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
@@ -85,15 +95,14 @@ namespace FileCabinetApp
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
-                        // change
-                        fileCabinetService = new FileCabinetMemoryService();
-                        RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
+                        serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
+                        fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
+                        recordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
                     }
                     else
                     {
-                        serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
-                        fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
-                        RecordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
+                        fileCabinetService = new FileCabinetMemoryService();
+                        recordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -126,63 +135,6 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
-        }
-
-        private class CommandLineOptions
-        {
-            [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
-            public string ValidationRules { get; set; }
-
-            [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
-            public string Storage { get; set; }
-        }
-
-        private static void ExportToCsv(string parameters)
-        {
-            if (string.IsNullOrEmpty(parameters))
-            {
-                Console.WriteLine("No parameters after command 'export'");
-                return;
-            }
-
-            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-
-            if (inputParameters.Length < 2)
-            {
-                Console.WriteLine("Not enough parameters after command 'find'");
-                return;
-            }
-
-            string importFile = inputParameters[0].ToLower(Culture);
-            string path = inputParameters[1];
-            try
-            {
-                using (StreamWriter stream = new StreamWriter(path))
-                {
-                    if (importFile == "csv")
-                    {
-                        snapshot = fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToCsv(stream);
-                    }
-                    else if (importFile == "xml")
-                    {
-                        snapshot = fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToXml(stream);
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{importFile} writer is not found");
-                    }
-                }
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -292,7 +244,7 @@ namespace FileCabinetApp
 
             try
             {
-                if (RecordIdValidator.TryGetRecordId(id))
+                if (recordIdValidator.TryGetRecordId(id))
                 {
                     PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
@@ -301,7 +253,7 @@ namespace FileCabinetApp
                     Console.WriteLine($"Record #{parameters} is updated");
                 }
             }
-            catch (FileRecordNotFound ex)
+            catch (FileRecordNotFoundException ex)
             {
                 Console.WriteLine($"{ex.Value} was not found");
                 Console.WriteLine($"Record #{parameters} is not updated ");
@@ -347,6 +299,107 @@ namespace FileCabinetApp
                 Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
                 Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
                 Console.WriteLine($"\tCredit duration: {rec.Duration}");
+            }
+        }
+
+        private static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
+        {
+            fileFormat = string.Empty;
+            path = string.Empty;
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("No parameters after command 'export'");
+                return false;
+            }
+
+            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+            if (inputParameters.Length < 2)
+            {
+                Console.WriteLine("Not enough parameters after command 'find'");
+                return false;
+            }
+
+            fileFormat = inputParameters[0].ToLower(Culture);
+            path = inputParameters[1];
+            return true;
+        }
+
+        private static void ImportToCsv(string parameters)
+        {
+            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (StreamReader stream = new StreamReader(path))
+                {
+                    if (fileFormat == "csv")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromCsv(stream, recordValidator);
+                        int count = fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
+                    }
+                    else if (fileFormat == "xml")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromXml(stream, recordValidator);
+                        int count = fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{fileFormat} writer is not found");
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private static void ExportToCsv(string parameters)
+        {
+            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            {
+                return;
+            }
+
+            try
+            {
+                using (StreamWriter stream = new StreamWriter(path))
+                {
+                    if (fileFormat == "csv")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToCsv(stream);
+                    }
+                    else if (fileFormat == "xml")
+                    {
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.SaveToXml(stream);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"{fileFormat} writer is not found");
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Console.WriteLine(ex.Message);
             }
         }
 

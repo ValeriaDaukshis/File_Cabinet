@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FileCabinetApp.Service
 {
@@ -21,14 +22,14 @@ namespace FileCabinetApp.Service
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            var record = fileCabinetRecord;
-            fileCabinetRecord.Id = this.list.Count + 1;
-            this.list.Add(record);
-            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
-            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
-            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
+            fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
 
-            return record.Id;
+            this.list.Add(fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
+
+            return fileCabinetRecord.Id;
         }
 
         /// <summary>
@@ -143,6 +144,26 @@ namespace FileCabinetApp.Service
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+
+            foreach (var record in readRecords)
+            {
+                var index = this.list.FindIndex(x => x.Id == record.Id);
+                if (index != -1)
+                {
+                    this.list[index] = record;
+                }
+                else
+                {
+                    this.list.Add(record);
+                }
+            }
+
+            return readRecords.Count;
+        }
+
         /// <summary>
         /// Gets the stat.
         /// </summary>
@@ -171,6 +192,23 @@ namespace FileCabinetApp.Service
             {
                 dictionary[value].Remove(record);
             }
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
+            {
+                return fileCabinetRecord.Id;
+            }
+
+            var maxId = 0;
+
+            if (this.list.Count > 0)
+            {
+                maxId = this.list.Max(x => x.Id);
+            }
+
+            return maxId + 1;
         }
     }
 }

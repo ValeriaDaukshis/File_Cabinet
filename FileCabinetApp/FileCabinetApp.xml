@@ -4,41 +4,148 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
-        <member name="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound">
+        <member name="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException">
             <summary>
             FileRecordNotFound.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.Int32)">
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException.#ctor(System.Int32)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException"/> class.
             </summary>
             <param name="val">value.</param>
         </member>
-        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.String)">
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException.#ctor(System.String)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException"/> class.
             </summary>
             <param name="message">message.</param>
         </member>
-        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor(System.String,System.Exception)">
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException.#ctor(System.String,System.Exception)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException"/> class.
             </summary>
             <param name="message">message.</param>
             <param name="innerException">inner Exception.</param>
         </member>
-        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFound.#ctor">
+        <member name="M:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException.#ctor">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFound"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException"/> class.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.ExceptionClasses.FileRecordNotFound.Value">
+        <member name="P:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException.Value">
             <summary>
             Gets value.
             </summary>
             <value>
             Value.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecords">
+            <summary>
+            FileCabinetRecords.
+            </summary>
+        </member>
+        <member name="F:FileCabinetApp.FileCabinetRecords.Record">
+            <summary>
+            The record.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecords.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecords"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Names.FirstName">
+            <summary>
+            Gets the first name.
+            </summary>
+            <value>
+            The first name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Names.LastName">
+            <summary>
+            Gets the last name.
+            </summary>
+            <value>
+            The last name.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Record.#ctor(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="firstName">first name.</param>
+            <param name="lastName">last name.</param>
+            <param name="gender">gender.</param>
+            <param name="dateOfBirth">date of birth.</param>
+            <param name="credit">credit sum.</param>
+            <param name="duration">duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.Record.#ctor(System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.Record.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Record"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Record.Id">
+            <summary>
+            Gets or sets the identifier.
+            </summary>
+            <value>
+            The identifier.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Record.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Record.Gender">
+            <summary>
+            Gets the gender.
+            </summary>
+            <value>
+            The gender.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Record.DateOfBirth">
+            <summary>
+            Gets the date of birth.
+            </summary>
+            <value>
+            The date of birth.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Record.CreditSum">
+            <summary>
+            Gets credit sum.
+            </summary>
+            <value>
+            Credit sum.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Record.Duration">
+            <summary>
+            Gets duration.
+            </summary>
+            <value>
+            The duration.
             </value>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -56,6 +163,18 @@
             <param name="dateOfBirth">date of birth.</param>
             <param name="credit">credit sum.</param>
             <param name="duration">duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecord.#ctor(System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecord"/> class.
+            </summary>
+            <param name="id">The identifier.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Id">
             <summary>
@@ -81,6 +200,14 @@
             The last name.
             </value>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+            <summary>
+            Gets the gender.
+            </summary>
+            <value>
+            The gender.
+            </value>
+        </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
             <summary>
             Gets the date of birth.
@@ -89,12 +216,12 @@
             The date of birth.
             </value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.Gender">
+        <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
             <summary>
-            Gets the gender.
+            Gets credit sum.
             </summary>
             <value>
-            The gender.
+            Credit sum.
             </value>
         </member>
         <member name="P:FileCabinetApp.FileCabinetRecord.Duration">
@@ -105,13 +232,41 @@
             The duration.
             </value>
         </member>
-        <member name="P:FileCabinetApp.FileCabinetRecord.CreditSum">
+        <member name="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader">
             <summary>
-            Gets credit sum.
+            FileCabinetRecordCsvReader.
             </summary>
-            <value>
-            Credit sum.
-            </value>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Reads all.
+            </summary>
+            <returns>list of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader">
+            <summary>
+            FileCabinetRecordXmlReader.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="streamReader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads all.
+            </summary>
+            <returns>list of records.</returns>
         </member>
         <member name="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvWriter">
             <summary>
@@ -165,6 +320,7 @@
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
+            Enter point.
             Enter point.
             </summary>
         </member>
@@ -350,6 +506,20 @@
             </summary>
             <param name="writer">The writer.</param>
         </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Loads from CSV.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Loads from XML.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
         <member name="T:FileCabinetApp.Service.IFileCabinetService">
             <summary>
             IFileCabinetService.
@@ -406,6 +576,13 @@
             Makes the snapshot.
             </summary>
             <returns>FileCabinetServiceSnapshot.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores the specified snapshot.
+            </summary>
+            <param name="snapshot">The snapshot.</param>
+            <returns>count of restored records.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
@@ -531,6 +708,44 @@
             Validates the gender.
             </summary>
             <param name="gender">The gender.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.RecordIdFilesystemValidator">
+            <summary>
+            RecordIdFilesystemValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordIdValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.RecordIdFilesystemValidator.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.RecordIdFilesystemValidator"/> class.
+            </summary>
+            <param name="fileStream">The file stream.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.RecordIdFilesystemValidator.TryGetRecordId(System.Int32)">
+            <summary>
+            Tries the get record identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>true if record with id is exists.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.RecordIdMemoryValidator">
+            <summary>
+            RecordIdMemoryValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.IRecordIdValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.RecordIdMemoryValidator.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.RecordIdMemoryValidator"/> class.
+            </summary>
+            <param name="service">The service.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.RecordIdMemoryValidator.TryGetRecordId(System.Int32)">
+            <summary>
+            Tries the get record identifier.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns>true if record with id is exists.</returns>
         </member>
     </members>
 </doc>

@@ -49,7 +49,7 @@ namespace FileCabinetApp.FIleWriters
             this.xmlWriter.WriteAttributeString("last",  $"{record.LastName}");
             this.xmlWriter.WriteEndElement();
             this.xmlWriter.WriteElementString("gender", $"{record.Gender}");
-            this.xmlWriter.WriteElementString("dateOfBirth", $"{record.DateOfBirth:yyyy-MMMM-dd}");
+            this.xmlWriter.WriteElementString("dateOfBirth", $"{record.DateOfBirth:yyyy-mm-dd}");
             this.xmlWriter.WriteElementString("creditSum", $"{record.CreditSum}");
             this.xmlWriter.WriteElementString("duration", $"{record.Duration}");
             this.xmlWriter.WriteEndElement();
