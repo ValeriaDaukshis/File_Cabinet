@@ -25,10 +25,13 @@ namespace FileCabinetApp
         }
     }
 
+    /// <summary>
+    /// Names.
+    /// </summary>
     public class Names
     {
         /// <summary>
-        /// Gets the first name.
+        /// Gets or sets the first name.
         /// </summary>
         /// <value>
         /// The first name.
@@ -37,7 +40,7 @@ namespace FileCabinetApp
         public string FirstName { get; set; }
 
         /// <summary>
-        /// Gets the last name.
+        /// Gets or sets the last name.
         /// </summary>
         /// <value>
         /// The last name.
@@ -46,6 +49,9 @@ namespace FileCabinetApp
         public string LastName { get; set; }
     }
 
+    /// <summary>
+    /// Record.
+    /// </summary>
     public class Record
     {
         /// <summary>
@@ -110,7 +116,7 @@ namespace FileCabinetApp
 
 
         /// <summary>
-        /// Gets the gender.
+        /// Gets or sets the gender.
         /// </summary>
         /// <value>
         /// The gender.
@@ -119,7 +125,7 @@ namespace FileCabinetApp
         public char Gender { get;  set; }
 
         /// <summary>
-        /// Gets the date of birth.
+        /// Gets or sets the date of birth.
         /// </summary>
         /// <value>
         /// The date of birth.
@@ -128,7 +134,7 @@ namespace FileCabinetApp
         public DateTime DateOfBirth { get;  set; }
 
         /// <summary>
-        /// Gets credit sum.
+        /// Gets or sets credit sum.
         /// </summary>
         /// <value>
         /// Credit sum.
@@ -137,12 +143,12 @@ namespace FileCabinetApp
         public decimal CreditSum { get;  set; }
 
         /// <summary>
-        /// Gets duration.
+        /// Gets or sets duration.
         /// </summary>
         /// <value>
         /// The duration.
         /// </value>
         [XmlElement("duration")]
-        public short Duration { get;  set; }   
+        public short Duration { get;  set; }
     }
 }

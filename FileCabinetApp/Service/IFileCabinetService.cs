@@ -67,10 +67,7 @@ namespace FileCabinetApp.Service
         /// <returns>count of restored records.</returns>
         int Restore(FileCabinetServiceSnapshot snapshot);
 
-        /// <summary>
-        /// Removes the record.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        void RemoveRecord(int id);
+        
+        void RemoveRecord(FileCabinetRecord fileCabinetRecord);
     }
 }

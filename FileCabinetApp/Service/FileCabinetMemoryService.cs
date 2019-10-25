@@ -32,14 +32,10 @@ namespace FileCabinetApp.Service
             return fileCabinetRecord.Id;
         }
 
-        /// <summary>
-        /// Removes the record.
-        /// </summary>
-        /// <param name="id">The identifier.</param>
-        public void RemoveRecord(int id)
+       
+        public void RemoveRecord(FileCabinetRecord record)
         {
-            FileCabinetRecord record = this.list.Find(x => x.Id == id);
-            int position = this.list.FindIndex(x => x.Id == id);
+            int position = this.list.FindIndex(x => x.Id == record.Id);
             this.list.RemoveAt(position);
 
             if (this.firstNameDictionary.ContainsKey(record.FirstName))

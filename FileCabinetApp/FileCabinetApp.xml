@@ -56,6 +56,11 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecords"/> class.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Names">
+            <summary>
+            Names.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.Names.FirstName">
             <summary>
             Gets the first name.
@@ -71,6 +76,11 @@
             <value>
             The last name.
             </value>
+        </member>
+        <member name="T:FileCabinetApp.Record">
+            <summary>
+            Record.
+            </summary>
         </member>
         <member name="M:FileCabinetApp.Record.#ctor(System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
             <summary>
@@ -361,11 +371,11 @@
             Id of created record.
             </returns>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.RemoveRecord(System.Int32)">
+        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.RemoveRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Removes the record.
             </summary>
-            <param name="id">The identifier.</param>
+            <param name="record">The record.</param>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.EditRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -435,12 +445,6 @@
             </summary>
             <param name="fileCabinetRecord">The file cabinet record.</param>
             <returns>id of created record.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.RemoveRecord(System.Int32)">
-            <summary>
-            Removes the record.
-            </summary>
-            <param name="id">The identifier.</param>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.EditRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -595,12 +599,6 @@
             </summary>
             <param name="snapshot">The snapshot.</param>
             <returns>count of restored records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.IFileCabinetService.RemoveRecord(System.Int32)">
-            <summary>
-            Removes the record.
-            </summary>
-            <param name="id">The identifier.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

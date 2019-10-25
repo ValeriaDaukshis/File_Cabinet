@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using CommandLine;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Service;
@@ -249,7 +250,9 @@ namespace FileCabinetApp
             {
                 if (recordIdValidator.TryGetRecordId(id))
                 {
-                    Program.fileCabinetService.RemoveRecord(id);
+                    var records = fileCabinetService.GetRecords().ToList();
+                    var record = records.Find(x => x.Id == id);
+                    Program.fileCabinetService.RemoveRecord(record);
                     Console.WriteLine($"Record #{parameters} was deleted");
                 }
             }

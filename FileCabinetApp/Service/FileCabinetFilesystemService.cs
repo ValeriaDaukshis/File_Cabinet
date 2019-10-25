@@ -15,7 +15,7 @@ namespace FileCabinetApp.Service
     public class FileCabinetFilesystemService : IFileCabinetService
     {
         private const int SizeOfStringRecord = 120;
-        private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
+        private const long RecordSize = 278;
         private readonly FileStream fileStream;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -45,10 +45,11 @@ namespace FileCabinetApp.Service
             fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
             this.countOfRecords++;
             BinaryWriter writer = new BinaryWriter(this.fileStream);
-            this.FileWriter(fileCabinetRecord, writer);
+            long position = RecordSize * (this.countOfRecords - 1);
+            this.FileWriter(fileCabinetRecord, writer, position);
             writer.Flush();
 
-            this.recordIndexPosition.Add(fileCabinetRecord.Id, RecordSize * (this.countOfRecords - 1));
+            this.recordIndexPosition.Add(fileCabinetRecord.Id, position);
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
@@ -59,10 +60,31 @@ namespace FileCabinetApp.Service
         /// <summary>
         /// Removes the record.
         /// </summary>
-        /// <param name="id">The identifier.</param>
-        public void RemoveRecord(int id)
+        /// <param name="record">The record.</param>
+        public void RemoveRecord(FileCabinetRecord record)
         {
-            
+            long position = this.recordIndexPosition[record.Id];
+            BinaryWriter writer = new BinaryWriter(this.fileStream);
+            writer.BaseStream.Position = position;
+            short reserved = 1;
+            writer.Write(reserved);
+            writer.Flush();
+
+            this.recordIndexPosition.Remove(record.Id);
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
+            }
         }
 
         /// <summary>
@@ -171,7 +193,12 @@ namespace FileCabinetApp.Service
             long position = reader.BaseStream.Position;
             for (int i = 0; i < this.countOfRecords; i++)
             {
-                list.Add(this.FileReader(reader, position));
+                FileCabinetRecord record = this.FileReader(reader, position);
+                if (record != null)
+                {
+                    list.Add(record);
+                }
+
                 position += RecordSize;
             }
 
@@ -290,9 +317,18 @@ namespace FileCabinetApp.Service
         {
             reader.BaseStream.Position = pointer;
             short reserved = reader.ReadInt16();
+            if (reserved == 1)
+            {
+                return null;
+            }
+
             int id = reader.ReadInt32();
             string firstName = Encoding.Unicode.GetString(reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            firstName = firstName.Replace("\0", string.Empty, StringComparison.InvariantCulture);
+
             string lastName = Encoding.Unicode.GetString(reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            lastName = lastName.Replace("\0", string.Empty, StringComparison.InvariantCulture);
+
             char gender = BitConverter.ToChar(reader.ReadBytes(2), 0);
             int year = BitConverter.ToInt32(reader.ReadBytes(4), 0);
             int month = BitConverter.ToInt32(reader.ReadBytes(4), 0);
@@ -300,15 +336,15 @@ namespace FileCabinetApp.Service
             DateTime dateOfBirth = new DateTime(year, month, day);
             decimal credit = reader.ReadDecimal();
             short duration = reader.ReadInt16();
-            var fileCabinetRecord = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-            fileCabinetRecord.Id = id;
+            var fileCabinetRecord = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
 
             return fileCabinetRecord;
         }
 
-        private void FileWriter(FileCabinetRecord fileCabinetRecord, BinaryWriter writer)
+        private void FileWriter(FileCabinetRecord fileCabinetRecord, BinaryWriter writer, long position)
         {
-            writer.Write(default(short));
+            writer.BaseStream.Position = position;
+            writer.Write((short)0);
             writer.Write(fileCabinetRecord.Id);
 
             var buffer = Encoding.Unicode.GetBytes(this.CreateEmptyString(fileCabinetRecord.FirstName, 60));
