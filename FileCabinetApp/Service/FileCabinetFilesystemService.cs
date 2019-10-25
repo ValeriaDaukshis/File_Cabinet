@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
 
@@ -19,6 +20,7 @@ namespace FileCabinetApp.Service
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly Dictionary<int, long> recordIndexPosition = new Dictionary<int, long>();
         private int countOfRecords;
 
         /// <summary>
@@ -40,17 +42,35 @@ namespace FileCabinetApp.Service
         /// </returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            fileCabinetRecord.Id = this.countOfRecords + 1;
+            fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
             this.countOfRecords++;
             BinaryWriter writer = new BinaryWriter(this.fileStream);
             this.FileWriter(fileCabinetRecord, writer);
             writer.Flush();
 
+            this.recordIndexPosition.Add(fileCabinetRecord.Id, RecordSize * (this.countOfRecords - 1));
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
 
             return fileCabinetRecord.Id;
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
+            {
+                return fileCabinetRecord.Id;
+            }
+
+            var maxId = 0;
+
+            if (this.recordIndexPosition.Count > 0)
+            {
+                maxId = this.recordIndexPosition.Keys.Max(x => x);
+            }
+
+            return maxId + 1;
         }
 
         /// <summary>
@@ -60,11 +80,12 @@ namespace FileCabinetApp.Service
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
             BinaryReader reader = new BinaryReader(this.fileStream);
-            if (!this.GetFileRecordPosition(reader, fileCabinetRecord.Id, out long position))
+            if (!this.recordIndexPosition.ContainsKey(fileCabinetRecord.Id))
             {
                 throw new FileRecordNotFoundException(fileCabinetRecord.Id);
             }
 
+            long position = this.recordIndexPosition[fileCabinetRecord.Id];
             FileCabinetRecord oldRecord = this.FileReader(reader, position);
             BinaryWriter writer = new BinaryWriter(this.fileStream);
 
@@ -239,12 +260,26 @@ namespace FileCabinetApp.Service
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
         }
 
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            throw new NotImplementedException();
+            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+
+            foreach (var record in readRecords)
+            {
+                if (this.recordIndexPosition.ContainsKey(record.Id))
+                {
+                    this.EditRecord(record);
+                }
+                else
+                {
+                    this.CreateRecord(record);
+                }
+            }
+
+            return readRecords.Count;
         }
 
         private string CreateEmptyString(string s, int capacity)

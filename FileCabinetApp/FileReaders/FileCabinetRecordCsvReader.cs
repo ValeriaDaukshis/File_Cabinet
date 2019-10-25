@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using FileCabinetApp.Validators;
 
-namespace FileCabinetApp.FIleWriters
+namespace FileCabinetApp.FileReaders
 {
     /// <summary>
     /// FileCabinetRecordCsvReader.

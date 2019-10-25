@@ -125,19 +125,37 @@
             The duration.
             </value>
         </member>
-        <member name="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvReader">
+        <member name="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader">
             <summary>
             FileCabinetRecordCsvReader.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.FIleWriters.FileCabinetRecordCsvReader"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader"/> class.
             </summary>
             <param name="reader">The reader.</param>
             <param name="validator">The validator.</param>
         </member>
-        <member name="M:FileCabinetApp.FIleWriters.FileCabinetRecordCsvReader.ReadAll">
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Reads all.
+            </summary>
+            <returns>list of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader">
+            <summary>
+            FileCabinetRecordXmlReader.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.ReadAll">
             <summary>
             Reads all.
             </summary>
@@ -444,6 +462,13 @@
             Makes the snapshot.
             </summary>
             <returns>FileCabinetServiceSnapshot.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores the specified snapshot.
+            </summary>
+            <param name="snapshot">The snapshot.</param>
+            <returns>count of restored records.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

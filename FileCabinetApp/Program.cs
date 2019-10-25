@@ -20,7 +20,7 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private const string ServiceStorageFile = @"C:\Users\dauks\Dop Task Epam\cabinet-records.db";
+        private const string ServiceStorageFile = @"C:\Users\dauks\File-Cabinet\cabinet-records.db";
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 

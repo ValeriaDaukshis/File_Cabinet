@@ -23,21 +23,31 @@ namespace FileCabinetApp.Service
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            var record = fileCabinetRecord;
-            var max = 0;
-            if (this.list.Count > 0)
+            fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
+
+            this.list.Add(fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
+            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
+
+            return fileCabinetRecord.Id;
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
             {
-                max = this.list.Max(x => x.Id);
+                return fileCabinetRecord.Id;
             }
 
-            fileCabinetRecord.Id = max + 1;
+            var maxId = 0;
 
-            this.list.Add(record);
-            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
-            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
-            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, record);
+            if (this.list.Count > 0)
+            {
+                maxId = this.list.Max(x => x.Id);
+            }
 
-            return record.Id;
+            return maxId + 1;
         }
 
         /// <summary>
