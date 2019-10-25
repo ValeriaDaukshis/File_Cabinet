@@ -78,6 +78,11 @@ namespace FileCabinetApp.Service
             this.ReadRecords = csvReader.ReadAll();
         }
 
+        /// <summary>
+        /// Loads from XML.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <param name="validator">The validator.</param>
         public void LoadFromXml(StreamReader reader, IRecordValidator validator)
         {
             FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, validator);

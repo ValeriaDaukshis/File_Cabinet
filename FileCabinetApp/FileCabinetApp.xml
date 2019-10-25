@@ -513,6 +513,13 @@
             <param name="reader">The reader.</param>
             <param name="validator">The validator.</param>
         </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+            <summary>
+            Loads from XML.
+            </summary>
+            <param name="reader">The reader.</param>
+            <param name="validator">The validator.</param>
+        </member>
         <member name="T:FileCabinetApp.Service.IFileCabinetService">
             <summary>
             IFileCabinetService.

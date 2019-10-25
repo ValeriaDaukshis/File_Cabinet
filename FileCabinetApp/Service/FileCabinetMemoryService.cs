@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -31,23 +30,6 @@ namespace FileCabinetApp.Service
             this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
 
             return fileCabinetRecord.Id;
-        }
-
-        private int GenerateId(FileCabinetRecord fileCabinetRecord)
-        {
-            if (fileCabinetRecord.Id != 0)
-            {
-                return fileCabinetRecord.Id;
-            }
-
-            var maxId = 0;
-
-            if (this.list.Count > 0)
-            {
-                maxId = this.list.Max(x => x.Id);
-            }
-
-            return maxId + 1;
         }
 
         /// <summary>
@@ -210,6 +192,23 @@ namespace FileCabinetApp.Service
             {
                 dictionary[value].Remove(record);
             }
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
+            {
+                return fileCabinetRecord.Id;
+            }
+
+            var maxId = 0;
+
+            if (this.list.Count > 0)
+            {
+                maxId = this.list.Max(x => x.Id);
+            }
+
+            return maxId + 1;
         }
     }
 }

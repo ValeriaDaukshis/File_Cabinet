@@ -56,23 +56,6 @@ namespace FileCabinetApp.Service
             return fileCabinetRecord.Id;
         }
 
-        private int GenerateId(FileCabinetRecord fileCabinetRecord)
-        {
-            if (fileCabinetRecord.Id != 0)
-            {
-                return fileCabinetRecord.Id;
-            }
-
-            var maxId = 0;
-
-            if (this.recordIndexPosition.Count > 0)
-            {
-                maxId = this.recordIndexPosition.Keys.Max(x => x);
-            }
-
-            return maxId + 1;
-        }
-
         /// <summary>
         /// Edits the record.
         /// </summary>
@@ -294,27 +277,6 @@ namespace FileCabinetApp.Service
             return builder.ToString();
         }
 
-        private bool GetFileRecordPosition(BinaryReader reader, int recordId, out long position)
-        {
-            position = 0;
-            reader.BaseStream.Position = 0;
-            while (reader.BaseStream.Position != reader.BaseStream.Length)
-            {
-                position = reader.BaseStream.Position;
-                reader.BaseStream.Position += sizeof(short);
-                var id = reader.ReadInt32();
-
-                if (id == recordId)
-                {
-                    return true;
-                }
-
-                reader.BaseStream.Position += RecordSize - sizeof(int) - sizeof(short);
-            }
-
-            return false;
-        }
-
         private FileCabinetRecord FileReader(BinaryReader reader, long pointer)
         {
             reader.BaseStream.Position = pointer;
@@ -375,6 +337,23 @@ namespace FileCabinetApp.Service
             {
                 dictionary[value].Remove(record);
             }
+        }
+
+        private int GenerateId(FileCabinetRecord fileCabinetRecord)
+        {
+            if (fileCabinetRecord.Id != 0)
+            {
+                return fileCabinetRecord.Id;
+            }
+
+            var maxId = 0;
+
+            if (this.recordIndexPosition.Count > 0)
+            {
+                maxId = this.recordIndexPosition.Keys.Max(x => x);
+            }
+
+            return maxId + 1;
         }
     }
 }
