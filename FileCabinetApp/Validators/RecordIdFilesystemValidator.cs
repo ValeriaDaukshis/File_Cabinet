@@ -3,23 +3,36 @@ using FileCabinetApp.ExceptionClasses;
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// RecordIdFilesystemValidator.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.Validators.IRecordIdValidator" />
     public class RecordIdFilesystemValidator : IRecordIdValidator
     {
         private const long RecordSize = (sizeof(short) * 2) + (120 * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
 
         private readonly FileStream fileStream;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecordIdFilesystemValidator"/> class.
+        /// </summary>
+        /// <param name="fileStream">The file stream.</param>
         public RecordIdFilesystemValidator(FileStream fileStream)
         {
             this.fileStream = fileStream;
         }
 
+        /// <summary>
+        /// Tries the get record identifier.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns>true if record with id is exists.</returns>
         public bool TryGetRecordId(int id)
         {
-            BinaryReader reader = new BinaryReader(fileStream);
+            BinaryReader reader = new BinaryReader(this.fileStream);
             if (!this.TryGetFileRecordPosition(reader, id))
             {
-                throw new FileRecordNotFound(id);
+                throw new FileRecordNotFoundException(id);
             }
 
             return true;

@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace FileCabinetApp.Service
 {
@@ -22,7 +24,14 @@ namespace FileCabinetApp.Service
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
             var record = fileCabinetRecord;
-            fileCabinetRecord.Id = this.list.Count + 1;
+            var max = 0;
+            if (this.list.Count > 0)
+            {
+                max = this.list.Max(x => x.Id);
+            }
+
+            fileCabinetRecord.Id = max + 1;
+
             this.list.Add(record);
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, record);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, record);
@@ -141,6 +150,26 @@ namespace FileCabinetApp.Service
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list.ToArray());
+        }
+
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+
+            foreach (var record in readRecords)
+            {
+                var index = this.list.FindIndex(x => x.Id == record.Id);
+                if (index != -1)
+                {
+                    this.list[index] = record;
+                }
+                else
+                {
+                    this.list.Add(record);
+                }
+            }
+
+            return readRecords.Count;
         }
 
         /// <summary>

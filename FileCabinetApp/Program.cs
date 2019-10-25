@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics.Tracing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using CommandLine;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Service;
@@ -31,7 +29,7 @@ namespace FileCabinetApp
         private static IFileCabinetService fileCabinetService;
         private static FileCabinetServiceSnapshot snapshot;
         private static FileStream serviceStorageFileStream;
-        private static IRecordIdValidator RecordIdValidator;
+        private static IRecordIdValidator recordIdValidator;
 
         /// <summary>
         /// The commands.
@@ -99,12 +97,12 @@ namespace FileCabinetApp
                     {
                         serviceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(serviceStorageFileStream);
-                        RecordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
+                        recordIdValidator = new RecordIdFilesystemValidator(serviceStorageFileStream);
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService();
-                        RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
+                        recordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -246,7 +244,7 @@ namespace FileCabinetApp
 
             try
             {
-                if (RecordIdValidator.TryGetRecordId(id))
+                if (recordIdValidator.TryGetRecordId(id))
                 {
                     PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
@@ -255,7 +253,7 @@ namespace FileCabinetApp
                     Console.WriteLine($"Record #{parameters} is updated");
                 }
             }
-            catch (FileRecordNotFound ex)
+            catch (FileRecordNotFoundException ex)
             {
                 Console.WriteLine($"{ex.Value} was not found");
                 Console.WriteLine($"Record #{parameters} is not updated ");
@@ -336,15 +334,18 @@ namespace FileCabinetApp
 
             try
             {
-                using (StreamWriter stream = new StreamWriter(path))
+                using (StreamReader stream = new StreamReader(path))
                 {
                     if (fileFormat == "csv")
                     {
-                       
+                        snapshot = fileCabinetService.MakeSnapshot();
+                        snapshot.LoadFromCsv(stream, recordValidator);
+                        int count = fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
-                        
+
                     }
                     else
                     {

@@ -16,10 +16,10 @@ namespace FileCabinetApp.Service
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = (sizeof(short) * 2) + (SizeOfStringRecord * 2) + sizeof(char) + (sizeof(int) * 4) + sizeof(decimal);
         private readonly FileStream fileStream;
-        private int countOfRecords;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private int countOfRecords;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -62,7 +62,7 @@ namespace FileCabinetApp.Service
             BinaryReader reader = new BinaryReader(this.fileStream);
             if (!this.GetFileRecordPosition(reader, fileCabinetRecord.Id, out long position))
             {
-                throw new FileRecordNotFound(fileCabinetRecord.Id);
+                throw new FileRecordNotFoundException(fileCabinetRecord.Id);
             }
 
             FileCabinetRecord oldRecord = this.FileReader(reader, position);
@@ -238,6 +238,11 @@ namespace FileCabinetApp.Service
         /// FileCabinetServiceSnapshot.
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             throw new NotImplementedException();
         }

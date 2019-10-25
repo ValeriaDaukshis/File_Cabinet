@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using FileCabinetApp.FIleWriters;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
 {
@@ -20,6 +22,8 @@ namespace FileCabinetApp.Service
         {
             this.records = records;
         }
+
+        public IList<FileCabinetRecord> ReadRecords { get; set; }
 
         /// <summary>
         /// Makes the snapshot.
@@ -60,6 +64,17 @@ namespace FileCabinetApp.Service
             }
 
             writeToFile.WriteFooter();
+        }
+
+        /// <summary>
+        /// Loads from CSV.
+        /// </summary>
+        /// <param name="reader">The reader.</param>
+        /// <param name="validator">The validator.</param>
+        public void LoadFromCsv(StreamReader reader, IRecordValidator validator)
+        {
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator);
+            this.ReadRecords = csvReader.ReadAll();
         }
     }
 }

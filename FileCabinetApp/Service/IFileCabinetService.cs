@@ -59,5 +59,7 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <returns>FileCabinetServiceSnapshot.</returns>
         FileCabinetServiceSnapshot MakeSnapshot();
+
+        int Restore(FileCabinetServiceSnapshot snapshot);
     }
 }
