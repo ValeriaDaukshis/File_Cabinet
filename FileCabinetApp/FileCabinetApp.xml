@@ -361,6 +361,12 @@
             Id of created record.
             </returns>
         </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.RemoveRecord(System.Int32)">
+            <summary>
+            Removes the record.
+            </summary>
+            <param name="id">The identifier.</param>
+        </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.EditRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Edits the record.
@@ -429,6 +435,12 @@
             </summary>
             <param name="fileCabinetRecord">The file cabinet record.</param>
             <returns>id of created record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.RemoveRecord(System.Int32)">
+            <summary>
+            Removes the record.
+            </summary>
+            <param name="id">The identifier.</param>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.EditRecord(FileCabinetApp.FileCabinetRecord)">
             <summary>
@@ -583,6 +595,12 @@
             </summary>
             <param name="snapshot">The snapshot.</param>
             <returns>count of restored records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Service.IFileCabinetService.RemoveRecord(System.Int32)">
+            <summary>
+            Removes the record.
+            </summary>
+            <param name="id">The identifier.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>

@@ -33,6 +33,32 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
+        /// Removes the record.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        public void RemoveRecord(int id)
+        {
+            FileCabinetRecord record = this.list.Find(x => x.Id == id);
+            int position = this.list.FindIndex(x => x.Id == id);
+            this.list.RemoveAt(position);
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
+            }
+        }
+
+        /// <summary>
         /// Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>

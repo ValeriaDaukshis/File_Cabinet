@@ -57,6 +57,15 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
+        /// Removes the record.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        public void RemoveRecord(int id)
+        {
+            
+        }
+
+        /// <summary>
         /// Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>

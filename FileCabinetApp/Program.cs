@@ -45,6 +45,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", ExportToCsv),
             new Tuple<string, Action<string>>("import", ImportToCsv),
+            new Tuple<string, Action<string>>("delete", Delete),
         };
 
         /// <summary>
@@ -58,7 +59,9 @@ namespace FileCabinetApp
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "get", "get all record", "The 'get' command get all record." },
             new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
-            new string[] { "export", "export data to csv file", "The 'export' command export data to csv file." },
+            new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file." },
+            new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file." },
+            new string[] { "delete", "delete record by id", "The 'delete' command delete record by id." },
             new string[]
             {
                 "find", "find record by firstname/lastname/dateofbirth",
@@ -228,6 +231,45 @@ namespace FileCabinetApp
             }
         }
 
+        private static void Delete(string parameters)
+        {
+            if (string.IsNullOrEmpty(parameters))
+            {
+                Console.WriteLine("Write a record number");
+                return;
+            }
+
+            if (!int.TryParse(parameters.Trim(), out var id))
+            {
+                Console.WriteLine($"#{parameters} record is not found");
+                return;
+            }
+
+            try
+            {
+                if (recordIdValidator.TryGetRecordId(id))
+                {
+                    Program.fileCabinetService.RemoveRecord(id);
+                    Console.WriteLine($"Record #{parameters} was deleted");
+                }
+            }
+            catch (FileRecordNotFoundException ex)
+            {
+                Console.WriteLine($"{ex.Value} was not found");
+                Console.WriteLine($"Record #{parameters} was not deleted ");
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Record #{parameters} was not deleted ");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Record #{parameters} was not deleted");
+            }
+        }
+
         private static void Edit(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -247,8 +289,7 @@ namespace FileCabinetApp
                 if (recordIdValidator.TryGetRecordId(id))
                 {
                     PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    FileCabinetRecord record = new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
-                    record.Id = id;
+                    FileCabinetRecord record = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
                     Program.fileCabinetService.EditRecord(record);
                     Console.WriteLine($"Record #{parameters} is updated");
                 }
@@ -256,17 +297,17 @@ namespace FileCabinetApp
             catch (FileRecordNotFoundException ex)
             {
                 Console.WriteLine($"{ex.Value} was not found");
-                Console.WriteLine($"Record #{parameters} is not updated ");
+                Console.WriteLine($"Record #{parameters} was not updated ");
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} is not updated ");
+                Console.WriteLine($"Record #{parameters} was not updated ");
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} is not updated");
+                Console.WriteLine($"Record #{parameters} was not updated");
             }
         }
 
