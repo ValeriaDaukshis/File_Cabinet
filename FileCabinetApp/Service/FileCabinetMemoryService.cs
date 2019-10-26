@@ -32,7 +32,6 @@ namespace FileCabinetApp.Service
             return fileCabinetRecord.Id;
         }
 
-       
         public void RemoveRecord(FileCabinetRecord record)
         {
             int position = this.list.FindIndex(x => x.Id == record.Id);
@@ -52,6 +51,16 @@ namespace FileCabinetApp.Service
             {
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
             }
+        }
+
+        /// <summary>
+        /// Purges the deleted records.
+        /// </summary>
+        /// <returns>count of deleted records and count of all records.</returns>
+        public (int, int) PurgeDeletedRecords()
+        {
+            int countOfRecords = this.list.Count;
+            return (0, countOfRecords);
         }
 
         /// <summary>

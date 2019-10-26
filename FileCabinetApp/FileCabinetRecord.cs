@@ -44,6 +44,14 @@ namespace FileCabinetApp
             this.Id = id;
         }
 
+        public FileCabinetRecord(short reserved, int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
+            : this(id, firstName, lastName, gender, dateOfBirth, credit, duration)
+        {
+            this.Reserved = reserved;
+        }
+
+        public int Reserved { get;  set; }
+
         /// <summary>
         /// Gets or sets the identifier.
         /// </summary>

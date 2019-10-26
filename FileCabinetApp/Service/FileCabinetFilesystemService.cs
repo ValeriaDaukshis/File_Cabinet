@@ -88,6 +88,49 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
+        /// Purges the deleted records.
+        /// </summary>
+        /// <returns>count of deleted records and count of all records.</returns>
+        public (int, int) PurgeDeletedRecords()
+        {
+            Queue<long> rewriteRecord = new Queue<long>();
+            BinaryWriter writer = new BinaryWriter(this.fileStream);
+            BinaryReader reader = new BinaryReader(this.fileStream);
+
+            this.recordIndexPosition.Clear();
+            writer.BaseStream.Position = 0;
+            reader.BaseStream.Position = 0;
+
+            long readerPosition = 0;
+            long sizeOfFile = 0;
+            int countOfDeletedRecords = 0;
+
+            while (readerPosition != reader.BaseStream.Length)
+            {
+                rewriteRecord.Enqueue(readerPosition);
+                FileCabinetRecord record = this.FileReader(reader, readerPosition);
+                if (record != null)
+                {
+                    long recordPosition = rewriteRecord.Dequeue();
+                    this.FileWriter(record, writer, recordPosition);
+                    this.recordIndexPosition.Add(record.Id, recordPosition);
+                    sizeOfFile += RecordSize;
+                }
+                else
+                {
+                    countOfDeletedRecords++;
+                }
+
+                readerPosition += RecordSize;
+            }
+
+            this.fileStream.SetLength(sizeOfFile);
+            int countOfAllRecords = this.countOfRecords;
+            this.countOfRecords -= countOfDeletedRecords;
+            return (countOfDeletedRecords, countOfAllRecords);
+        }
+
+        /// <summary>
         /// Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
@@ -282,6 +325,13 @@ namespace FileCabinetApp.Service
             return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
         }
 
+        /// <summary>
+        /// Restores the specified snapshot.
+        /// </summary>
+        /// <param name="snapshot">The snapshot.</param>
+        /// <returns>
+        /// count of restored records.
+        /// </returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;

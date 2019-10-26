@@ -67,7 +67,16 @@ namespace FileCabinetApp.Service
         /// <returns>count of restored records.</returns>
         int Restore(FileCabinetServiceSnapshot snapshot);
 
-        
+        /// <summary>
+        /// Removes the record.
+        /// </summary>
+        /// <param name="fileCabinetRecord">The file cabinet record.</param>
         void RemoveRecord(FileCabinetRecord fileCabinetRecord);
+
+        /// <summary>
+        /// Purges the deleted records.
+        /// </summary>
+        /// <returns>count of deleted records and count of all records.</returns>
+        (int, int) PurgeDeletedRecords();
     }
 }

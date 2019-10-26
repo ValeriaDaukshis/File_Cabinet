@@ -47,6 +47,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", ExportToCsv),
             new Tuple<string, Action<string>>("import", ImportToCsv),
             new Tuple<string, Action<string>>("delete", Delete),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         /// <summary>
@@ -408,6 +409,12 @@ namespace FileCabinetApp
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+
+        private static void Purge(string parameters)
+        {
+            (int countOfDeletedRecords, int countOfRecords) = fileCabinetService.PurgeDeletedRecords();
+            Console.WriteLine($"Data file processing is completed: {countOfDeletedRecords} of {countOfRecords} records were purged");
         }
 
         private static void ExportToCsv(string parameters)
