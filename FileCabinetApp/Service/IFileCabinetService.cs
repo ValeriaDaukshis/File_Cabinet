@@ -25,7 +25,7 @@ namespace FileCabinetApp.Service
         /// Gets the stat.
         /// </summary>
         /// <returns>number of records.</returns>
-        int GetStat();
+        (int, int) GetStat();
 
         /// <summary>
         /// Gets the records.

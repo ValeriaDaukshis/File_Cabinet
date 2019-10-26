@@ -64,6 +64,7 @@ namespace FileCabinetApp
             new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file." },
             new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file." },
             new string[] { "delete", "delete record by id", "The 'delete' command delete record by id." },
+            new string[] { "purge", "purge the file", "The 'purge' command purge the file." },
             new string[]
             {
                 "find", "find record by firstname/lastname/dateofbirth",
@@ -317,8 +318,8 @@ namespace FileCabinetApp
 
         private static void Stat(string parameters)
         {
-            var recordsCount = Program.fileCabinetService.GetStat();
-            Console.WriteLine($"{recordsCount} record(s).");
+            (int purgedRecords, int recordsCount) = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s), where {purgedRecords} are purged.");
         }
 
         private static void Get(string parameters)

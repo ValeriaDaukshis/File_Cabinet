@@ -389,14 +389,6 @@
             </summary>
             <param name="fileCabinetRecord">The file cabinet record.</param>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.GetStat">
-            <summary>
-            Gets the stat.
-            </summary>
-            <returns>
-            number of records.
-            </returns>
-        </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.GetRecords">
             <summary>
             Gets the records.

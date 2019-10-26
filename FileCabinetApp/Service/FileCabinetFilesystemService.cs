@@ -210,15 +210,11 @@ namespace FileCabinetApp.Service
             }
         }
 
-        /// <summary>
-        /// Gets the stat.
-        /// </summary>
-        /// <returns>
-        /// number of records.
-        /// </returns>
-        public int GetStat()
+        
+        public (int, int) GetStat()
         {
-            return this.countOfRecords;
+            int reservedRecords = this.countOfRecords - this.recordIndexPosition.Count;
+            return (reservedRecords, this.countOfRecords);
         }
 
         /// <summary>

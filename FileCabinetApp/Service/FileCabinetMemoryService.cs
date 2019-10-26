@@ -199,9 +199,9 @@ namespace FileCabinetApp.Service
         /// Gets the stat.
         /// </summary>
         /// <returns>count of records.</returns>
-        public int GetStat()
+        public (int, int) GetStat()
         {
-            return this.list.Count;
+            return (0, this.list.Count);
         }
 
         private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
