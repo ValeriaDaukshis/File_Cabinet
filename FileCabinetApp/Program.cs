@@ -34,23 +34,23 @@ namespace FileCabinetApp
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        CommandHandler.RecordValidator = new CustomValidator();
+                        CommandHandlerBase.RecordValidator = new CustomValidator();
                     }
                     else
                     {
-                        CommandHandler.RecordValidator = new DefaultValidator();
+                        CommandHandlerBase.RecordValidator = new DefaultValidator();
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
-                        CommandHandler.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
-                        fileCabinetService = new FileCabinetFilesystemService(CommandHandler.ServiceStorageFileStream);
-                        CommandHandler.RecordIdValidator = new RecordIdFilesystemValidator(CommandHandler.ServiceStorageFileStream);
+                        CommandHandlerBase.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
+                        fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream);
+                        CommandHandlerBase.RecordIdValidator = new RecordIdFilesystemValidator(CommandHandlerBase.ServiceStorageFileStream);
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService();
-                        CommandHandler.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
+                        CommandHandlerBase.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -83,8 +83,32 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var commendHandler = new CommandHandler();
-            return commendHandler;
+            var helpCommand = new HelpCommandHandler();
+            var createCommand = new CreateCommandHandler();
+            var getCommand = new GetCommandHandler();
+            var editCommand = new EditCommandHandler();
+            var deleteCommand = new DeleteCommandHandler();
+            var findCommand = new FindCommandHandler();
+            var statCommand = new StatCommandHandler();
+            var importCommand = new ImportCommandHandler();
+            var exportCommand = new ExportCommandHandler();
+            var purgeCommand = new PurgeCommandHandler();
+            var exitCommand = new ExitCommandHandler();
+            var missedCommand = new MissedCommandHandler();
+
+            helpCommand.SetNext(createCommand);
+            createCommand.SetNext(getCommand);
+            getCommand.SetNext(editCommand);
+            editCommand.SetNext(deleteCommand);
+            deleteCommand.SetNext(findCommand);
+            findCommand.SetNext(statCommand);
+            statCommand.SetNext(importCommand);
+            importCommand.SetNext(exportCommand);
+            exportCommand.SetNext(purgeCommand);
+            purgeCommand.SetNext(exitCommand);
+            exitCommand.SetNext(missedCommand);
+
+            return helpCommand;
         }
     }
 

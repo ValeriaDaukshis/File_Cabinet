@@ -25,18 +25,13 @@
             The parameters.
             </value>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.CommandHandler">
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
             <summary>
-            CommandHandler.
+            CommandHandlerBase.
             </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+            <seealso cref="T:FileCabinetApp.CommandHandlers.ICommandHandler" />
         </member>
-        <member name="F:FileCabinetApp.CommandHandlers.CommandHandler.helpMessages">
-            <summary>
-            The help messages.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandler.RecordValidator">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.RecordValidator">
             <summary>
             Gets or sets the record validator.
             </summary>
@@ -44,7 +39,7 @@
             The record validator.
             </value>
         </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandler.ServiceStorageFileStream">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.ServiceStorageFileStream">
             <summary>
             Gets or sets the service storage file stream.
             </summary>
@@ -52,26 +47,13 @@
             The service storage file stream.
             </value>
         </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandler.RecordIdValidator">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.RecordIdValidator">
             <summary>
             Gets or sets the record identifier validator.
             </summary>
             <value>
             The record identifier validator.
             </value>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the specified command request.
-            </summary>
-            <param name="commandRequest">The command request.</param>
-            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlerBase">
-            <summary>
-            CommandHandlerBase.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.ICommandHandler" />
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
             <summary>
@@ -84,6 +66,19 @@
             Handles the specified command request.
             </summary>
             <param name="commandRequest">The command request.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
+            <summary>
+            CommandHandler.
+            </summary>
+            <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
             <summary>
