@@ -46,7 +46,6 @@ namespace FileCabinetApp.FileReaders
                 {
                     this.ReaderValidator(node);
                     list.Add(new FileCabinetRecord(node.Id, node.Name.FirstName, node.Name.LastName, node.Gender, node.DateOfBirth, node.CreditSum, node.Duration));
-
                 }
                 catch (ArgumentException ex)
                 {

@@ -209,7 +209,6 @@ namespace FileCabinetApp.Service
                 writer.Write(fileCabinetRecord.Duration);
             }
         }
-
         
         public (int, int) GetStat()
         {
