@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        public FindCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
+        private IRecordPrinter printer;
+
+        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer) : base(fileCabinetService)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest commandRequest)
@@ -66,7 +70,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (foundResult.Count > 0)
             {
-                PrintRecords(foundResult);
+                this.printer.Print(foundResult);
             }
 
             if (foundResult.Count == 0)

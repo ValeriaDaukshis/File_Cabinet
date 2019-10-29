@@ -4,6 +4,7 @@ using System.IO;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
+using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
@@ -87,12 +88,13 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
+            var recordPrinter = new DefaultRecordPrinter();
             var helpCommand = new HelpCommandHandler();
             var createCommand = new CreateCommandHandler(fileCabinetService);
-            var getCommand = new GetCommandHandler(fileCabinetService);
+            var getCommand = new GetCommandHandler(fileCabinetService, recordPrinter);
             var editCommand = new EditCommandHandler(fileCabinetService);
             var deleteCommand = new DeleteCommandHandler(fileCabinetService);
-            var findCommand = new FindCommandHandler(fileCabinetService);
+            var findCommand = new FindCommandHandler(fileCabinetService, recordPrinter);
             var statCommand = new StatCommandHandler(fileCabinetService);
             var importCommand = new ImportCommandHandler(fileCabinetService);
             var exportCommand = new ExportCommandHandler(fileCabinetService);

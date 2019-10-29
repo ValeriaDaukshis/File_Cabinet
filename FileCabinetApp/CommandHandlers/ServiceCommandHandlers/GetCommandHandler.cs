@@ -1,12 +1,16 @@
 ﻿using System;
+using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     public class GetCommandHandler : ServiceCommandHandlerBase
     {
-        public GetCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
+        private IRecordPrinter printer;
+
+        public GetCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer) : base(fileCabinetService)
         {
+            this.printer = printer;
         }
 
         public override void Handle(AppCommandRequest commandRequest)
@@ -30,7 +34,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            PrintRecords(records);
+            this.printer.Print(records);
         }
     }
 }

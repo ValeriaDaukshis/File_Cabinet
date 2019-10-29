@@ -73,19 +73,19 @@ namespace FileCabinetApp.CommandHandlers
             duration = ReadInput(shortConverter, durationValidator);
         }
 
-        protected static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
-        {
-            foreach (var rec in records)
-            {
-                Console.WriteLine($"Id: {rec.Id}");
-                Console.WriteLine($"\tFirst name: {rec.FirstName}");
-                Console.WriteLine($"\tLast name: {rec.LastName}");
-                Console.WriteLine($"\tGender: {rec.Gender}");
-                Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
-                Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
-                Console.WriteLine($"\tCredit duration: {rec.Duration}");
-            }
-        }
+//        protected static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
+//        {
+//            foreach (var rec in records)
+//            {
+//                Console.WriteLine($"Id: {rec.Id}");
+//                Console.WriteLine($"\tFirst name: {rec.FirstName}");
+//                Console.WriteLine($"\tLast name: {rec.LastName}");
+//                Console.WriteLine($"\tGender: {rec.Gender}");
+//                Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
+//                Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
+//                Console.WriteLine($"\tCredit duration: {rec.Duration}");
+//            }
+//        }
 
         protected static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
         {
