@@ -1,17 +1,9 @@
 ﻿using System;
-using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
     public class MissedCommandHandler : CommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
-        public MissedCommandHandler(IFileCabinetService fileCabinetService)
-        {
-            this.fileCabinetService = fileCabinetService;
-        }
-
         public override void Handle(AppCommandRequest commandRequest)
         {
             PrintMissedCommandInfo(commandRequest.Command);

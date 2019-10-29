@@ -1,17 +1,9 @@
 ﻿using System;
-using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
     public class ExitCommandHandler : CommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
-        public ExitCommandHandler(IFileCabinetService fileCabinetService)
-        {
-            this.fileCabinetService = fileCabinetService;
-        }
-
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "exit")

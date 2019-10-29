@@ -1,22 +1,19 @@
 ﻿using System;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly IFileCabinetService fileCabinetService;
-
-        public CreateCommandHandler(IFileCabinetService fileCabinetService)
+        public CreateCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "create")
             {
-                Create(commandRequest.Parameters);
+                this.Create(commandRequest.Parameters);
             }
             else if (this.nextHandler != null)
             {

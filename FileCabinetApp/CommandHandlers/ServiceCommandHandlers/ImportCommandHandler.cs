@@ -2,22 +2,19 @@
 using System.IO;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
-    public class ExportCommandHandler : CommandHandlerBase
+    public class ImportCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
-        public ExportCommandHandler(IFileCabinetService fileCabinetService)
+        public ImportCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest commandRequest)
         {
-            if (commandRequest.Command == "export")
+            if (commandRequest.Command == "import")
             {
-                Export(commandRequest.Parameters);
+                Import(commandRequest.Parameters);
             }
             else if (this.nextHandler != null)
             {
@@ -25,7 +22,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private void Export(string parameters)
+        private void Import(string parameters)
         {
             if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
             {
@@ -34,17 +31,21 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                using (StreamWriter stream = new StreamWriter(path))
+                using (StreamReader stream = new StreamReader(path))
                 {
                     if (fileFormat == "csv")
                     {
                         snapshot = this.fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToCsv(stream);
+                        snapshot.LoadFromCsv(stream, RecordValidator);
+                        int count = this.fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
                         snapshot = this.fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToXml(stream);
+                        snapshot.LoadFromXml(stream, RecordValidator);
+                        int count = this.fileCabinetService.Restore(snapshot);
+                        Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else
                     {

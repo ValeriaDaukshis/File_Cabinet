@@ -1,15 +1,12 @@
 ﻿using System;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
-    public class StatCommandHandler : CommandHandlerBase
+    public class StatCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
-        public StatCommandHandler(IFileCabinetService fileCabinetService)
+        public StatCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         public override void Handle(AppCommandRequest commandRequest)

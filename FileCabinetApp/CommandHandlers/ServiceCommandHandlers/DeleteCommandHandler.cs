@@ -3,19 +3,16 @@ using System.Linq;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
     /// CommandHandler.
     /// </summary>
     /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
-    public class DeleteCommandHandler : CommandHandlerBase
+    public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
-        public DeleteCommandHandler(IFileCabinetService fileCabinetService)
+        public DeleteCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
         {
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <summary>

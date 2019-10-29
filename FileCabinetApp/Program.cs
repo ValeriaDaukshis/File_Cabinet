@@ -3,6 +3,8 @@ using System.Globalization;
 using System.IO;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
+using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -83,8 +85,7 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            //var createHandler = new CreateCommandHandler();
-            var helpCommand = new HelpCommandHandler(fileCabinetService);
+            var helpCommand = new HelpCommandHandler();
             var createCommand = new CreateCommandHandler(fileCabinetService);
             var getCommand = new GetCommandHandler(fileCabinetService);
             var editCommand = new EditCommandHandler(fileCabinetService);
@@ -94,8 +95,8 @@ namespace FileCabinetApp
             var importCommand = new ImportCommandHandler(fileCabinetService);
             var exportCommand = new ExportCommandHandler(fileCabinetService);
             var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler(fileCabinetService);
-            var missedCommand = new MissedCommandHandler(fileCabinetService);
+            var exitCommand = new ExitCommandHandler();
+            var missedCommand = new MissedCommandHandler();
 
             helpCommand.SetNext(createCommand);
             createCommand.SetNext(getCommand);
