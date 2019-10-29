@@ -1,9 +1,17 @@
 ﻿using System;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class PurgeCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public PurgeCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "purge")
@@ -16,9 +24,9 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Purge(string parameters)
+        private void Purge(string parameters)
         {
-            (int countOfDeletedRecords, int countOfRecords) = Program.fileCabinetService.PurgeDeletedRecords();
+            (int countOfDeletedRecords, int countOfRecords) = this.fileCabinetService.PurgeDeletedRecords();
             Console.WriteLine($"Data file processing is completed: {countOfDeletedRecords} of {countOfRecords} records were purged");
         }
     }

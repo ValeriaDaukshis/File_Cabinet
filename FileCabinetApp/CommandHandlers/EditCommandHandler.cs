@@ -1,10 +1,18 @@
 ﻿using System;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class EditCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public EditCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "edit")
@@ -17,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Edit(string parameters)
+        private void Edit(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
             {
@@ -37,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     FileCabinetRecord record = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
-                    Program.fileCabinetService.EditRecord(record);
+                    this.fileCabinetService.EditRecord(record);
                     Console.WriteLine($"Record #{parameters} is updated");
                 }
             }

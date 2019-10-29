@@ -1,9 +1,17 @@
 ﻿using System;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class CreateCommandHandler : CommandHandlerBase
     {
+        private readonly IFileCabinetService fileCabinetService;
+
+        public CreateCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "create")
@@ -16,13 +24,13 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Create(string parameters)
+        private void Create(string parameters)
         {
             PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
             try
             {
                 var recordNumber =
-                    Program.fileCabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
+                    this.fileCabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)

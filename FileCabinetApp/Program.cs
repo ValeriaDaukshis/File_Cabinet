@@ -20,7 +20,7 @@ namespace FileCabinetApp
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         public static bool isRunning = true;
-        public static IFileCabinetService fileCabinetService;
+        private static IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// Defines the entry point of the application.
@@ -83,18 +83,19 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var helpCommand = new HelpCommandHandler();
-            var createCommand = new CreateCommandHandler();
-            var getCommand = new GetCommandHandler();
-            var editCommand = new EditCommandHandler();
-            var deleteCommand = new DeleteCommandHandler();
-            var findCommand = new FindCommandHandler();
-            var statCommand = new StatCommandHandler();
-            var importCommand = new ImportCommandHandler();
-            var exportCommand = new ExportCommandHandler();
-            var purgeCommand = new PurgeCommandHandler();
-            var exitCommand = new ExitCommandHandler();
-            var missedCommand = new MissedCommandHandler();
+            //var createHandler = new CreateCommandHandler();
+            var helpCommand = new HelpCommandHandler(fileCabinetService);
+            var createCommand = new CreateCommandHandler(fileCabinetService);
+            var getCommand = new GetCommandHandler(fileCabinetService);
+            var editCommand = new EditCommandHandler(fileCabinetService);
+            var deleteCommand = new DeleteCommandHandler(fileCabinetService);
+            var findCommand = new FindCommandHandler(fileCabinetService);
+            var statCommand = new StatCommandHandler(fileCabinetService);
+            var importCommand = new ImportCommandHandler(fileCabinetService);
+            var exportCommand = new ExportCommandHandler(fileCabinetService);
+            var purgeCommand = new PurgeCommandHandler(fileCabinetService);
+            var exitCommand = new ExitCommandHandler(fileCabinetService);
+            var missedCommand = new MissedCommandHandler(fileCabinetService);
 
             helpCommand.SetNext(createCommand);
             createCommand.SetNext(getCommand);

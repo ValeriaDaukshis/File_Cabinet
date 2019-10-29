@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -7,6 +8,7 @@ namespace FileCabinetApp.CommandHandlers
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private IFileCabinetService fileCabinetService;
 
         private static string[][] helpMessages = new string[][]
         {
@@ -26,6 +28,11 @@ namespace FileCabinetApp.CommandHandlers
                 "The 'find' command find record by firstname/lastname/dateofbirth.",
             },
         };
+
+        public HelpCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         public override void Handle(AppCommandRequest commandRequest)
         {

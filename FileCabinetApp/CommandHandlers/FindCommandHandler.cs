@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class FindCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public FindCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "find")
@@ -18,7 +26,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Find(string parameters)
+        private void Find(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
             {
@@ -47,16 +55,16 @@ namespace FileCabinetApp.CommandHandlers
 
             if (field == "firstname")
             {
-                foundResult = Program.fileCabinetService.FindByFirstName(value);
+                foundResult = this.fileCabinetService.FindByFirstName(value);
             }
             else if (field == "lastname")
             {
-                foundResult = Program.fileCabinetService.FindByLastName(value);
+                foundResult = this.fileCabinetService.FindByLastName(value);
             }
             else if (field == "dateofbirth")
             {
                 DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
-                foundResult = Program.fileCabinetService.FindByDateOfBirth(date);
+                foundResult = this.fileCabinetService.FindByDateOfBirth(date);
             }
 
             if (foundResult.Count > 0)

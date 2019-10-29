@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -10,6 +11,12 @@ namespace FileCabinetApp.CommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
     public class DeleteCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public DeleteCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
 
         /// <summary>
         /// Handles the specified command request.
@@ -28,7 +35,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Delete(string parameters)
+        private void Delete(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
             {
@@ -46,9 +53,9 @@ namespace FileCabinetApp.CommandHandlers
             {
                 if (RecordIdValidator.TryGetRecordId(id))
                 {
-                    var records = Program.fileCabinetService.GetRecords().ToList();
+                    var records = this.fileCabinetService.GetRecords().ToList();
                     var record = records.Find(x => x.Id == id);
-                    Program.fileCabinetService.RemoveRecord(record);
+                    this.fileCabinetService.RemoveRecord(record);
                     Console.WriteLine($"Record #{parameters} was deleted");
                 }
             }

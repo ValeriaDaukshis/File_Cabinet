@@ -1,9 +1,17 @@
 ﻿using System;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class StatCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public StatCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "stat")
@@ -16,9 +24,9 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Stat(string parameters)
+        private void Stat(string parameters)
         {
-            (int purgedRecords, int recordsCount) = Program.fileCabinetService.GetStat();
+            (int purgedRecords, int recordsCount) = this.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s), where {purgedRecords} are purged.");
         }
     }

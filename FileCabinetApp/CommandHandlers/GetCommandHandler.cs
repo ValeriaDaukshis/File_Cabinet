@@ -1,9 +1,17 @@
 ﻿using System;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class GetCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public GetCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "get")
@@ -16,9 +24,9 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Get(string parameters)
+        private void Get(string parameters)
         {
-            var records = Program.fileCabinetService.GetRecords();
+            var records = this.fileCabinetService.GetRecords();
             if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");

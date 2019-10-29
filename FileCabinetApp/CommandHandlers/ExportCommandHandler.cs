@@ -1,10 +1,18 @@
 ﻿using System;
 using System.IO;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class ExportCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public ExportCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "export")
@@ -17,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Export(string parameters)
+        private void Export(string parameters)
         {
             if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
             {
@@ -30,12 +38,12 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        snapshot = Program.fileCabinetService.MakeSnapshot();
+                        snapshot = this.fileCabinetService.MakeSnapshot();
                         snapshot.SaveToCsv(stream);
                     }
                     else if (fileFormat == "xml")
                     {
-                        snapshot = Program.fileCabinetService.MakeSnapshot();
+                        snapshot = this.fileCabinetService.MakeSnapshot();
                         snapshot.SaveToXml(stream);
                     }
                     else

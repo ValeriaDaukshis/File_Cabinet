@@ -1,10 +1,18 @@
 ﻿using System;
 using System.IO;
+using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers
 {
     public class ImportCommandHandler : CommandHandlerBase
     {
+        private IFileCabinetService fileCabinetService;
+
+        public ImportCommandHandler(IFileCabinetService fileCabinetService)
+        {
+            this.fileCabinetService = fileCabinetService;
+        }
+
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest.Command == "import")
@@ -17,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
-        private static void Import(string parameters)
+        private void Import(string parameters)
         {
             if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
             {
@@ -30,16 +38,16 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        snapshot = Program.fileCabinetService.MakeSnapshot();
+                        snapshot = this.fileCabinetService.MakeSnapshot();
                         snapshot.LoadFromCsv(stream, RecordValidator);
-                        int count = Program.fileCabinetService.Restore(snapshot);
+                        int count = this.fileCabinetService.Restore(snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
-                        snapshot = Program.fileCabinetService.MakeSnapshot();
+                        snapshot = this.fileCabinetService.MakeSnapshot();
                         snapshot.LoadFromXml(stream, RecordValidator);
-                        int count = Program.fileCabinetService.Restore(snapshot);
+                        int count = this.fileCabinetService.Restore(snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else
