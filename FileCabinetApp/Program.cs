@@ -21,8 +21,10 @@ namespace FileCabinetApp
         private const string ServiceStorageFile = @"C:\Users\dauks\File-Cabinet\cabinet-records.db";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
-        public static bool isRunning = true;
+        private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService;
+
+        private static Action<bool> running = b => isRunning = b;
 
         /// <summary>
         /// Defines the entry point of the application.
@@ -30,7 +32,6 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            ICommandHandler commandHandler = CreateCommandHandlers();
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
@@ -59,6 +60,7 @@ namespace FileCabinetApp
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
+            ICommandHandler commandHandler = CreateCommandHandlers();
             do
             {
                 Console.Write("> ");
@@ -95,7 +97,7 @@ namespace FileCabinetApp
             var importCommand = new ImportCommandHandler(fileCabinetService);
             var exportCommand = new ExportCommandHandler(fileCabinetService);
             var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler();
+            var exitCommand = new ExitCommandHandler(running);
             var missedCommand = new MissedCommandHandler();
 
             helpCommand.SetNext(createCommand);
