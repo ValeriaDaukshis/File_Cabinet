@@ -729,47 +729,11 @@
             </summary>
             <returns>count of deleted records and count of all records.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidator">
-            <summary>
-            CustomValidator.
-            </summary>
-            <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateFirstName(System.String)">
-            <summary>
-            Validates the first name.
-            </summary>
-            <param name="firstName">The first name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateLastName(System.String)">
-            <summary>
-            Validates the last name.
-            </summary>
-            <param name="lastName">The last name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateGender(System.Char)">
-            <summary>
-            Validates the gender.
-            </summary>
-            <param name="gender">The gender.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDateOfBirth(System.DateTime)">
+        <member name="M:FileCabinetApp.Validators.Custom.CustomDateOfBirthValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
             <summary>
             Validates the date of birth.
             </summary>
             <param name="dateOfBirth">The date of birth.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDuration(System.Int16)">
-            <summary>
-            Validates the duration.
-            </summary>
-            <param name="duration">The duration.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateCreditSum(System.Decimal)">
-            <summary>
-            Validates the credit sum.
-            </summary>
-            <param name="creditSum">The credit sum.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
@@ -777,82 +741,10 @@
             </summary>
             <seealso cref="T:FileCabinetApp.Validators.IRecordValidator" />
         </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateFirstName(System.String)">
-            <summary>
-            Validates the first name.
-            </summary>
-            <param name="firstName">The first name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateLastName(System.String)">
-            <summary>
-            Validates the last name.
-            </summary>
-            <param name="lastName">The last name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateGender(System.Char)">
-            <summary>
-            Validates the gender.
-            </summary>
-            <param name="gender">The gender.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Validates the date of birth.
-            </summary>
-            <param name="dateOfBirth">The date of birth.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDuration(System.Int16)">
-            <summary>
-            Validates the duration.
-            </summary>
-            <param name="duration">The duration.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateCreditSum(System.Decimal)">
-            <summary>
-            Validates the credit sum.
-            </summary>
-            <param name="creditSum">The credit sum.</param>
-        </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
             IRecordValidator.
             </summary>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateFirstName(System.String)">
-            <summary>
-            Validates the first name.
-            </summary>
-            <param name="firstName">The first name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateLastName(System.String)">
-            <summary>
-            Validates the last name.
-            </summary>
-            <param name="lastName">The last name.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateCreditSum(System.Decimal)">
-            <summary>
-            Validates the credit sum.
-            </summary>
-            <param name="creditSum">The credit sum.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateDuration(System.Int16)">
-            <summary>
-            Validates the duration.
-            </summary>
-            <param name="duration">The duration.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Validates the date of birth.
-            </summary>
-            <param name="dateOfBirth">The date of birth.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.IRecordValidator.ValidateGender(System.Char)">
-            <summary>
-            Validates the gender.
-            </summary>
-            <param name="gender">The gender.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.RecordIdFilesystemValidator">
             <summary>

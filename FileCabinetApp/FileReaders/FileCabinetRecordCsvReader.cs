@@ -98,12 +98,7 @@ namespace FileCabinetApp.FileReaders
                 throw new ArgumentException("duration has not short format");
             }
 
-            this.validator.ValidateFirstName(firstName);
-            this.validator.ValidateLastName(lastName);
-            this.validator.ValidateCreditSum(credit);
-            this.validator.ValidateDuration(duration);
-            this.validator.ValidateGender(gender);
-            this.validator.ValidateDateOfBirth(dateOfBirth);
+            this.validator.ValidateParameters(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
         }
     }
 }

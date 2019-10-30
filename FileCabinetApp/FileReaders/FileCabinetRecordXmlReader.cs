@@ -56,14 +56,10 @@ namespace FileCabinetApp.FileReaders
             return list;
         }
 
-        private void ReaderValidator(Record record)
+        private void ReaderValidator(Record node)
         {
-            this.validator.ValidateFirstName(record.Name.FirstName);
-            this.validator.ValidateLastName(record.Name.LastName);
-            this.validator.ValidateCreditSum(record.CreditSum);
-            this.validator.ValidateDuration(record.Duration);
-            this.validator.ValidateGender(record.Gender);
-            this.validator.ValidateDateOfBirth(record.DateOfBirth);
+            this.validator.ValidateParameters(new FileCabinetRecord(node.Id, node.Name.FirstName, node.Name.LastName, node.Gender, node.DateOfBirth, node.CreditSum, node.Duration));
+
         }
     }
 }

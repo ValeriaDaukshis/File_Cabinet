@@ -73,20 +73,6 @@ namespace FileCabinetApp.CommandHandlers
             duration = ReadInput(shortConverter, durationValidator);
         }
 
-//        protected static void PrintRecords(ReadOnlyCollection<FileCabinetRecord> records)
-//        {
-//            foreach (var rec in records)
-//            {
-//                Console.WriteLine($"Id: {rec.Id}");
-//                Console.WriteLine($"\tFirst name: {rec.FirstName}");
-//                Console.WriteLine($"\tLast name: {rec.LastName}");
-//                Console.WriteLine($"\tGender: {rec.Gender}");
-//                Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
-//                Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
-//                Console.WriteLine($"\tCredit duration: {rec.Duration}");
-//            }
-//        }
-
         protected static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
         {
             fileFormat = string.Empty;
@@ -146,17 +132,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<string, Tuple<bool, string>> firstNameValidator = input =>
         {
-            try
+            if (string.IsNullOrEmpty(input))
             {
-                RecordValidator.ValidateFirstName(input);
+                return new Tuple<bool, string>(false, "First name is empty");
             }
-            catch (ArgumentNullException ex)
+
+            if (input.Length < 2 || input.Length > 60)
             {
-                return new Tuple<bool, string>(false, ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(false, "First name length is upper than 60 or under than 2 symbols");
             }
 
             return new Tuple<bool, string>(true, input);
@@ -164,45 +147,34 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<string, Tuple<bool, string>> lastNameValidator = input =>
         {
-            try
+            if (string.IsNullOrEmpty(input))
             {
-                RecordValidator.ValidateLastName(input);
+                return new Tuple<bool, string>(false, "Last name is empty");
             }
-            catch (ArgumentNullException ex)
+
+            if (input.Length < 2 || input.Length > 60)
             {
-                return new Tuple<bool, string>(false, ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(false, "Last name length is upper than 60 or under than 2 symbols");
             }
 
             return new Tuple<bool, string>(true, input);
         };
 
-        private static Func<char, Tuple<bool, string>> genderValidator = input =>
+        private static Func<char, Tuple<bool, string>> genderValidator = gender =>
         {
-            try
+            if (gender != 'M' && gender != 'F')
             {
-                RecordValidator.ValidateGender(input);
-            }
-            catch (ArgumentException ex)
-            {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(true, "Indefinite gender");
             }
 
-            return new Tuple<bool, string>(true, $"{input}");
+            return new Tuple<bool, string>(true, $"{gender}");
         };
 
         private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
         {
-            try
+            if (input > 5000 || input < 10)
             {
-                RecordValidator.ValidateCreditSum(input);
-            }
-            catch (ArgumentException ex)
-            {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(false, "Credit sum is upper than 5000 or under than 10 BYN");
             }
 
             return new Tuple<bool, string>(true, $"{input}");
@@ -210,13 +182,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
         {
-            try
+            if (input > DateTime.Now)
             {
-                RecordValidator.ValidateDateOfBirth(input);
+                return new Tuple<bool, string>(true, "Date of birth is upper than today's date");
             }
-            catch (ArgumentException ex)
+
+            if (input < new DateTime(1930, 01, 01))
             {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(true, $"Date of birth is under than 01-Jan-1930");
             }
 
             return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");
@@ -224,13 +197,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<short, Tuple<bool, string>> durationValidator = input =>
         {
-            try
+            if (input > 500 || input < 12)
             {
-                RecordValidator.ValidateDuration(input);
-            }
-            catch (ArgumentException ex)
-            {
-                return new Tuple<bool, string>(false, ex.Message);
+                return new Tuple<bool, string>(false, "Duration is upper than 500 or under than 12 BYN");
             }
 
             return new Tuple<bool, string>(true, $"{input}");
