@@ -7,37 +7,20 @@ namespace FileCabinetApp.Validators
     /// DefaultValidator.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
-    public class DefaultValidator : IRecordValidator
+    public class DefaultValidator : CompositeValidator
     {
-        private decimal minCreditSum;
-        private decimal maxCreditSum;
-        private int minLength;
-        private int maxLength;
-        private short minPeriod;
-        private short maxPeriod;
-        private DateTime minDateOfBirth;
-        private DateTime maxDateOfBirth;
-
-        public DefaultValidator(int minLength, int maxLength, DateTime minDateOfBirth, DateTime maxDateOfBirth, decimal minCreditSum, decimal maxCreditSum, short minPeriod, short maxPeriod)
+        public DefaultValidator(int minLength, int maxLength, DateTime minDateOfBirth, DateTime maxDateOfBirth,
+            decimal minCreditSum, decimal maxCreditSum, short minPeriod, short maxPeriod)
+            : base(new IRecordValidator[]
+            {
+                new FirstNameValidator(minLength, maxLength),
+                new LastNameValidator(minLength, maxLength),
+                new GenderValidator(),
+                new DateOfBirthValidator(minDateOfBirth, maxDateOfBirth),
+                new CreditSumValidator(minCreditSum, maxCreditSum),
+                new DurationValidator(minPeriod, maxPeriod),
+            })
         {
-            this.minLength = minLength;
-            this.maxLength = maxLength;
-            this.minDateOfBirth = minDateOfBirth;
-            this.maxDateOfBirth = maxDateOfBirth;
-            this.minCreditSum = minCreditSum;
-            this.maxCreditSum = maxCreditSum;
-            this.minPeriod = minPeriod;
-            this.maxPeriod = maxPeriod;
-        }
-
-        public void ValidateParameters(FileCabinetRecord record)
-        {
-            new FirstNameValidator(this.minLength, this.maxLength).ValidateParameters(record);
-            new LastNameValidator(this.minLength, this.maxLength).ValidateParameters(record);
-            new GenderValidator().ValidateParameters(record);
-            new DateOfBirthValidator(this.minDateOfBirth, this.maxDateOfBirth).ValidateParameters(record);
-            new CreditSumValidator(this.minCreditSum, this.maxCreditSum).ValidateParameters(record);
-            new DurationValidator(this.minPeriod, this.maxPeriod).ValidateParameters(record);
         }
     }
 }
