@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
 {
@@ -14,6 +15,12 @@ namespace FileCabinetApp.Service
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+        private readonly IRecordValidator validator;
+
+        public FileCabinetMemoryService(IRecordValidator validator)
+        {
+            this.validator = validator;
+        }
 
         /// <summary>
         /// Creates the record.
@@ -22,8 +29,8 @@ namespace FileCabinetApp.Service
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
+            this.validator.ValidateParameters(fileCabinetRecord);
             fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
-
             this.list.Add(fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);

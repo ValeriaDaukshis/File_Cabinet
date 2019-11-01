@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace FileCabinetApp.Validators
+namespace FileCabinetApp.Validators.Custom
 {
-    public class DefaultGenderValidator : IRecordValidator
+    public class GenderValidator : IRecordValidator
     {
         public void ValidateParameters(FileCabinetRecord record)
         {

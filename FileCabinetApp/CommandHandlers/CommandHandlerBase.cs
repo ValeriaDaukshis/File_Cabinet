@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using FileCabinetApp.Service;
@@ -164,7 +163,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (gender != 'M' && gender != 'F')
             {
-                return new Tuple<bool, string>(true, "Indefinite gender");
+                return new Tuple<bool, string>(false, "Indefinite gender");
             }
 
             return new Tuple<bool, string>(true, $"{gender}");
@@ -184,12 +183,12 @@ namespace FileCabinetApp.CommandHandlers
         {
             if (input > DateTime.Now)
             {
-                return new Tuple<bool, string>(true, "Date of birth is upper than today's date");
+                return new Tuple<bool, string>(false, "Date of birth is upper than today's date");
             }
 
             if (input < new DateTime(1930, 01, 01))
             {
-                return new Tuple<bool, string>(true, $"Date of birth is under than 01-Jan-1930");
+                return new Tuple<bool, string>(false, $"Date of birth is under than 01-Jan-1930");
             }
 
             return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");

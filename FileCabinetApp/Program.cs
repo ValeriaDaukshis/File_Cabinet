@@ -38,22 +38,22 @@ namespace FileCabinetApp
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        CommandHandlerBase.RecordValidator = new CustomValidator();
+                        CommandHandlerBase.RecordValidator = new CustomValidator(2, 60, new DateTime(1930, 1, 1), DateTime.Now, 10, 5000, 6, 120);
                     }
                     else
                     {
-                        CommandHandlerBase.RecordValidator = new DefaultValidator();
+                        CommandHandlerBase.RecordValidator = new DefaultValidator(4, 60, new DateTime(1950, 1, 1), DateTime.Now, 5, 10_000, 6, 500);
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
                         CommandHandlerBase.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
-                        fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream);
+                        fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream, CommandHandlerBase.RecordValidator);
                         CommandHandlerBase.RecordIdValidator = new RecordIdFilesystemValidator(CommandHandlerBase.ServiceStorageFileStream);
                     }
                     else
                     {
-                        fileCabinetService = new FileCabinetMemoryService();
+                        fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
                         CommandHandlerBase.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });

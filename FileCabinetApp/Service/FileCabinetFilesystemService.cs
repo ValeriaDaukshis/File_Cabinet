@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
 {
@@ -23,13 +24,15 @@ namespace FileCabinetApp.Service
         private readonly Dictionary<int, long> recordIndexPosition = new Dictionary<int, long>();
         private int countOfRecords;
 
+        private readonly IRecordValidator validator;
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
         /// </summary>
         /// <param name="fileStream">The file stream.</param>
-        public FileCabinetFilesystemService(FileStream fileStream)
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
         {
             this.fileStream = fileStream;
+            this.validator = validator;
             this.countOfRecords = 0;
         }
 
@@ -42,6 +45,7 @@ namespace FileCabinetApp.Service
         /// </returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
+            this.validator.ValidateParameters(fileCabinetRecord);
             fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
             this.countOfRecords++;
             BinaryWriter writer = new BinaryWriter(this.fileStream);

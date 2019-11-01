@@ -460,7 +460,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.Service.IFileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.#ctor(System.IO.FileStream)">
+        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.Validators.IRecordValidator)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Service.FileCabinetFilesystemService"/> class.
             </summary>
@@ -728,12 +728,6 @@
             Purges the deleted records.
             </summary>
             <returns>count of deleted records and count of all records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Validators.Custom.CustomDateOfBirthValidator.ValidateParameters(FileCabinetApp.FileCabinetRecord)">
-            <summary>
-            Validates the date of birth.
-            </summary>
-            <param name="dateOfBirth">The date of birth.</param>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
             <summary>
