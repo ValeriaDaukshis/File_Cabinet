@@ -136,9 +136,9 @@ namespace FileCabinetApp.CommandHandlers
                 return new Tuple<bool, string>(false, "First name is empty");
             }
 
-            if (input.Length < 2 || input.Length > 60)
+            if (input.Length < Program.validatorParameters.minLength || input.Length > Program.validatorParameters.maxLength)
             {
-                return new Tuple<bool, string>(false, "First name length is upper than 60 or under than 2 symbols");
+                return new Tuple<bool, string>(false, $"First name length is upper than {Program.validatorParameters.maxLength} or under than {Program.validatorParameters.minLength} symbols");
             }
 
             return new Tuple<bool, string>(true, input);
@@ -151,9 +151,9 @@ namespace FileCabinetApp.CommandHandlers
                 return new Tuple<bool, string>(false, "Last name is empty");
             }
 
-            if (input.Length < 2 || input.Length > 60)
+            if (input.Length < Program.validatorParameters.minLength || input.Length > Program.validatorParameters.maxLength)
             {
-                return new Tuple<bool, string>(false, "Last name length is upper than 60 or under than 2 symbols");
+                return new Tuple<bool, string>(false, $"Last name length is upper than {Program.validatorParameters.maxLength} or under than {Program.validatorParameters.minLength} symbols");
             }
 
             return new Tuple<bool, string>(true, input);
@@ -171,9 +171,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
         {
-            if (input > 5000 || input < 10)
+            if (input > Program.validatorParameters.maxCreditSum || input < Program.validatorParameters.minCreditSum)
             {
-                return new Tuple<bool, string>(false, "Credit sum is upper than 5000 or under than 10 BYN");
+                return new Tuple<bool, string>(false, $"Credit sum is upper than {Program.validatorParameters.maxCreditSum} or under than {Program.validatorParameters.minCreditSum} BYN");
             }
 
             return new Tuple<bool, string>(true, $"{input}");
@@ -181,14 +181,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
         {
-            if (input > DateTime.Now)
+            if (input > Program.validatorParameters.maxDateOfBirth)
             {
-                return new Tuple<bool, string>(false, "Date of birth is upper than today's date");
+                return new Tuple<bool, string>(false, $"Date of birth is upper than {Program.validatorParameters.maxDateOfBirth}");
             }
 
-            if (input < new DateTime(1930, 01, 01))
+            if (input < Program.validatorParameters.minDateOfBirth)
             {
-                return new Tuple<bool, string>(false, $"Date of birth is under than 01-Jan-1930");
+                return new Tuple<bool, string>(false, $"Date of birth is under than {Program.validatorParameters.minDateOfBirth}");
             }
 
             return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");
@@ -196,9 +196,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<short, Tuple<bool, string>> durationValidator = input =>
         {
-            if (input > 500 || input < 12)
+            if (input > Program.validatorParameters.maxPeriod || input < Program.validatorParameters.minPeriod)
             {
-                return new Tuple<bool, string>(false, "Duration is upper than 500 or under than 12 BYN");
+                return new Tuple<bool, string>(false, $"Duration is upper than {Program.validatorParameters.maxPeriod} or under than {Program.validatorParameters.minPeriod}");
             }
 
             return new Tuple<bool, string>(true, $"{input}");

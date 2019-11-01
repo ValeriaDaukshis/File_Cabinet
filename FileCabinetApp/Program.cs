@@ -27,22 +27,21 @@ namespace FileCabinetApp
 
         private static Action<bool> running = b => isRunning = b;
 
+        public static ValidatorParameters validatorParameters { get; set; }
+
         /// <summary>
         /// Defines the entry point of the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            validatorParameters = new ValidatorParameters(4, 60, new DateTime(1950, 1, 1), DateTime.Now, 100, 10_000, 6, 500);
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        CommandHandlerBase.RecordValidator = new CustomValidator(2, 60, new DateTime(1930, 1, 1), DateTime.Now, 10, 5000, 6, 120);
-                    }
-                    else
-                    {
-                        CommandHandlerBase.RecordValidator = new DefaultValidator(4, 60, new DateTime(1950, 1, 1), DateTime.Now, 5, 10_000, 6, 500);
+                        validatorParameters = new ValidatorParameters(2, 60, new DateTime(1930, 1, 1), DateTime.Now, 100, 5000, 6, 120);
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
@@ -57,6 +56,16 @@ namespace FileCabinetApp
                         CommandHandlerBase.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
+
+            CommandHandlerBase.RecordValidator = new ValidatorBuilder()
+                .ValidateFirstName(validatorParameters.minLength, validatorParameters.maxLength)
+                .ValidateLastName(validatorParameters.minLength, validatorParameters.maxLength)
+                .ValidateGender()
+                .ValidateDateOfBirth(validatorParameters.minDateOfBirth, validatorParameters.maxDateOfBirth)
+                .ValidateCreditSum(validatorParameters.minCreditSum, validatorParameters.maxCreditSum)
+                .ValidateDuration(validatorParameters.minPeriod, validatorParameters.maxPeriod)
+                .Create();
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -115,6 +124,11 @@ namespace FileCabinetApp
             exitCommand.SetNext(missedCommand);
 
             return helpCommand;
+        }
+
+        private static void InitValidatorBuilder()
+        {
+            
         }
     }
 

@@ -29,7 +29,6 @@ namespace FileCabinetApp.Service
         /// <returns>id of created record.</returns>
         public int CreateRecord(FileCabinetRecord fileCabinetRecord)
         {
-            this.validator.ValidateParameters(fileCabinetRecord);
             fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
             this.list.Add(fileCabinetRecord);
             this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
