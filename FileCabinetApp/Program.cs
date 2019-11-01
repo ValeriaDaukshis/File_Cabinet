@@ -35,13 +35,16 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            validatorParameters = new ValidatorParameters(4, 60, new DateTime(1950, 1, 1), DateTime.Now, 100, 10_000, 6, 500);
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        validatorParameters = new ValidatorParameters(2, 60, new DateTime(1930, 1, 1), DateTime.Now, 100, 5000, 6, 120);
+                        (CommandHandlerBase.RecordValidator, validatorParameters) = new ValidatorBuilder().CreateCustom();
+                    }
+                    else
+                    {
+                        (CommandHandlerBase.RecordValidator, validatorParameters) = new ValidatorBuilder().CreateDefault();
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
@@ -56,15 +59,6 @@ namespace FileCabinetApp
                         CommandHandlerBase.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
-
-            CommandHandlerBase.RecordValidator = new ValidatorBuilder()
-                .ValidateFirstName(validatorParameters.minLength, validatorParameters.maxLength)
-                .ValidateLastName(validatorParameters.minLength, validatorParameters.maxLength)
-                .ValidateGender()
-                .ValidateDateOfBirth(validatorParameters.minDateOfBirth, validatorParameters.maxDateOfBirth)
-                .ValidateCreditSum(validatorParameters.minCreditSum, validatorParameters.maxCreditSum)
-                .ValidateDuration(validatorParameters.minPeriod, validatorParameters.maxPeriod)
-                .Create();
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
