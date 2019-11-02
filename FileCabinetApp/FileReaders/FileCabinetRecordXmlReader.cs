@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.FileReaders
@@ -34,9 +36,9 @@ namespace FileCabinetApp.FileReaders
             XmlSerializer formatter = new XmlSerializer(typeof(FileCabinetRecords));
 
             FileCabinetRecords records;
-            using (this.streamReader)
+            using (XmlReader xmlReader = XmlReader.Create(this.streamReader))
             {
-                records = (FileCabinetRecords)formatter.Deserialize(this.streamReader);
+                records = (FileCabinetRecords)formatter.Deserialize(xmlReader);
             }
 
             IList<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -46,7 +48,6 @@ namespace FileCabinetApp.FileReaders
                 {
                     this.ReaderValidator(node);
                     list.Add(new FileCabinetRecord(node.Id, node.Name.FirstName, node.Name.LastName, node.Gender, node.DateOfBirth, node.CreditSum, node.Duration));
-
                 }
                 catch (ArgumentException ex)
                 {
@@ -57,14 +58,9 @@ namespace FileCabinetApp.FileReaders
             return list;
         }
 
-        private void ReaderValidator(Record record)
+        private void ReaderValidator(Record node)
         {
-            this.validator.ValidateFirstName(record.Name.FirstName);
-            this.validator.ValidateLastName(record.Name.LastName);
-            this.validator.ValidateCreditSum(record.CreditSum);
-            this.validator.ValidateDuration(record.Duration);
-            this.validator.ValidateGender(record.Gender);
-            this.validator.ValidateDateOfBirth(record.DateOfBirth);
+            this.validator.ValidateParameters(new FileCabinetRecord(node.Id, node.Name.FirstName, node.Name.LastName, node.Gender, node.DateOfBirth, node.CreditSum, node.Duration));
         }
     }
 }

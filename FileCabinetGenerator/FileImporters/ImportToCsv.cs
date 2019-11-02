@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using FileCabinetApp;
+using FileCabinetApp.Records;
 
 namespace FileCabinetGenerator.FileImporters
 {

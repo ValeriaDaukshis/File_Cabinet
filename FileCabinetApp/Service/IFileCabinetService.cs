@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Service
 {
@@ -11,9 +12,9 @@ namespace FileCabinetApp.Service
         /// <summary>
         /// Creates the record.
         /// </summary>
-        /// <param name="fileCabinetRecord">The file cabinet record.</param>
+        /// <param name="record"> record.</param>
         /// <returns>Id of created record.</returns>
-        int CreateRecord(FileCabinetRecord fileCabinetRecord);
+        int CreateRecord(FileCabinetRecord record);
 
         /// <summary>
         /// Edits the record.
@@ -78,5 +79,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <returns>count of deleted records and count of all records.</returns>
         (int, int) PurgeDeletedRecords();
+
+        /// <summary>
+        /// Dispose method.
+        /// </summary>
+        void Dispose();
     }
 }

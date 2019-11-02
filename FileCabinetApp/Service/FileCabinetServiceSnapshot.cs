@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using FileCabinetApp.FileReaders;
 using FileCabinetApp.FIleWriters;
+using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
@@ -24,6 +25,12 @@ namespace FileCabinetApp.Service
             this.records = records;
         }
 
+        /// <summary>
+        /// Gets or sets the read records.
+        /// </summary>
+        /// <value>
+        /// The read records.
+        /// </value>
         public IList<FileCabinetRecord> ReadRecords { get; set; }
 
         /// <summary>

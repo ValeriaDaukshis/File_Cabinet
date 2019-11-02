@@ -1,5 +1,6 @@
 ﻿
 using FileCabinetApp;
+using FileCabinetApp.Records;
 
 namespace FileCabinetGenerator.FileImporters
 {

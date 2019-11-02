@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.FileReaders
@@ -98,12 +99,7 @@ namespace FileCabinetApp.FileReaders
                 throw new ArgumentException("duration has not short format");
             }
 
-            this.validator.ValidateFirstName(firstName);
-            this.validator.ValidateLastName(lastName);
-            this.validator.ValidateCreditSum(credit);
-            this.validator.ValidateDuration(duration);
-            this.validator.ValidateGender(gender);
-            this.validator.ValidateDateOfBirth(dateOfBirth);
+            this.validator.ValidateParameters(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
         }
     }
 }

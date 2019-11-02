@@ -4,6 +4,7 @@ using System.IO;
 using System.Xml.Serialization;
 using CommandLine;
 using FileCabinetApp;
+using FileCabinetApp.Records;
 using FileCabinetGenerator.FileImporters;
 
 namespace FileCabinetGenerator
@@ -11,40 +12,23 @@ namespace FileCabinetGenerator
     /// <summary>
     /// Enter point.
     /// </summary>
-    class Program
+    static class Program
     {
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
+        private static readonly DateTime BirthDayMinValue = new DateTime(1950, 01, 01);
+        private static readonly FileCabinetRecords FileCabinetRecords = new FileCabinetRecords();
         private static IFileCabinetSerializer serializer;
-        private static string _outputFormat;
-        private static string _outputFileName;
-        private static int _recordsAmount;
-        private static int _startId;
+        private static string outputFormat;
+        private static string outputFileName;
+        private static int recordsAmount;
+        private static int startId;
         private static string firstName = "FirstName";
         private static string lastName = "LastName";
         private static int durationMinValue = 6;
         private static int durationMaxValue = 120;
         private static int creditSumMinValue = 10;
         private static int creditSumMaxValue = 5000;
-        private static DateTime birthDayMinValue = new DateTime(1950, 01, 01);
-        
-        [XmlElement("record")]
-        public decimal CreditSum { get; private set; }
-        private static FileCabinetRecords fileCabinetRecords = new FileCabinetRecords();
-        private class CommandLineOptions
-        {
-            [Option('t', "output-type", Required = true, HelpText = "Output format type (csv, xml)")]
-            public string OutputFormat { get; set; }
 
-            [Option('o', "output", Required = true, HelpText = "Output file name.")]
-            public string OutputFileName { get; set; }
-            
-            [Option('a', "records-amount", Required = true, HelpText = "Amount of generated records.")]
-            public int RecordsAmount { get; set; }
-
-            [Option('i', "start-id", Required = true, HelpText = "ID value to start.")]
-            public int StartId { get; set; }
-        }
-        
         /// <summary>
         /// Main.
         /// </summary>
@@ -78,31 +62,31 @@ namespace FileCabinetGenerator
                         Console.WriteLine($"Invalid id {o.StartId}");
                         return;
                     }
-                    _outputFormat = o.OutputFormat;
-                    _outputFileName = o.OutputFileName;
-                    _recordsAmount = o.RecordsAmount;
-                    _startId = o.StartId;
+                    outputFormat = o.OutputFormat;
+                    outputFileName = o.OutputFileName;
+                    recordsAmount = o.RecordsAmount;
+                    startId = o.StartId;
                 });
             GenerateFileCabinetRecordsFields();
             ExportToFile();
-            Console.WriteLine($"{_recordsAmount} records were written to {_outputFileName}");
+            Console.WriteLine($"{recordsAmount} records were written to {outputFileName}");
         }
         
         private static void ExportToFile()
         {
             try
             {
-                using (StreamWriter fs = new StreamWriter(_outputFileName))
+                using (StreamWriter fs = new StreamWriter(outputFileName))
                 {
-                    if (_outputFormat == "csv")
+                    if (outputFormat == "csv")
                     {
                         serializer = new ImportToCsv(fs);
                     }
-                    else if (_outputFormat == "xml")
+                    else if (outputFormat == "xml")
                     {
                         serializer = new ImportToXml(fs);
                     }
-                    serializer.Serialize(fileCabinetRecords);
+                    serializer.Serialize(FileCabinetRecords);
                 }
             }
             catch (IOException ex)
@@ -117,12 +101,12 @@ namespace FileCabinetGenerator
         
         private static void GenerateFileCabinetRecordsFields()
         {
-            int userId = _startId;
-            for (int i = 0; i < _recordsAmount; i++)
+            int userId = startId;
+            for (int i = 0; i < recordsAmount; i++)
             {
                 GenerateFields(i, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                 Record record = new Record(userId, firstName, lastName, gender, dateOfBirth, credit, duration);
-                fileCabinetRecords.Record.Add(record);
+                FileCabinetRecords.Record.Add(record);
                 userId++;
             }
         }
@@ -138,7 +122,7 @@ namespace FileCabinetGenerator
         }
         private static DateTime RandomBirthDay()
         {
-            DateTime start = birthDayMinValue;
+            DateTime start = BirthDayMinValue;
             Random rand = new Random();
             int range = (DateTime.Today - start).Days;
             return start.AddDays(rand.Next(range)); 
