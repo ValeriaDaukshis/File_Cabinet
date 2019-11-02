@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
@@ -17,6 +18,10 @@ namespace FileCabinetApp.Service
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
         private readonly IRecordValidator validator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
+        /// </summary>
+        /// <param name="validator">the validator.</param>
         public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
@@ -25,21 +30,36 @@ namespace FileCabinetApp.Service
         /// <summary>
         /// Creates the record.
         /// </summary>
-        /// <param name="fileCabinetRecord">The file cabinet record.</param>
+        /// <param name="record">The file cabinet record.</param>
         /// <returns>id of created record.</returns>
-        public int CreateRecord(FileCabinetRecord fileCabinetRecord)
+        public int CreateRecord(FileCabinetRecord record)
         {
-            fileCabinetRecord.Id = this.GenerateId(fileCabinetRecord);
-            this.list.Add(fileCabinetRecord);
-            this.AddValueToDictionary(fileCabinetRecord.FirstName, this.firstNameDictionary, fileCabinetRecord);
-            this.AddValueToDictionary(fileCabinetRecord.LastName, this.lastNameDictionary, fileCabinetRecord);
-            this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
 
-            return fileCabinetRecord.Id;
+            this.validator.ValidateParameters(record);
+            record.Id = this.GenerateId(record);
+            this.list.Add(record);
+            this.AddValueToDictionary(record.FirstName, this.firstNameDictionary, record);
+            this.AddValueToDictionary(record.LastName, this.lastNameDictionary, record);
+            this.AddValueToDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
+
+            return record.Id;
         }
 
+        /// <summary>
+        /// RemoveRecord.
+        /// </summary>
+        /// <param name="record">record.</param>
         public void RemoveRecord(FileCabinetRecord record)
         {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
+
             int position = this.list.FindIndex(x => x.Id == record.Id);
             this.list.RemoveAt(position);
 
@@ -70,11 +90,23 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
+        /// Dispose.
+        /// </summary>
+        public void Dispose()
+        {
+        }
+
+        /// <summary>
         /// Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
         {
+            if (fileCabinetRecord is null)
+            {
+                throw new ArgumentNullException(nameof(fileCabinetRecord), $"{nameof(fileCabinetRecord)} is null");
+            }
+
             FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
 
             if (fileCabinetRecord.FirstName != record.FirstName)
@@ -181,8 +213,18 @@ namespace FileCabinetApp.Service
             return new FileCabinetServiceSnapshot(this.list.ToArray());
         }
 
+        /// <summary>
+        /// Restore.
+        /// </summary>
+        /// <param name="snapshot">snapshot.</param>
+        /// <returns>records count.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
+            if (snapshot is null)
+            {
+                throw new ArgumentNullException(nameof(snapshot), $"{nameof(snapshot)} is null");
+            }
+
             IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
 
             foreach (var record in readRecords)
@@ -246,6 +288,22 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
+        }
+
+        private void CheckFileCabinetRecord(FileCabinetRecord record)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
+        }
+
+        private void CheckStringParams(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException($"{nameof(value)} is null or empty", nameof(value));
+            }
         }
     }
 }

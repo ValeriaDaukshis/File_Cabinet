@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
 using FileCabinetApp;
+using FileCabinetApp.Records;
 
 namespace FileCabinetGenerator.FileImporters
 {

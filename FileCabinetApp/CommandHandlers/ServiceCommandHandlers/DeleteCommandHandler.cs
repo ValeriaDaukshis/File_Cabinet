@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
@@ -11,7 +12,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
-        public DeleteCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
+        /// DeleteCommandHandler constructor.
+        /// </summary>
+        /// <param name="fileCabinetService">fileCabinetService.</param>
+        public DeleteCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
         }
 
@@ -22,13 +29,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <exception cref="ArgumentNullException">commandRequest.</exception>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "delete")
             {
-                Delete(commandRequest.Parameters);
+                this.Delete(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 
@@ -48,11 +60,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                if (RecordIdValidator.TryGetRecordId(id))
+                var records = this.FileCabinetService.GetRecords().ToList();
+                FileCabinetRecord record;
+                if ((record = records.Find(x => x.Id == id)) != null)
                 {
-                    var records = this.fileCabinetService.GetRecords().ToList();
-                    var record = records.Find(x => x.Id == id);
-                    this.fileCabinetService.RemoveRecord(record);
+                    this.FileCabinetService.RemoveRecord(record);
                     Console.WriteLine($"Record #{parameters} was deleted");
                 }
             }

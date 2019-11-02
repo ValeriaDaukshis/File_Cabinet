@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators
 {
@@ -7,6 +8,10 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public interface IRecordValidator
     {
+        /// <summary>
+        /// Validates the parameters.
+        /// </summary>
+        /// <param name="record">The record.</param>
         void ValidateParameters(FileCabinetRecord record);
     }
 }

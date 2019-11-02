@@ -4,30 +4,49 @@ using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
+    /// <summary>
+    /// GetCommandHandler.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class GetCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private readonly IRecordPrinter printer;
 
-        public GetCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer) : base(fileCabinetService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">The file cabinet service.</param>
+        /// <param name="printer">The printer.</param>
+        public GetCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
+            : base(fileCabinetService)
         {
             this.printer = printer;
         }
 
+        /// <summary>
+        /// Handles the specified command request.
+        /// </summary>
+        /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "get")
             {
-                Get(commandRequest.Parameters);
+                this.Get(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 
         private void Get(string parameters)
         {
-            var records = this.fileCabinetService.GetRecords();
+            var records = this.FileCabinetService.GetRecords();
             if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");

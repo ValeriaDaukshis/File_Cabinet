@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Xml.Serialization;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Records
 {
     /// <summary>
     /// FileCabinetRecord.
@@ -44,12 +44,29 @@ namespace FileCabinetApp
             this.Id = id;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        /// </summary>
+        /// <param name="reserved">The reserved.</param>
+        /// <param name="id">The identifier.</param>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="credit">The credit.</param>
+        /// <param name="duration">The duration.</param>
         public FileCabinetRecord(short reserved, int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
             : this(id, firstName, lastName, gender, dateOfBirth, credit, duration)
         {
             this.Reserved = reserved;
         }
 
+        /// <summary>
+        /// Gets or sets the reserved.
+        /// </summary>
+        /// <value>
+        /// The identifier.
+        /// </value>
         public int Reserved { get;  set; }
 
         /// <summary>

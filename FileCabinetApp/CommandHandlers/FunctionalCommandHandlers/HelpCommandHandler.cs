@@ -2,6 +2,10 @@
 
 namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
+    /// <summary>
+    /// HelpCommandHandler.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
     public class HelpCommandHandler : CommandHandlerBase
     {
         private const int CommandHelpIndex = 0;
@@ -27,15 +31,24 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             },
         };
 
+        /// <summary>
+        /// Handles the specified command request.
+        /// </summary>
+        /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "help")
             {
                 PrintHelp(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 

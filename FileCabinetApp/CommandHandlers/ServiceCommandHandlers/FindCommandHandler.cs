@@ -2,28 +2,48 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.CommandHandlers.Printer;
+using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
+    /// <summary>
+    /// FindCommandHandler.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private IRecordPrinter printer;
+        private readonly IRecordPrinter printer;
 
-        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer) : base(fileCabinetService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">The file cabinet service.</param>
+        /// <param name="printer">The printer.</param>
+        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
+            : base(fileCabinetService)
         {
             this.printer = printer;
         }
 
+        /// <summary>
+        /// Handles the specified command request.
+        /// </summary>
+        /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "find")
             {
-                Find(commandRequest.Parameters);
+                this.Find(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 
@@ -56,16 +76,16 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (field == "firstname")
             {
-                foundResult = this.fileCabinetService.FindByFirstName(value);
+                foundResult = this.FileCabinetService.FindByFirstName(value);
             }
             else if (field == "lastname")
             {
-                foundResult = this.fileCabinetService.FindByLastName(value);
+                foundResult = this.FileCabinetService.FindByLastName(value);
             }
             else if (field == "dateofbirth")
             {
                 DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
-                foundResult = this.fileCabinetService.FindByDateOfBirth(date);
+                foundResult = this.FileCabinetService.FindByDateOfBirth(date);
             }
 
             if (foundResult.Count > 0)

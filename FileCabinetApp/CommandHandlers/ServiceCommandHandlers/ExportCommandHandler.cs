@@ -4,21 +4,39 @@ using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
+    /// <summary>
+    /// ExportCommandHandler.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
-        public ExportCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">The file cabinet service.</param>
+        public ExportCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles the specified command request.
+        /// </summary>
+        /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "export")
             {
-                Export(commandRequest.Parameters);
+                this.Export(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 
@@ -35,13 +53,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        snapshot = this.fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToCsv(stream);
+                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot.SaveToCsv(stream);
                     }
                     else if (fileFormat == "xml")
                     {
-                        snapshot = this.fileCabinetService.MakeSnapshot();
-                        snapshot.SaveToXml(stream);
+                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot.SaveToXml(stream);
                     }
                     else
                     {

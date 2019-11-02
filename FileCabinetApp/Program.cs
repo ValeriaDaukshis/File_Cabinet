@@ -13,7 +13,6 @@ namespace FileCabinetApp
 {
     /// <summary>
     /// Enter point.
-    /// Enter point.
     /// </summary>
     public static class Program
     {
@@ -27,11 +26,17 @@ namespace FileCabinetApp
 
         private static Action<bool> running = b => isRunning = b;
 
-        public static ValidatorParameters validatorParameters { get; set; }
+        /// <summary>
+        /// Gets or sets validatorParams.
+        /// </summary>
+        /// <value>
+        /// ValidatorParams.
+        /// </value>
+        public static ValidatorParameters ValidatorParams { get; set; }
 
         /// <summary>
         /// Defines the entry point of the application.
-        /// </summary>
+        /// </summary>RecordIdValidator
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
@@ -40,23 +45,21 @@ namespace FileCabinetApp
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        (CommandHandlerBase.RecordValidator, validatorParameters) = new ValidatorBuilder().CreateCustom();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom();
                     }
                     else
                     {
-                        (CommandHandlerBase.RecordValidator, validatorParameters) = new ValidatorBuilder().CreateDefault();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault();
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
                         CommandHandlerBase.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream, CommandHandlerBase.RecordValidator);
-                        CommandHandlerBase.RecordIdValidator = new RecordIdFilesystemValidator(CommandHandlerBase.ServiceStorageFileStream);
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
-                        CommandHandlerBase.RecordIdValidator = new RecordIdMemoryValidator(fileCabinetService);
                     }
                 });
 
@@ -87,6 +90,7 @@ namespace FileCabinetApp
                     });
             }
             while (isRunning);
+            fileCabinetService.Dispose();
         }
 
         private static ICommandHandler CreateCommandHandlers()
@@ -119,34 +123,5 @@ namespace FileCabinetApp
 
             return helpCommand;
         }
-
-        private static void InitValidatorBuilder()
-        {
-            
-        }
-    }
-
-    /// <summary>
-    /// CommandLineOptions.
-    /// </summary>
-    internal class CommandLineOptions
-    {
-        /// <summary>
-        /// Gets or sets the validation rules.
-        /// </summary>
-        /// <value>
-        /// The validation rules.
-        /// </value>
-        [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
-        public string ValidationRules { get; set; }
-
-        /// <summary>
-        /// Gets or sets the storage.
-        /// </summary>
-        /// <value>
-        /// The storage.
-        /// </value>
-        [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
-        public string Storage { get; set; }
     }
 }

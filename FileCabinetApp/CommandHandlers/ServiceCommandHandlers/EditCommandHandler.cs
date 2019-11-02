@@ -1,24 +1,44 @@
 ﻿using System;
+using System.Linq;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
+    /// <summary>
+    /// EditCommandHandler.
+    /// </summary>
+    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class EditCommandHandler : ServiceCommandHandlerBase
     {
-        public EditCommandHandler(IFileCabinetService fileCabinetService) : base(fileCabinetService)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">The file cabinet service.</param>
+        public EditCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
         }
 
+        /// <summary>
+        /// Handles the specified command request.
+        /// </summary>
+        /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
         {
+            if (commandRequest is null)
+            {
+                throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
+            }
+
             if (commandRequest.Command == "edit")
             {
-                Edit(commandRequest.Parameters);
+                this.Edit(commandRequest.Parameters);
             }
-            else if (this.nextHandler != null)
+            else
             {
-                this.nextHandler.Handle(commandRequest);
+                this.NextHandler.Handle(commandRequest);
             }
         }
 
@@ -38,11 +58,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                if (RecordIdValidator.TryGetRecordId(id))
+                var records = this.FileCabinetService.GetRecords().ToList();
+                FileCabinetRecord record;
+                if ((record = records.Find(x => x.Id == id)) != null)
                 {
                     PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    FileCabinetRecord record = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
-                    this.fileCabinetService.EditRecord(record);
+                    record = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
+                    this.FileCabinetService.EditRecord(record);
                     Console.WriteLine($"Record #{parameters} is updated");
                 }
             }

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.Records;
 
 namespace FileCabinetApp.FIleWriters
 {
