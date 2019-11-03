@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.Validators.ValidationParameters;
 
 namespace FileCabinetApp.Validators
 {
@@ -10,88 +11,58 @@ namespace FileCabinetApp.Validators
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatorParameters"/> class.
         /// </summary>
-        /// <param name="minLength">The minimum length.</param>
-        /// <param name="maxLength">The maximum length.</param>
-        /// <param name="minDateOfBirth">The minimum date of birth.</param>
-        /// <param name="maxDateOfBirth">The maximum date of birth.</param>
-        /// <param name="minCreditSum">The minimum credit sum.</param>
-        /// <param name="maxCreditSum">The maximum credit sum.</param>
-        /// <param name="minPeriod">The minimum period.</param>
-        /// <param name="maxPeriod">The maximum period.</param>
-        public ValidatorParameters(int minLength, int maxLength, DateTime minDateOfBirth, DateTime maxDateOfBirth, decimal minCreditSum, decimal maxCreditSum, short minPeriod, short maxPeriod)
+        /// <param name="firstNameCriterions">The first name criterions.</param>
+        /// <param name="lastNameCriterions">The last name criterions.</param>
+        /// <param name="dateOfBirthCriterions">The date of birth criterions.</param>
+        /// <param name="creditSumCriterions">The credit sum criterions.</param>
+        /// <param name="durationCriterions">The duration criterions.</param>
+        public ValidatorParameters(FirstNameCriterions firstNameCriterions, LastNameCriterions lastNameCriterions, DateOfBirthCriterions dateOfBirthCriterions, CreditSumCriterions creditSumCriterions, DurationCriterions durationCriterions)
         {
-            this.MinLength = minLength;
-            this.MaxLength = maxLength;
-            this.MinDateOfBirth = minDateOfBirth;
-            this.MaxDateOfBirth = maxDateOfBirth;
-            this.MinCreditSum = minCreditSum;
-            this.MaxCreditSum = maxCreditSum;
-            this.MinPeriod = minPeriod;
-            this.MaxPeriod = maxPeriod;
+            this.DurationCriterions = durationCriterions;
+            this.FirstNameCriterions = firstNameCriterions;
+            this.LastNameCriterions = lastNameCriterions;
+            this.DateOfBirthCriterions = dateOfBirthCriterions;
+            this.CreditSumCriterions = creditSumCriterions;
         }
 
         /// <summary>
-        /// Gets the minimum credit sum.
+        /// Gets the last name criterions.
         /// </summary>
         /// <value>
-        /// The minimum credit sum.
+        /// The last name criterions.
         /// </value>
-        public decimal MinCreditSum { get; private set; }
+        public LastNameCriterions LastNameCriterions { get; private set; }
 
         /// <summary>
-        /// Gets the maximum credit sum.
+        /// Gets the first name criterions.
         /// </summary>
         /// <value>
-        /// The maximum credit sum.
+        /// The first name criterions.
         /// </value>
-        public decimal MaxCreditSum { get; private set; }
+        public FirstNameCriterions FirstNameCriterions { get; private set; }
 
         /// <summary>
-        /// Gets the minimum length.
+        /// Gets the duration criterions.
         /// </summary>
         /// <value>
-        /// The minimum length.
+        /// The duration criterions.
         /// </value>
-        public int MinLength { get; private set; }
+        public DurationCriterions DurationCriterions { get; private set; }
 
         /// <summary>
-        /// Gets the maximum length.
+        /// Gets the credit sum criterions.
         /// </summary>
         /// <value>
-        /// The maximum length.
+        /// The credit sum criterions.
         /// </value>
-        public int MaxLength { get; private set; }
+        public CreditSumCriterions CreditSumCriterions { get; private set; }
 
         /// <summary>
-        /// Gets the minimum period.
+        /// Gets the date of birth criterions.
         /// </summary>
         /// <value>
-        /// The minimum period.
+        /// The date of birth criterions.
         /// </value>
-        public short MinPeriod { get; private set; }
-
-        /// <summary>
-        /// Gets the maximum period.
-        /// </summary>
-        /// <value>
-        /// The maximum period.
-        /// </value>
-        public short MaxPeriod { get; private set; }
-
-        /// <summary>
-        /// Gets the minimum date of birth.
-        /// </summary>
-        /// <value>
-        /// The minimum date of birth.
-        /// </value>
-        public DateTime MinDateOfBirth { get; private set; }
-
-        /// <summary>
-        /// Gets the maximum date of birth.
-        /// </summary>
-        /// <value>
-        /// The maximum date of birth.
-        /// </value>
-        public DateTime MaxDateOfBirth { get; private set; }
+        public DateOfBirthCriterions DateOfBirthCriterions { get; private set; }
     }
 }

@@ -63,9 +63,9 @@ namespace FileCabinetApp.CommandHandlers
                 return new Tuple<bool, string>(false, "First name is empty");
             }
 
-            if (input.Length < Program.ValidatorParams.MinLength || input.Length > Program.ValidatorParams.MaxLength)
+            if (input.Length < Program.ValidatorParams.FirstNameCriterions.Min || input.Length > Program.ValidatorParams.FirstNameCriterions.Max)
             {
-                return new Tuple<bool, string>(false, $"First name length is upper than {Program.ValidatorParams.MaxLength} or under than {Program.ValidatorParams.MinLength} symbols");
+                return new Tuple<bool, string>(false, $"First name length is upper than {Program.ValidatorParams.FirstNameCriterions.Max} or under than {Program.ValidatorParams.FirstNameCriterions.Min} symbols");
             }
 
             return new Tuple<bool, string>(true, input);
@@ -78,9 +78,9 @@ namespace FileCabinetApp.CommandHandlers
                 return new Tuple<bool, string>(false, "Last name is empty");
             }
 
-            if (input.Length < Program.ValidatorParams.MinLength || input.Length > Program.ValidatorParams.MaxLength)
+            if (input.Length < Program.ValidatorParams.LastNameCriterions.Min || input.Length > Program.ValidatorParams.LastNameCriterions.Max)
             {
-                return new Tuple<bool, string>(false, $"Last name length is upper than {Program.ValidatorParams.MaxLength} or under than {Program.ValidatorParams.MinLength} symbols");
+                return new Tuple<bool, string>(false, $"Last name length is upper than {Program.ValidatorParams.LastNameCriterions.Max} or under than {Program.ValidatorParams.LastNameCriterions.Min} symbols");
             }
 
             return new Tuple<bool, string>(true, input);
@@ -98,9 +98,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
         {
-            if (input > Program.ValidatorParams.MaxCreditSum || input < Program.ValidatorParams.MinCreditSum)
+            if (input > Program.ValidatorParams.CreditSumCriterions.Max || input < Program.ValidatorParams.CreditSumCriterions.Min)
             {
-                return new Tuple<bool, string>(false, $"Credit sum is upper than {Program.ValidatorParams.MaxCreditSum} or under than {Program.ValidatorParams.MinCreditSum} BYN");
+                return new Tuple<bool, string>(false, $"Credit sum is upper than {Program.ValidatorParams.CreditSumCriterions.Max} or under than {Program.ValidatorParams.CreditSumCriterions.Min} BYN");
             }
 
             return new Tuple<bool, string>(true, $"{input}");
@@ -108,14 +108,14 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
         {
-            if (input > Program.ValidatorParams.MaxDateOfBirth)
+            if (input > Program.ValidatorParams.DateOfBirthCriterions.To)
             {
-                return new Tuple<bool, string>(false, $"Date of birth is upper than {Program.ValidatorParams.MaxDateOfBirth}");
+                return new Tuple<bool, string>(false, $"Date of birth is upper than {Program.ValidatorParams.DateOfBirthCriterions.To:MM/dd/yyyy}");
             }
 
-            if (input < Program.ValidatorParams.MinDateOfBirth)
+            if (input < Program.ValidatorParams.DateOfBirthCriterions.From)
             {
-                return new Tuple<bool, string>(false, $"Date of birth is under than {Program.ValidatorParams.MinDateOfBirth}");
+                return new Tuple<bool, string>(false, $"Date of birth is under than {Program.ValidatorParams.DateOfBirthCriterions.From:MM/dd/yyyy}");
             }
 
             return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");
@@ -123,9 +123,9 @@ namespace FileCabinetApp.CommandHandlers
 
         private static Func<short, Tuple<bool, string>> durationValidator = input =>
         {
-            if (input > Program.ValidatorParams.MaxPeriod || input < Program.ValidatorParams.MinPeriod)
+            if (input > Program.ValidatorParams.DurationCriterions.To || input < Program.ValidatorParams.DurationCriterions.From)
             {
-                return new Tuple<bool, string>(false, $"Duration is upper than {Program.ValidatorParams.MaxPeriod} or under than {Program.ValidatorParams.MinPeriod}");
+                return new Tuple<bool, string>(false, $"Duration is upper than {Program.ValidatorParams.DurationCriterions.To} or under than {Program.ValidatorParams.DurationCriterions.From}");
             }
 
             return new Tuple<bool, string>(true, $"{input}");

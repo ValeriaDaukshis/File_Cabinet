@@ -1241,6 +1241,111 @@
             </summary>
             <param name="record">The record.</param>
         </member>
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions">
+            <summary>
+            CreditSumCriterions.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions.Min">
+            <summary>
+            Gets or sets the minimum.
+            </summary>
+            <value>
+            The minimum.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions.Max">
+            <summary>
+            Gets or sets the maximum.
+            </summary>
+            <value>
+            The maximum.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions">
+            <summary>
+            DateOfBirthCriterions.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions.From">
+            <summary>
+            Gets or sets from.
+            </summary>
+            <value>
+            From.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions.To">
+            <summary>
+            Gets or sets to.
+            </summary>
+            <value>
+            To.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.DurationCriterions">
+            <summary>
+            DurationCriterions.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DurationCriterions.From">
+            <summary>
+            Gets or sets from.
+            </summary>
+            <value>
+            From.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DurationCriterions.To">
+            <summary>
+            Gets or sets to.
+            </summary>
+            <value>
+            To.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions">
+            <summary>
+            FirstNameCriterions.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions.Min">
+            <summary>
+            Gets or sets the minimum.
+            </summary>
+            <value>
+            The minimum.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions.Max">
+            <summary>
+            Gets or sets the maximum.
+            </summary>
+            <value>
+            The maximum.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions">
+            <summary>
+            LastNameCriterions.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions.Min">
+            <summary>
+            Gets or sets the minimum.
+            </summary>
+            <value>
+            The minimum.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions.Max">
+            <summary>
+            Gets or sets the maximum.
+            </summary>
+            <value>
+            The maximum.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
             <summary>
             ValidatorBuilder.
@@ -1303,81 +1408,54 @@
             ValidatorParameters.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorParameters.#ctor(System.Int32,System.Int32,System.DateTime,System.DateTime,System.Decimal,System.Decimal,System.Int16,System.Int16)">
+        <member name="M:FileCabinetApp.Validators.ValidatorParameters.#ctor(FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions,FileCabinetApp.Validators.ValidationParameters.LastNameCriterions,FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions,FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions,FileCabinetApp.Validators.ValidationParameters.DurationCriterions)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ValidatorParameters"/> class.
             </summary>
-            <param name="minLength">The minimum length.</param>
-            <param name="maxLength">The maximum length.</param>
-            <param name="minDateOfBirth">The minimum date of birth.</param>
-            <param name="maxDateOfBirth">The maximum date of birth.</param>
-            <param name="minCreditSum">The minimum credit sum.</param>
-            <param name="maxCreditSum">The maximum credit sum.</param>
-            <param name="minPeriod">The minimum period.</param>
-            <param name="maxPeriod">The maximum period.</param>
+            <param name="firstNameCriterions">The first name criterions.</param>
+            <param name="lastNameCriterions">The last name criterions.</param>
+            <param name="dateOfBirthCriterions">The date of birth criterions.</param>
+            <param name="creditSumCriterions">The credit sum criterions.</param>
+            <param name="durationCriterions">The duration criterions.</param>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MinCreditSum">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.LastNameCriterions">
             <summary>
-            Gets the minimum credit sum.
+            Gets the last name criterions.
             </summary>
             <value>
-            The minimum credit sum.
+            The last name criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MaxCreditSum">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.FirstNameCriterions">
             <summary>
-            Gets the maximum credit sum.
+            Gets the first name criterions.
             </summary>
             <value>
-            The maximum credit sum.
+            The first name criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MinLength">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.DurationCriterions">
             <summary>
-            Gets the minimum length.
+            Gets the duration criterions.
             </summary>
             <value>
-            The minimum length.
+            The duration criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MaxLength">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.CreditSumCriterions">
             <summary>
-            Gets the maximum length.
+            Gets the credit sum criterions.
             </summary>
             <value>
-            The maximum length.
+            The credit sum criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MinPeriod">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.DateOfBirthCriterions">
             <summary>
-            Gets the minimum period.
+            Gets the date of birth criterions.
             </summary>
             <value>
-            The minimum period.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MaxPeriod">
-            <summary>
-            Gets the maximum period.
-            </summary>
-            <value>
-            The maximum period.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MinDateOfBirth">
-            <summary>
-            Gets the minimum date of birth.
-            </summary>
-            <value>
-            The minimum date of birth.
-            </value>
-        </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.MaxDateOfBirth">
-            <summary>
-            Gets the maximum date of birth.
-            </summary>
-            <value>
-            The maximum date of birth.
+            The date of birth criterions.
             </value>
         </member>
         <member name="T:FileCabinetApp.Validators.ValidatorsExtensions">
@@ -1385,19 +1463,21 @@
             ValidatorsExtensions.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder)">
+        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder,Microsoft.Extensions.Configuration.IConfigurationRoot)">
             <summary>
             Creates the custom.
             </summary>
             <param name="validatorBuilder">The validator builder.</param>
-            <returns> (IRecordValidator, ValidatorParameters).</returns>
+            <param name="config">The configuration.</param>
+            <returns>(IRecordValidator, ValidatorParameters).</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder)">
+        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder,Microsoft.Extensions.Configuration.IConfigurationRoot)">
             <summary>
             Creates the default.
             </summary>
             <param name="validatorBuilder">The validator builder.</param>
-            <returns> (IRecordValidator, ValidatorParameters).</returns>
+            <param name="config">The configuration.</param>
+            <returns>(IRecordValidator, ValidatorParameters).</returns>
         </member>
     </members>
 </doc>

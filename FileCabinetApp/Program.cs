@@ -8,6 +8,7 @@ using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
 {
@@ -18,7 +19,7 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Valeria Daukshis";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const string ServiceStorageFile = @"C:\Users\dauks\File-Cabinet\cabinet-records.db";
+        private const string ServiceStorageFile = "cabinet-records.db";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static bool isRunning = true;
@@ -40,16 +41,21 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("validation-rules.json", optional: true, reloadOnChange: true);
+            var config = builder.Build();
+
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
                     }
                     else
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
