@@ -11,13 +11,16 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     public class ExitCommandHandler : CommandHandlerBase
     {
         private readonly Action<bool> isRunning;
+        private readonly IDisposable dispose;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
         /// </summary>
         /// <param name="isRunning">The is running.</param>
-        public ExitCommandHandler(Action<bool> isRunning)
+        /// <param name="dispose">Dispose.</param>
+        public ExitCommandHandler(IDisposable dispose, Action<bool> isRunning)
         {
+            this.dispose = dispose;
             this.isRunning = isRunning;
         }
 
@@ -44,6 +47,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 
         private void Exit(string parameters)
         {
+            this.dispose?.Dispose();
             Console.WriteLine("Exiting an application...");
             this.isRunning.Invoke(false);
         }

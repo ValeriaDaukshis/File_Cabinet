@@ -64,8 +64,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     else
                     {
                         Console.WriteLine($"{fileFormat} writer is not found");
+                        return;
                     }
                 }
+
+                Console.WriteLine($"File {path} was successfully exported");
             }
             catch (IOException ex)
             {

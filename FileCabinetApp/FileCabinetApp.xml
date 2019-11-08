@@ -111,11 +111,12 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler.#ctor(System.Action{System.Boolean})">
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler.#ctor(System.IDisposable,System.Action{System.Boolean})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler"/> class.
             </summary>
             <param name="isRunning">The is running.</param>
+            <param name="dispose">Dispose.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -389,6 +390,14 @@
             </summary>
             <value>
             The storage.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.CommandLineOptions.StopWatcher">
+            <summary>
+            Gets or sets a value indicating whether [stop watcher].
+            </summary>
+            <value>
+              <c>true</c> if [stop watcher]; otherwise, <c>false</c>.
             </value>
         </member>
         <member name="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException">
@@ -861,12 +870,6 @@
             Dispose.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.Dispose(System.Boolean)">
-            <summary>
-            Dispose.
-            </summary>
-            <param name="disposing">disposing.</param>
-        </member>
         <member name="T:FileCabinetApp.Service.FileCabinetMemoryService">
             <summary>
             FileCabinetService.
@@ -896,11 +899,6 @@
             Purges the deleted records.
             </summary>
             <returns>count of deleted records and count of all records.</returns>
-        </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.Dispose">
-            <summary>
-            Dispose.
-            </summary>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.EditRecord(FileCabinetApp.Records.FileCabinetRecord)">
             <summary>
@@ -1083,9 +1081,170 @@
             </summary>
             <returns>count of deleted records and count of all records.</returns>
         </member>
-        <member name="M:FileCabinetApp.Service.IFileCabinetService.Dispose">
+        <member name="T:FileCabinetApp.Timer.IStopWatcher">
             <summary>
-            Dispose method.
+            IStopWatcher.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Timer.IStopWatcher.EllapsedMilliseconds">
+            <summary>
+            Gets the ellapsed milliseconds.
+            </summary>
+            <value>
+            The ellapsed milliseconds.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Timer.IStopWatcher.StartTimer">
+            <summary>
+            Starts this instance.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Timer.IStopWatcher.StopTimer">
+            <summary>
+            Stops this instance.
+            </summary>
+        </member>
+        <member name="T:FileCabinetApp.Timer.ServiceMeter">
+            <summary>
+            ServiceMeter.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Service.IFileCabinetService" />
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Timer.ServiceMeter"/> class.
+            </summary>
+            <param name="service">The service.</param>
+        </member>
+        <member name="P:FileCabinetApp.Timer.ServiceMeter.TimeInMilliseconds">
+            <summary>
+            Gets or sets the time in milliseconds.
+            </summary>
+            <value>
+            The time in milliseconds.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.Create">
+            <summary>
+            Creates this instance.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.CreateRecord(FileCabinetApp.Records.FileCabinetRecord)">
+            <summary>
+            Creates the record.
+            </summary>
+            <param name="record">record.</param>
+            <returns>
+            Id of created record.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.EditRecord(FileCabinetApp.Records.FileCabinetRecord)">
+            <summary>
+            Edits the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.GetStat">
+            <summary>
+            Gets the stat.
+            </summary>
+            <returns>
+            number of records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.GetRecords">
+            <summary>
+            Gets the records.
+            </summary>
+            <returns>
+            All records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.FindByDateOfBirth(System.DateTime)">
+            <summary>
+            Finds the by date of birth.
+            </summary>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>
+            Array of records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.FindByLastName(System.String)">
+            <summary>
+            Finds the last name of the by.
+            </summary>
+            <param name="lastName">The last name.</param>
+            <returns>
+            Array of records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.FindByFirstName(System.String)">
+            <summary>
+            Finds the first name of the by.
+            </summary>
+            <param name="firstName">The first name.</param>
+            <returns>
+            Array of records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.MakeSnapshot">
+            <summary>
+            Makes the snapshot.
+            </summary>
+            <returns>
+            FileCabinetServiceSnapshot.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores the specified snapshot.
+            </summary>
+            <param name="snapshot">The snapshot.</param>
+            <returns>
+            count of restored records.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.RemoveRecord(FileCabinetApp.Records.FileCabinetRecord)">
+            <summary>
+            Removes the record.
+            </summary>
+            <param name="fileCabinetRecord">The file cabinet record.</param>
+        </member>
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.PurgeDeletedRecords">
+            <summary>
+            Purges the deleted records.
+            </summary>
+            <returns>
+            count of deleted records and count of all records.
+            </returns>
+        </member>
+        <member name="T:FileCabinetApp.Timer.StopWatcher">
+            <summary>
+            StopWatcher.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Timer.IStopWatcher" />
+        </member>
+        <member name="M:FileCabinetApp.Timer.StopWatcher.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Timer.StopWatcher"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Timer.StopWatcher.EllapsedMilliseconds">
+            <summary>
+            Gets the ellapsed milliseconds.
+            </summary>
+            <value>
+            The ellapsed milliseconds.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Timer.StopWatcher.StartTimer">
+            <summary>
+            Starts this instance.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Timer.StopWatcher.StopTimer">
+            <summary>
+            Stops this instance.
             </summary>
         </member>
         <member name="T:FileCabinetApp.Validators.CommonValidators.CreditSumValidator">

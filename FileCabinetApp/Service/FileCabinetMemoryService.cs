@@ -90,13 +90,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Dispose.
-        /// </summary>
-        public void Dispose()
-        {
-        }
-
-        /// <summary>
         /// Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>

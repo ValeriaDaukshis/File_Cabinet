@@ -7,6 +7,7 @@ using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
 using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
 using FileCabinetApp.Service;
+using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
 using Microsoft.Extensions.Configuration;
 
@@ -20,10 +21,12 @@ namespace FileCabinetApp
         private const string DeveloperName = "Valeria Daukshis";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const string ServiceStorageFile = "cabinet-records.db";
+        private const string ValidationRulesFile = "validation-rules.json";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService;
+        private static IFileCabinetService fileCabinetMeter;
 
         private static Action<bool> running = b => isRunning = b;
 
@@ -43,7 +46,7 @@ namespace FileCabinetApp
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("validation-rules.json", optional: true, reloadOnChange: true);
+                .AddJsonFile(ValidationRulesFile, optional: true, reloadOnChange: true);
             var config = builder.Build();
 
             Parser.Default.ParseArguments<CommandLineOptions>(args)
@@ -66,6 +69,15 @@ namespace FileCabinetApp
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
+                    }
+
+                    if (o.StopWatcher == true)
+                    {
+                        fileCabinetMeter = new ServiceMeter(fileCabinetService);
+                    }
+                    else
+                    {
+                        fileCabinetMeter = fileCabinetService;
                     }
                 });
 
@@ -96,23 +108,22 @@ namespace FileCabinetApp
                     });
             }
             while (isRunning);
-            fileCabinetService.Dispose();
         }
 
         private static ICommandHandler CreateCommandHandlers()
         {
             var recordPrinter = new DefaultRecordPrinter();
             var helpCommand = new HelpCommandHandler();
-            var createCommand = new CreateCommandHandler(fileCabinetService);
-            var getCommand = new GetCommandHandler(fileCabinetService, recordPrinter);
-            var editCommand = new EditCommandHandler(fileCabinetService);
-            var deleteCommand = new DeleteCommandHandler(fileCabinetService);
-            var findCommand = new FindCommandHandler(fileCabinetService, recordPrinter);
-            var statCommand = new StatCommandHandler(fileCabinetService);
-            var importCommand = new ImportCommandHandler(fileCabinetService);
-            var exportCommand = new ExportCommandHandler(fileCabinetService);
-            var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler(running);
+            var createCommand = new CreateCommandHandler(fileCabinetMeter);
+            var getCommand = new GetCommandHandler(fileCabinetMeter, recordPrinter);
+            var editCommand = new EditCommandHandler(fileCabinetMeter);
+            var deleteCommand = new DeleteCommandHandler(fileCabinetMeter);
+            var findCommand = new FindCommandHandler(fileCabinetMeter, recordPrinter);
+            var statCommand = new StatCommandHandler(fileCabinetMeter);
+            var importCommand = new ImportCommandHandler(fileCabinetMeter);
+            var exportCommand = new ExportCommandHandler(fileCabinetMeter);
+            var purgeCommand = new PurgeCommandHandler(fileCabinetMeter);
+            var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
             var missedCommand = new MissedCommandHandler();
 
             helpCommand.SetNext(createCommand);

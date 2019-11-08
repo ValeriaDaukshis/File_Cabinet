@@ -13,7 +13,7 @@ namespace FileCabinetApp
         /// <value>
         /// The validation rules.
         /// </value>
-        [Option('v', "validation-rules", Required = false, HelpText = "set validation rules(default/custom)")]
+        [Option('v', "validation-rules", Required = false, HelpText = "Set validation rules(default/custom)")]
         public string ValidationRules { get; set; }
 
         /// <summary>
@@ -24,5 +24,14 @@ namespace FileCabinetApp
         /// </value>
         [Option('s', "storage", Required = false, HelpText = "Set storage place (memory/file)")]
         public string Storage { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether [stop watcher].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [stop watcher]; otherwise, <c>false</c>.
+        /// </value>
+        [Option('u', "use-stopwatch", Required = false, HelpText = "Use methods measuring")]
+        public bool StopWatcher { get; set; }
     }
 }
