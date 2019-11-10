@@ -33,5 +33,14 @@ namespace FileCabinetApp
         /// </value>
         [Option('u', "use-stopwatch", Required = false, HelpText = "Use methods measuring")]
         public bool StopWatcher { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="CommandLineOptions"/> is logger.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if logger; otherwise, <c>false</c>.
+        /// </value>
+        [Option('l', "use-logger", Required = false, HelpText = "Logging methods")]
+        public bool Logger { get; set; }
     }
 }
