@@ -11,7 +11,7 @@ namespace FileCabinetApp.Service
     /// <summary>
     /// FileCabinetService.
     /// </summary>
-    public class FileCabinetMemoryService : IFileCabinetService, IEnumerable<FileCabinetRecord>
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -129,17 +129,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return this.firstNameDictionary[firstName].ToArray();
+                foreach (var element in this.firstNameDictionary[firstName])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -149,17 +150,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return this.lastNameDictionary[lastName].ToArray();
+                foreach (var element in this.lastNameDictionary[lastName])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -169,17 +171,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.dateOfBirthDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return this.dateOfBirthDictionary[dateOfBirth].ToArray();
+                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -227,10 +230,14 @@ namespace FileCabinetApp.Service
                 if (index != -1)
                 {
                     this.list[index] = record;
+                    this.EditRecord(record);
                 }
                 else
                 {
                     this.list.Add(record);
+                    this.AddValueToDictionary(record.FirstName, this.firstNameDictionary, record);
+                    this.AddValueToDictionary(record.LastName, this.lastNameDictionary, record);
+                    this.AddValueToDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
                 }
             }
 
@@ -282,16 +289,6 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
-        }
-
-        public IEnumerator<FileCabinetRecord> GetEnumerator()
-        {
-            return new MemoryIterator<FileCabinetRecord>(this.list.ToArray());
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

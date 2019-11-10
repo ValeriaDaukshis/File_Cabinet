@@ -56,7 +56,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            parameters = parameters.ToLower(Culture);
             string[] inputParameters = parameters.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (inputParameters.Length < 2)
@@ -65,7 +64,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            string field = inputParameters[0];
+            string field = inputParameters[0].ToLower(Culture);
             string value = inputParameters[1];
 
             if (value[0] == '"')
@@ -91,7 +90,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (!(foundResult is null))
             {
-                this.printer.Print(foundResult);
+                if (!this.printer.Print(foundResult))
+                {
+                    Console.WriteLine($"{value} is not found");
+                }
             }
 
             if (foundResult is null)

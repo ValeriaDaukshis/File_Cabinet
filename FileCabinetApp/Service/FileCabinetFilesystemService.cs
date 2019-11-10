@@ -16,7 +16,7 @@ namespace FileCabinetApp.Service
     /// FileCabinetFilesystemService.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
-    public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable, IEnumerable<FileCabinetRecord>
+    public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = 278;
@@ -31,7 +31,6 @@ namespace FileCabinetApp.Service
         private readonly BinaryWriter writer;
         private int countOfRecords;
         private bool disposed = false;
-        private FileCabinetRecord[] recordsList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -280,18 +279,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                this.recordsList = this.firstNameDictionary[firstName].ToArray();
-                return this.recordsList;
+                foreach (var element in this.firstNameDictionary[firstName])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -301,18 +300,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                this.recordsList = this.lastNameDictionary[lastName].ToArray();
-                return this.recordsList;
+                foreach (var element in this.lastNameDictionary[lastName])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -322,18 +321,18 @@ namespace FileCabinetApp.Service
         /// <returns>Array of records.</returns>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.dateOfBirthDictionary.Count == 0)
-            {
-                return Array.Empty<FileCabinetRecord>();
-            }
-
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                this.recordsList = this.dateOfBirthDictionary[dateOfBirth].ToArray();
-                return this.recordsList;
+                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
+                {
+                    yield return element;
+                }
             }
 
-            return Array.Empty<FileCabinetRecord>();
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -501,16 +500,6 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
-        }
-
-        public IEnumerator<FileCabinetRecord> GetEnumerator()
-        {
-            return new FilesystemIterator<FileCabinetRecord>(this.recordsList);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }
