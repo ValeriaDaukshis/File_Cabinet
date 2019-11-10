@@ -79,10 +79,5 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <returns>count of deleted records and count of all records.</returns>
         (int, int) PurgeDeletedRecords();
-
-        /// <summary>
-        /// Dispose method.
-        /// </summary>
-        void Dispose();
     }
 }

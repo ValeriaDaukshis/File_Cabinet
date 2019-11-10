@@ -400,10 +400,6 @@ namespace FileCabinetApp.Service
             return builder.ToString();
         }
 
-        /// <summary>
-        /// Dispose.
-        /// </summary>
-        /// <param name="disposing">disposing.</param>
         private void Dispose(bool disposing)
         {
             if (this.disposed)

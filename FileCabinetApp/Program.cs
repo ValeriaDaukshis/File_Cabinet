@@ -6,8 +6,11 @@ using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
 using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
+using FileCabinetApp.Logger;
 using FileCabinetApp.Service;
+using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
 {
@@ -18,7 +21,8 @@ namespace FileCabinetApp
     {
         private const string DeveloperName = "Valeria Daukshis";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
-        private const string ServiceStorageFile = @"C:\Users\dauks\File-Cabinet\cabinet-records.db";
+        private const string ServiceStorageFile = "cabinet-records.db";
+        private const string ValidationRulesFile = "validation-rules.json";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static bool isRunning = true;
@@ -40,16 +44,21 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(ValidationRulesFile, optional: true, reloadOnChange: true);
+            var config = builder.Build();
+
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
                     }
                     else
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault();
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
@@ -60,6 +69,17 @@ namespace FileCabinetApp
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
+                    }
+
+                    if (o.StopWatcher == true)
+                    {
+                        fileCabinetService = new ServiceMeter(fileCabinetService);
+                    }
+
+                    if (o.Logger == true)
+                    {
+                        string sourceFilePath = CreateValidPath("logger.log");
+                        fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
                     }
                 });
 
@@ -90,7 +110,6 @@ namespace FileCabinetApp
                     });
             }
             while (isRunning);
-            fileCabinetService.Dispose();
         }
 
         private static ICommandHandler CreateCommandHandlers()
@@ -106,7 +125,7 @@ namespace FileCabinetApp
             var importCommand = new ImportCommandHandler(fileCabinetService);
             var exportCommand = new ExportCommandHandler(fileCabinetService);
             var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler(running);
+            var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
             var missedCommand = new MissedCommandHandler();
 
             helpCommand.SetNext(createCommand);
@@ -123,5 +142,8 @@ namespace FileCabinetApp
 
             return helpCommand;
         }
+
+        private static string CreateValidPath(string path) =>
+            Path.Combine(Directory.GetCurrentDirectory(), path);
     }
 }

@@ -22,8 +22,8 @@ namespace FileCabinetGenerator
         private static string outputFileName;
         private static int recordsAmount;
         private static int startId;
-        private static string firstName = "FirstName";
-        private static string lastName = "LastName";
+        private static string firstNameTemplate = "FirstName";
+        private static string lastNameTemplate = "LastName";
         private static int durationMinValue = 6;
         private static int durationMaxValue = 120;
         private static int creditSumMinValue = 10;
@@ -113,8 +113,8 @@ namespace FileCabinetGenerator
         
         private static void GenerateFields(int i,out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
-            firstName = Program.firstName + i;
-            lastName = Program.lastName + i;
+            firstName = Program.firstNameTemplate + i;
+            lastName = Program.lastNameTemplate + i;
             gender = i % 5 == 0 ? 'F' : 'M';
             dateOfBirth = RandomBirthDay();
             credit = new Random().Next(creditSumMinValue, creditSumMaxValue);

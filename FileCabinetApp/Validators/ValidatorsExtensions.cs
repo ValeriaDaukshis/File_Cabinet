@@ -1,4 +1,6 @@
 ﻿using System;
+using FileCabinetApp.Validators.ValidationParameters;
+using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp.Validators
 {
@@ -11,15 +13,21 @@ namespace FileCabinetApp.Validators
         /// Creates the custom.
         /// </summary>
         /// <param name="validatorBuilder">The validator builder.</param>
-        /// <returns> (IRecordValidator, ValidatorParameters).</returns>
-        public static (IRecordValidator, ValidatorParameters) CreateCustom(this ValidatorBuilder validatorBuilder)
+        /// <param name="config">The configuration.</param>
+        /// <returns>(IRecordValidator, ValidatorParameters).</returns>
+        public static (IRecordValidator, ValidatorParameters) CreateCustom(this ValidatorBuilder validatorBuilder, IConfigurationRoot config)
         {
             if (validatorBuilder is null)
             {
                 throw new ArgumentNullException(nameof(validatorBuilder), $"{nameof(validatorBuilder)} is null");
             }
 
-            var validatorParameters = new ValidatorParameters(2, 60, new DateTime(1930, 1, 1), DateTime.Now, 100, 5000, 6, 120);
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config), $"{nameof(config)} is null");
+            }
+
+            var validatorParameters = ReadParamsFromJson(config.GetSection("custom"));
             return (CreateValidator(validatorParameters, validatorBuilder), validatorParameters);
         }
 
@@ -27,29 +35,52 @@ namespace FileCabinetApp.Validators
         /// Creates the default.
         /// </summary>
         /// <param name="validatorBuilder">The validator builder.</param>
-        /// <returns> (IRecordValidator, ValidatorParameters).</returns>
-        public static (IRecordValidator, ValidatorParameters) CreateDefault(this ValidatorBuilder validatorBuilder)
+        /// <param name="config">The configuration.</param>
+        /// <returns>(IRecordValidator, ValidatorParameters).</returns>
+        public static (IRecordValidator, ValidatorParameters) CreateDefault(this ValidatorBuilder validatorBuilder, IConfigurationRoot config)
         {
             if (validatorBuilder is null)
             {
                 throw new ArgumentNullException(nameof(validatorBuilder), $"{nameof(validatorBuilder)} is null");
             }
 
-            var validatorParameters = new ValidatorParameters(4, 60, new DateTime(1950, 1, 1), DateTime.Now, 100, 10_000, 6, 500);
+            if (config is null)
+            {
+                throw new ArgumentNullException(nameof(config), $"{nameof(config)} is null");
+            }
+
+            var validatorParameters = ReadParamsFromJson(config.GetSection("default"));
             return (CreateValidator(validatorParameters, validatorBuilder), validatorParameters);
         }
 
         private static IRecordValidator CreateValidator(ValidatorParameters validatorParameters, ValidatorBuilder validatorBuilder)
         {
             IRecordValidator recordValidator = validatorBuilder
-                .ValidateFirstName(validatorParameters.MinLength, validatorParameters.MaxLength)
-                .ValidateLastName(validatorParameters.MinLength, validatorParameters.MaxLength)
+                .ValidateFirstName(validatorParameters.FirstNameCriterions.Min, validatorParameters.FirstNameCriterions.Max)
+                .ValidateLastName(validatorParameters.LastNameCriterions.Min, validatorParameters.LastNameCriterions.Max)
                 .ValidateGender()
-                .ValidateDateOfBirth(validatorParameters.MinDateOfBirth, validatorParameters.MaxDateOfBirth)
-                .ValidateCreditSum(validatorParameters.MinCreditSum, validatorParameters.MaxCreditSum)
-                .ValidateDuration(validatorParameters.MinPeriod, validatorParameters.MaxPeriod)
+                .ValidateDateOfBirth(validatorParameters.DateOfBirthCriterions.From, validatorParameters.DateOfBirthCriterions.To)
+                .ValidateCreditSum(validatorParameters.CreditSumCriterions.Min, validatorParameters.CreditSumCriterions.Max)
+                .ValidateDuration(validatorParameters.DurationCriterions.From, validatorParameters.DurationCriterions.To)
                 .Create();
             return recordValidator;
+        }
+
+        private static ValidatorParameters ReadParamsFromJson(IConfigurationSection config)
+        {
+            var firstNameCriterion = new FirstNameCriterions();
+            var lastNameCriterion = new LastNameCriterions();
+            var dateOfBirthCriterion = new DateOfBirthCriterions();
+            var durationCriterion = new DurationCriterions();
+            var creditSumCriterion = new CreditSumCriterions();
+
+            config.GetSection("firstName").Bind(firstNameCriterion);
+            config.GetSection("lastName").Bind(lastNameCriterion);
+            config.GetSection("dateOfBirth").Bind(dateOfBirthCriterion);
+            config.GetSection("creditSum").Bind(creditSumCriterion);
+            config.GetSection("duration").Bind(durationCriterion);
+
+            return new ValidatorParameters(firstNameCriterion, lastNameCriterion, dateOfBirthCriterion, creditSumCriterion, durationCriterion);
         }
     }
 }
