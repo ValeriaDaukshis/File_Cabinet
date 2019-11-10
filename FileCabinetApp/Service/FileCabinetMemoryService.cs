@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -126,19 +127,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return this.firstNameDictionary[firstName].AsReadOnly();
+                return new MemoryIterator<FileCabinetRecord>(this.firstNameDictionary[firstName].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -146,19 +147,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return this.lastNameDictionary[lastName].AsReadOnly();
+                return new MemoryIterator<FileCabinetRecord>(this.lastNameDictionary[lastName].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -166,19 +167,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+                return new MemoryIterator<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -282,21 +283,6 @@ namespace FileCabinetApp.Service
 
             return maxId + 1;
         }
-
-        private void CheckFileCabinetRecord(FileCabinetRecord record)
-        {
-            if (record is null)
-            {
-                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
-            }
-        }
-
-        private void CheckStringParams(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException($"{nameof(value)} is null or empty", nameof(value));
-            }
-        }
+        
     }
 }

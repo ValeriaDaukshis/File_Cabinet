@@ -72,7 +72,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 value = value.Substring(1, value.Length - 2);
             }
 
-            ReadOnlyCollection<FileCabinetRecord> foundResult = new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            IRecordIterator<FileCabinetRecord> foundResult = null;
 
             if (field == "firstname")
             {
@@ -88,12 +88,23 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 foundResult = this.FileCabinetService.FindByDateOfBirth(date);
             }
 
-            if (foundResult.Count > 0)
+            if (!(foundResult is null))
             {
-                this.printer.Print(foundResult);
+                //this.printer.Print(foundResult);
+                while (foundResult.MoveNext())
+                {
+                   var rec = foundResult.Current();
+                   Console.WriteLine($"Id: {rec.Id}");
+                   Console.WriteLine($"\tFirst name: {rec.FirstName}");
+                   Console.WriteLine($"\tLast name: {rec.LastName}");
+                   Console.WriteLine($"\tGender: {rec.Gender}");
+                   Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
+                   Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
+                   Console.WriteLine($"\tCredit duration: {rec.Duration}");
+                }
             }
 
-            if (foundResult.Count == 0)
+            if (foundResult is null)
             {
                 Console.WriteLine($"{value} is not found");
             }

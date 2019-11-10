@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -278,19 +279,19 @@ namespace FileCabinetApp.Service
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+                return new FilesystemIterator<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -300,19 +301,19 @@ namespace FileCabinetApp.Service
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return this.lastNameDictionary[lastName].AsReadOnly();
+                return new FilesystemIterator<FileCabinetRecord>(this.lastNameDictionary[lastName].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
@@ -322,19 +323,19 @@ namespace FileCabinetApp.Service
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.Count == 0)
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
             }
 
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return this.firstNameDictionary[firstName].AsReadOnly();
+                return new FilesystemIterator<FileCabinetRecord>(this.firstNameDictionary[firstName].ToArray());
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>

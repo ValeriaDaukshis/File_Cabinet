@@ -109,10 +109,10 @@ namespace FileCabinetApp.Timer
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             this.stopwatch.StartTimer();
-            ReadOnlyCollection<FileCabinetRecord> records = this.service.FindByDateOfBirth(dateOfBirth);
+            IRecordIterator<FileCabinetRecord> records = this.service.FindByDateOfBirth(dateOfBirth);
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             Console.WriteLine($"Find method execution duration is {this.TimeInMilliseconds} ticks.");
@@ -126,10 +126,10 @@ namespace FileCabinetApp.Timer
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.stopwatch.StartTimer();
-            ReadOnlyCollection<FileCabinetRecord> records = this.service.FindByLastName(lastName);
+            IRecordIterator<FileCabinetRecord> records = this.service.FindByLastName(lastName);
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             Console.WriteLine($"Find method execution duration is {this.TimeInMilliseconds} ticks.");
@@ -143,10 +143,10 @@ namespace FileCabinetApp.Timer
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.stopwatch.StartTimer();
-            ReadOnlyCollection<FileCabinetRecord> records = this.service.FindByFirstName(firstName);
+            IRecordIterator<FileCabinetRecord> records = this.service.FindByFirstName(firstName);
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             Console.WriteLine($"Find method execution duration is {this.TimeInMilliseconds} ticks.");

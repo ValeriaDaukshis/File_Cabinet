@@ -112,10 +112,10 @@ namespace FileCabinetApp.Logger
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             this.writer.WriteLine($"{CreateText("FindByDateOfBirth")} with firstName = '{dateOfBirth}'");
-            ReadOnlyCollection<FileCabinetRecord> collection = this.service.FindByDateOfBirth(dateOfBirth);
+            IRecordIterator<FileCabinetRecord> collection = this.service.FindByDateOfBirth(dateOfBirth);
             this.writer.WriteLine($"FindByDateOfBirth() returned '{collection}'");
             this.writer.Flush();
             return collection;
@@ -128,10 +128,10 @@ namespace FileCabinetApp.Logger
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.writer.WriteLine($"{CreateText("FindByLastName")} with firstName = '{lastName}'");
-            ReadOnlyCollection<FileCabinetRecord> collection = this.service.FindByLastName(lastName);
+            IRecordIterator<FileCabinetRecord> collection = this.service.FindByLastName(lastName);
             this.writer.WriteLine($"FindByLastName() returned '{collection}'");
             return collection;
         }
@@ -143,10 +143,10 @@ namespace FileCabinetApp.Logger
         /// <returns>
         /// Array of records.
         /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.writer.WriteLine($"{CreateText("FindByFirstName")} with firstName = '{firstName}'");
-            ReadOnlyCollection<FileCabinetRecord> collection = this.service.FindByFirstName(firstName);
+            IRecordIterator<FileCabinetRecord> collection = this.service.FindByFirstName(firstName);
             this.writer.WriteLine($"FindByFirstName() returned '{collection}'");
             this.writer.Flush();
             return collection;
