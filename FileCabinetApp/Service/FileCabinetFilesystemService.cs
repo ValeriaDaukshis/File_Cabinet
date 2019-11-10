@@ -285,6 +285,8 @@ namespace FileCabinetApp.Service
                 {
                     yield return element;
                 }
+
+                yield break;
             }
 
             foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
@@ -306,6 +308,8 @@ namespace FileCabinetApp.Service
                 {
                     yield return element;
                 }
+
+                yield break;
             }
 
             foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
@@ -327,6 +331,8 @@ namespace FileCabinetApp.Service
                 {
                     yield return element;
                 }
+
+                yield break;
             }
 
             foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())

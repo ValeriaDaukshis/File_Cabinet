@@ -90,10 +90,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (!(foundResult is null))
             {
-                if (!this.printer.Print(foundResult))
-                {
-                    Console.WriteLine($"{value} is not found");
-                }
+                this.printer.Print(foundResult);
+
             }
 
             if (foundResult is null)
