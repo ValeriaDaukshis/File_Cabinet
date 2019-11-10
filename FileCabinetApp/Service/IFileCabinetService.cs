@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using FileCabinetApp.Records;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
 {
@@ -39,21 +41,21 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <returns>Array of records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
+        IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth);
 
         /// <summary>
         /// Finds the last name of the by.
         /// </summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>Array of records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName);
+        IEnumerable<FileCabinetRecord> FindByLastName(string lastName);
 
         /// <summary>
         /// Finds the first name of the by.
         /// </summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>Array of records.</returns>
-        ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName);
+        IEnumerable<FileCabinetRecord> FindByFirstName(string firstName);
 
         /// <summary>
         /// Makes the snapshot.

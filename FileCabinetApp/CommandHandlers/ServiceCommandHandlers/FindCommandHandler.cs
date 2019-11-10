@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.CommandHandlers.Printer;
@@ -55,7 +56,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            parameters = parameters.ToLower(Culture);
             string[] inputParameters = parameters.Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
             if (inputParameters.Length < 2)
@@ -64,7 +64,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            string field = inputParameters[0];
+            string field = inputParameters[0].ToLower(Culture);
             string value = inputParameters[1];
 
             if (value[0] == '"')
@@ -72,7 +72,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 value = value.Substring(1, value.Length - 2);
             }
 
-            ReadOnlyCollection<FileCabinetRecord> foundResult = new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            IEnumerable<FileCabinetRecord> foundResult = null;
 
             if (field == "firstname")
             {
@@ -88,12 +88,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 foundResult = this.FileCabinetService.FindByDateOfBirth(date);
             }
 
-            if (foundResult.Count > 0)
+            if (!(foundResult is null))
             {
                 this.printer.Print(foundResult);
+
             }
 
-            if (foundResult.Count == 0)
+            if (foundResult is null)
             {
                 Console.WriteLine($"{value} is not found");
             }

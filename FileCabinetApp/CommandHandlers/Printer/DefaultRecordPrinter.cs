@@ -14,8 +14,9 @@ namespace FileCabinetApp.CommandHandlers.Printer
         /// Prints the specified record.
         /// </summary>
         /// <param name="record">The record.</param>
-        public void Print(IEnumerable<FileCabinetRecord> record)
+        public bool Print(IEnumerable<FileCabinetRecord> record)
         {
+            bool isPrinted = false;
             if (record is null)
             {
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
@@ -30,7 +31,10 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
                 Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
                 Console.WriteLine($"\tCredit duration: {rec.Duration}");
+                isPrinted = true;
             }
+
+            return isPrinted;
         }
     }
 }

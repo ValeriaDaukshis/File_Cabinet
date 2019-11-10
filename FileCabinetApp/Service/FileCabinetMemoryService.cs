@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -126,19 +127,22 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.Count == 0)
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
-
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return this.firstNameDictionary[firstName].AsReadOnly();
+                foreach (var element in this.firstNameDictionary[firstName])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -146,19 +150,22 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.Count == 0)
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
-
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return this.lastNameDictionary[lastName].AsReadOnly();
+                foreach (var element in this.lastNameDictionary[lastName])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -166,19 +173,22 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.dateOfBirthDictionary.Count == 0)
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
-
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
@@ -226,10 +236,14 @@ namespace FileCabinetApp.Service
                 if (index != -1)
                 {
                     this.list[index] = record;
+                    this.EditRecord(record);
                 }
                 else
                 {
                     this.list.Add(record);
+                    this.AddValueToDictionary(record.FirstName, this.firstNameDictionary, record);
+                    this.AddValueToDictionary(record.LastName, this.lastNameDictionary, record);
+                    this.AddValueToDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
                 }
             }
 
@@ -281,22 +295,6 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
-        }
-
-        private void CheckFileCabinetRecord(FileCabinetRecord record)
-        {
-            if (record is null)
-            {
-                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
-            }
-        }
-
-        private void CheckStringParams(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException($"{nameof(value)} is null or empty", nameof(value));
-            }
         }
     }
 }

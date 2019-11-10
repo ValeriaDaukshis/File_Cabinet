@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -272,69 +273,72 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Finds the by date of birth.
+        /// Finds the first name of the by.
         /// </summary>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        /// <param name="firstName">The first name.</param>
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.dateOfBirthDictionary.Count == 0)
+            if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                foreach (var element in this.firstNameDictionary[firstName])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
             {
-                return this.dateOfBirthDictionary[dateOfBirth].AsReadOnly();
+                yield return fileCabinetRecord;
             }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
         /// Finds the last name of the by.
         /// </summary>
         /// <param name="lastName">The last name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.Count == 0)
-            {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
-            }
-
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return this.lastNameDictionary[lastName].AsReadOnly();
+                foreach (var element in this.lastNameDictionary[lastName])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
+            {
+                yield return fileCabinetRecord;
+            }
         }
 
         /// <summary>
-        /// Finds the first name of the by.
+        /// Finds the by date of birth.
         /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.firstNameDictionary.Count == 0)
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
+                {
+                    yield return element;
+                }
+
+                yield break;
             }
 
-            if (this.firstNameDictionary.ContainsKey(firstName))
+            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
             {
-                return this.firstNameDictionary[firstName].AsReadOnly();
+                yield return fileCabinetRecord;
             }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
         }
 
         /// <summary>
