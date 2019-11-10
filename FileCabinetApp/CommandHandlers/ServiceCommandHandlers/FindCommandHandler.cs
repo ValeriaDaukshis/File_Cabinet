@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.CommandHandlers.Printer;
@@ -72,7 +73,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 value = value.Substring(1, value.Length - 2);
             }
 
-            IRecordIterator<FileCabinetRecord> foundResult = null;
+            IEnumerable<FileCabinetRecord> foundResult = null;
 
             if (field == "firstname")
             {
@@ -90,18 +91,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (!(foundResult is null))
             {
-                //this.printer.Print(foundResult);
-                while (foundResult.MoveNext())
-                {
-                   var rec = foundResult.Current();
-                   Console.WriteLine($"Id: {rec.Id}");
-                   Console.WriteLine($"\tFirst name: {rec.FirstName}");
-                   Console.WriteLine($"\tLast name: {rec.LastName}");
-                   Console.WriteLine($"\tGender: {rec.Gender}");
-                   Console.WriteLine($"\tDate of birth: {rec.DateOfBirth:yyyy-MMMM-dd}");
-                   Console.WriteLine($"\tCredit sum: {rec.CreditSum}");
-                   Console.WriteLine($"\tCredit duration: {rec.Duration}");
-                }
+                this.printer.Print(foundResult);
             }
 
             if (foundResult is null)

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Service
 {
-    public class FilesystemIterator<FileCabinetRecord> : IRecordIterator<FileCabinetRecord>
+    public class FilesystemIterator<FileCabinetRecord> : IEnumerator<FileCabinetRecord>
     {
         private FileCabinetRecord[] collection;
         private int currentIndex;
+        private object current;
+        private FileCabinetRecord current1;
+        private bool disposed = false;
 
         public FilesystemIterator(FileCabinetRecord[] records)
         {
@@ -24,14 +29,41 @@ namespace FileCabinetApp.Service
             this.currentIndex = -1;
         }
 
-        public FileCabinetRecord Current()
+        FileCabinetRecord IEnumerator<FileCabinetRecord>.Current => current1;
+
+        object IEnumerator.Current => current;
+
+        public FileCabinetRecord Current
         {
-            if (this.currentIndex == -1 || this.currentIndex == this.collection.Length)
+            get
             {
-                throw new InvalidOperationException();
+                if (this.currentIndex == -1 || this.currentIndex == this.collection.Length)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return this.collection[this.currentIndex];
+            }
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
             }
 
-            return this.collection[this.currentIndex];
+            if (disposing)
+            {
+            }
+
+            this.disposed = true;
         }
     }
 }

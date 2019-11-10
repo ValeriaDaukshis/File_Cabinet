@@ -16,7 +16,7 @@ namespace FileCabinetApp.Service
     /// FileCabinetFilesystemService.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
-    public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
+    public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable, IEnumerable<FileCabinetRecord>
     {
         private const int SizeOfStringRecord = 120;
         private const long RecordSize = 278;
@@ -31,6 +31,7 @@ namespace FileCabinetApp.Service
         private readonly BinaryWriter writer;
         private int countOfRecords;
         private bool disposed = false;
+        private FileCabinetRecord[] recordsList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -273,69 +274,66 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Finds the by date of birth.
+        /// Finds the first name of the by.
         /// </summary>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        /// <param name="firstName">The first name.</param>
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.dateOfBirthDictionary.Count == 0)
+            if (this.firstNameDictionary.Count == 0)
             {
-                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return new FilesystemIterator<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth].ToArray());
+                this.recordsList = this.firstNameDictionary[firstName].ToArray();
+                return this.recordsList;
             }
 
-            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
         /// Finds the last name of the by.
         /// </summary>
         /// <param name="lastName">The last name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.Count == 0)
             {
-                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return new FilesystemIterator<FileCabinetRecord>(this.lastNameDictionary[lastName].ToArray());
+                this.recordsList = this.lastNameDictionary[lastName].ToArray();
+                return this.recordsList;
             }
 
-            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
-        /// Finds the first name of the by.
+        /// Finds the by date of birth.
         /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <returns>Array of records.</returns>
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
-            if (this.firstNameDictionary.Count == 0)
+            if (this.dateOfBirthDictionary.Count == 0)
             {
-                return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
-            if (this.firstNameDictionary.ContainsKey(firstName))
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return new FilesystemIterator<FileCabinetRecord>(this.firstNameDictionary[firstName].ToArray());
+                this.recordsList = this.dateOfBirthDictionary[dateOfBirth].ToArray();
+                return this.recordsList;
             }
 
-            return new FilesystemIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -503,6 +501,16 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
+        }
+
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
+        {
+            return new FilesystemIterator<FileCabinetRecord>(this.recordsList);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace FileCabinetApp.Service
     /// <summary>
     /// FileCabinetService.
     /// </summary>
-    public class FileCabinetMemoryService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService, IEnumerable<FileCabinetRecord>
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -127,19 +127,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="firstName">The first name.</param>
         /// <returns>Array of records.</returns>
-        public IRecordIterator<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.Count == 0)
             {
-                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                return new MemoryIterator<FileCabinetRecord>(this.firstNameDictionary[firstName].ToArray());
+                return this.firstNameDictionary[firstName].ToArray();
             }
 
-            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -147,19 +147,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="lastName">The last name.</param>
         /// <returns>Array of records.</returns>
-        public IRecordIterator<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.Count == 0)
             {
-                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                return new MemoryIterator<FileCabinetRecord>(this.lastNameDictionary[lastName].ToArray());
+                return this.lastNameDictionary[lastName].ToArray();
             }
 
-            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -167,19 +167,19 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <returns>Array of records.</returns>
-        public IRecordIterator<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
         {
             if (this.dateOfBirthDictionary.Count == 0)
             {
-                return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+                return Array.Empty<FileCabinetRecord>();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                return new MemoryIterator<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth].ToArray());
+                return this.dateOfBirthDictionary[dateOfBirth].ToArray();
             }
 
-            return new MemoryIterator<FileCabinetRecord>(Array.Empty<FileCabinetRecord>());
+            return Array.Empty<FileCabinetRecord>();
         }
 
         /// <summary>
@@ -283,6 +283,15 @@ namespace FileCabinetApp.Service
 
             return maxId + 1;
         }
-        
+
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
+        {
+            return new MemoryIterator<FileCabinetRecord>(this.list.ToArray());
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

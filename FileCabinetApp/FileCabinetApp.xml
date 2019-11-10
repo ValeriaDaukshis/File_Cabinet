@@ -941,32 +941,26 @@
             All records.
             </returns>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
+        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByFirstName(System.String)">
             <summary>
-            Finds the by date of birth.
+            Finds the first name of the by.
             </summary>
-            <param name="dateOfBirth">The date of birth.</param>
-            <returns>
-            Array of records.
-            </returns>
+            <param name="firstName">The first name.</param>
+            <returns>Array of records.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByLastName(System.String)">
             <summary>
             Finds the last name of the by.
             </summary>
             <param name="lastName">The last name.</param>
-            <returns>
-            Array of records.
-            </returns>
+            <returns>Array of records.</returns>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByFirstName(System.String)">
+        <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.FindByDateOfBirth(System.DateTime)">
             <summary>
-            Finds the first name of the by.
+            Finds the by date of birth.
             </summary>
-            <param name="firstName">The first name.</param>
-            <returns>
-            Array of records.
-            </returns>
+            <param name="dateOfBirth">The date of birth.</param>
+            <returns>Array of records.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.MakeSnapshot">
             <summary>
