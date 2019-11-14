@@ -138,11 +138,6 @@ namespace FileCabinetApp.Service
 
                 yield break;
             }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
-            }
         }
 
         /// <summary>
@@ -161,11 +156,6 @@ namespace FileCabinetApp.Service
 
                 yield break;
             }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
-            }
         }
 
         /// <summary>
@@ -183,11 +173,6 @@ namespace FileCabinetApp.Service
                 }
 
                 yield break;
-            }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
             }
         }
 

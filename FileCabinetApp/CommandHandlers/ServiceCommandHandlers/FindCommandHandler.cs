@@ -67,7 +67,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             string field = inputParameters[0].ToLower(Culture);
             string value = inputParameters[1];
 
-            if (value[0] == '"')
+            if (value[0] == '\'' || value[0] == '"')
             {
                 value = value.Substring(1, value.Length - 2);
             }
@@ -91,7 +91,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             if (!(foundResult is null))
             {
                 this.printer.Print(foundResult);
-
             }
 
             if (foundResult is null)

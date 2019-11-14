@@ -117,6 +117,7 @@ namespace FileCabinetApp
             var recordPrinter = new DefaultRecordPrinter();
             var helpCommand = new HelpCommandHandler();
             var createCommand = new CreateCommandHandler(fileCabinetService);
+            var insertCommand = new InsertCommandHandler(fileCabinetService);
             var getCommand = new GetCommandHandler(fileCabinetService, recordPrinter);
             var editCommand = new EditCommandHandler(fileCabinetService);
             var deleteCommand = new DeleteCommandHandler(fileCabinetService);
@@ -129,7 +130,8 @@ namespace FileCabinetApp
             var missedCommand = new MissedCommandHandler();
 
             helpCommand.SetNext(createCommand);
-            createCommand.SetNext(getCommand);
+            createCommand.SetNext(insertCommand);
+            insertCommand.SetNext(getCommand);
             getCommand.SetNext(editCommand);
             editCommand.SetNext(deleteCommand);
             deleteCommand.SetNext(findCommand);

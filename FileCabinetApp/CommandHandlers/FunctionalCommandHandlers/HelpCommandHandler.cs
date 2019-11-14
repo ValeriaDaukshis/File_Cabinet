@@ -18,6 +18,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "insert", "creates a new record", "The 'insert' command creates a new record. Syntax: insert (firstname, lastname, gender, dateofbirth, credit, duration) values ('your values', ...)" },
             new string[] { "get", "get all record", "The 'get' command get all record." },
             new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
             new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file." },

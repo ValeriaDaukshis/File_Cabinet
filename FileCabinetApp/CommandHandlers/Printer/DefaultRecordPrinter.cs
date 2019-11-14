@@ -14,6 +14,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
         /// Prints the specified record.
         /// </summary>
         /// <param name="record">The record.</param>
+        /// <returns>true if records was printed.</returns>
         public bool Print(IEnumerable<FileCabinetRecord> record)
         {
             bool isPrinted = false;

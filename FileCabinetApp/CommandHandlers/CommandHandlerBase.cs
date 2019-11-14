@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -22,41 +24,41 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         protected static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
 
-        private static Func<string, Tuple<bool, string, string>> stringConverter = input =>
+        private static readonly Func<string, Tuple<bool, string, string>> StringConverter = input =>
         {
             bool success = !string.IsNullOrEmpty(input) && input.Trim().Length != 0;
             return new Tuple<bool, string, string>(success, input, input.Trim());
         };
 
-        private static Func<string, Tuple<bool, string, char>> charConverter = input =>
+        private static readonly Func<string, Tuple<bool, string, char>> CharConverter = input =>
         {
             var result = '\x0000';
             bool success = char.TryParse(input?.Trim().ToUpper(Culture), out result);
             return new Tuple<bool, string, char>(success, input, result);
         };
 
-        private static Func<string, Tuple<bool, string, DateTime>> dateTimeConverter = input =>
+        private static readonly Func<string, Tuple<bool, string, DateTime>> DateTimeConverter = input =>
         {
             var result = DateTime.Now;
             bool success = !string.IsNullOrEmpty(input) && DateTime.TryParse(input, DateTimeCulture, DateTimeStyles.None, out result);
             return new Tuple<bool, string, DateTime>(success, input, result);
         };
 
-        private static Func<string, Tuple<bool, string, decimal>> decimalConverter = input =>
+        private static readonly Func<string, Tuple<bool, string, decimal>> DecimalConverter = input =>
         {
             var result = 0.0m;
             bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, out result);
             return new Tuple<bool, string, decimal>(success, input, result);
         };
 
-        private static Func<string, Tuple<bool, string, short>> shortConverter = input =>
+        private static readonly Func<string, Tuple<bool, string, short>> ShortConverter = input =>
         {
             short result = 0;
             bool success = !string.IsNullOrEmpty(input) && short.TryParse(input, out result);
             return new Tuple<bool, string, short>(success, input, result);
         };
 
-        private static Func<string, Tuple<bool, string>> firstNameValidator = input =>
+        private static readonly Func<string, Tuple<bool, string>> FirstNameValidator = input =>
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -71,7 +73,7 @@ namespace FileCabinetApp.CommandHandlers
             return new Tuple<bool, string>(true, input);
         };
 
-        private static Func<string, Tuple<bool, string>> lastNameValidator = input =>
+        private static readonly Func<string, Tuple<bool, string>> LastNameValidator = input =>
         {
             if (string.IsNullOrEmpty(input))
             {
@@ -86,7 +88,7 @@ namespace FileCabinetApp.CommandHandlers
             return new Tuple<bool, string>(true, input);
         };
 
-        private static Func<char, Tuple<bool, string>> genderValidator = gender =>
+        private static readonly Func<char, Tuple<bool, string>> GenderValidator = gender =>
         {
             if (gender != 'M' && gender != 'F')
             {
@@ -96,7 +98,7 @@ namespace FileCabinetApp.CommandHandlers
             return new Tuple<bool, string>(true, $"{gender}");
         };
 
-        private static Func<decimal, Tuple<bool, string>> creditSumValidator = input =>
+        private static readonly Func<decimal, Tuple<bool, string>> CreditSumValidator = input =>
         {
             if (input > Program.ValidatorParams.CreditSumCriterions.Max || input < Program.ValidatorParams.CreditSumCriterions.Min)
             {
@@ -106,7 +108,7 @@ namespace FileCabinetApp.CommandHandlers
             return new Tuple<bool, string>(true, $"{input}");
         };
 
-        private static Func<DateTime, Tuple<bool, string>> dateOfBirthValidator = input =>
+        private static readonly Func<DateTime, Tuple<bool, string>> DateOfBirthValidator = input =>
         {
             if (input > Program.ValidatorParams.DateOfBirthCriterions.To)
             {
@@ -121,7 +123,7 @@ namespace FileCabinetApp.CommandHandlers
             return new Tuple<bool, string>(true, $"{input:MM/dd/yyyy}");
         };
 
-        private static Func<short, Tuple<bool, string>> durationValidator = input =>
+        private static readonly Func<short, Tuple<bool, string>> DurationValidator = input =>
         {
             if (input > Program.ValidatorParams.DurationCriterions.To || input < Program.ValidatorParams.DurationCriterions.From)
             {
@@ -129,6 +131,84 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return new Tuple<bool, string>(true, $"{input}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> FirstNameSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("firstname"))
+            {
+                return new Tuple<bool, string>(false, "Can not find firstname member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "firstname");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> LastNameSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("lastname"))
+            {
+                return new Tuple<bool, string>(false, "Can not find lastname member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "lastname");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> GenderSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("gender"))
+            {
+                return new Tuple<bool, string>(false, "Can not find gender member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "gender");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> CreditSumSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("credit"))
+            {
+                return new Tuple<bool, string>(false, "Can not find credit member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "credit");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> DateOfBirthSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("dateofbirth"))
+            {
+                return new Tuple<bool, string>(false, "Can not find dateofbirth member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "dateofbirth");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
+        };
+
+        private static readonly Func<string[], string[], Tuple<bool, string>> DurationSearcher = (fields, values) =>
+        {
+            if (!fields.Contains("duration"))
+            {
+                return new Tuple<bool, string>(false, "Can not find duration member");
+            }
+
+            var index = fields.ToList().FindIndex(x => x == "duration");
+            var item = values[index];
+
+            return new Tuple<bool, string>(true, $"{item}");
         };
 
         /// <summary>
@@ -190,17 +270,38 @@ namespace FileCabinetApp.CommandHandlers
         protected static void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             Console.Write("First name: ");
-            firstName = ReadInput(stringConverter, firstNameValidator);
+            firstName = ReadInput(StringConverter, FirstNameValidator);
             Console.Write("Last name: ");
-            lastName = ReadInput(stringConverter, lastNameValidator);
+            lastName = ReadInput(StringConverter, LastNameValidator);
             Console.Write("Gender(M/F): ");
-            gender = ReadInput(charConverter, genderValidator);
+            gender = ReadInput(CharConverter, GenderValidator);
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = ReadInput(dateTimeConverter, dateOfBirthValidator);
+            dateOfBirth = ReadInput(DateTimeConverter, DateOfBirthValidator);
             Console.Write("Credit sum(bel rub): ");
-            credit = ReadInput(decimalConverter, creditSumValidator);
+            credit = ReadInput(DecimalConverter, CreditSumValidator);
             Console.Write("Credit duration(month): ");
-            duration = ReadInput(shortConverter, durationValidator);
+            duration = ReadInput(ShortConverter, DurationValidator);
+        }
+
+        /// <summary>
+        /// Prints the input fields.
+        /// </summary>
+        /// <param name="fields">The fields.</param>
+        /// <param name="values">The values.</param>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="credit">The credit.</param>
+        /// <param name="duration">The duration.</param>
+        protected static void PrintInputFields(string[] fields, string[] values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        {
+            firstName = ReadInput(fields, values, FirstNameSearcher, StringConverter, FirstNameValidator);
+            lastName = ReadInput(fields, values, LastNameSearcher, StringConverter, LastNameValidator);
+            gender = ReadInput(fields, values, GenderSearcher, CharConverter, GenderValidator);
+            dateOfBirth = ReadInput(fields, values, DateOfBirthSearcher, DateTimeConverter, DateOfBirthValidator);
+            credit = ReadInput(fields, values, CreditSumSearcher, DecimalConverter, CreditSumValidator);
+            duration = ReadInput(fields, values, DurationSearcher, ShortConverter, DurationValidator);
         }
 
         /// <summary>
@@ -231,6 +332,35 @@ namespace FileCabinetApp.CommandHandlers
             fileFormat = inputParameters[0].ToLower(Culture);
             path = inputParameters[1];
             return true;
+        }
+
+        private static T ReadInput<T>(string[] fields, string[] values, Func<string[], string[], Tuple<bool, string>> finder, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            T value;
+            var inputResult = finder(fields, values);
+            if (!inputResult.Item1)
+            {
+                throw new ArgumentException($"Conversion failed: {inputResult.Item2}. Please, correct your input.");
+            }
+
+            string input = inputResult.Item2;
+
+            var conversionResult = converter(input);
+
+            if (!conversionResult.Item1)
+            {
+                throw new ArgumentException($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+            }
+
+            value = conversionResult.Item3;
+
+            var validationResult = validator(value);
+            if (!validationResult.Item1)
+            {
+                throw new ArgumentException($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+            }
+
+            return value;
         }
 
         private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)

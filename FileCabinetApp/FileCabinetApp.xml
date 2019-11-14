@@ -96,6 +96,19 @@
             <param name="credit">credit sum.</param>
             <param name="duration">duration.</param>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String[],System.String[],System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
+            <summary>
+            Prints the input fields.
+            </summary>
+            <param name="fields">The fields.</param>
+            <param name="values">The values.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ImportExportParametersSpliter(System.String,System.String@,System.String@)">
             <summary>
             Imports the export parameters spliter.
@@ -176,6 +189,7 @@
             Prints the specified record.
             </summary>
             <param name="record">The record.</param>
+            <returns>true if records was printed.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.Printer.IRecordPrinter">
             <summary>
@@ -187,6 +201,7 @@
             Prints the specified records.
             </summary>
             <param name="records">The records.</param>
+            <returns>true if records was printed.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
@@ -330,6 +345,24 @@
             <param name="fileCabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler">
+            <summary>
+            InsertCommandHandler.
+            </summary>
+            <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">The file cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the specified command request.
             </summary>
