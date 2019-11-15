@@ -162,6 +162,12 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler.#ctor(System.String[][])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler"/> class.
+            </summary>
+            <param name="help">The help.</param>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the specified command request.
@@ -173,6 +179,12 @@
             MissedCommandHandler.
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler"/> class.
+            </summary>
+            <param name="commands">The commands.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>

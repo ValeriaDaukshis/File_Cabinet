@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
@@ -29,6 +30,28 @@ namespace FileCabinetApp
         private static IFileCabinetService fileCabinetService;
 
         private static Action<bool> running = b => isRunning = b;
+
+        private static string[][] helpMessages = new string[][]
+        {
+            new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
+            new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics." },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "insert", "creates a new record", "The 'insert' command creates a new record. Syntax: insert (firstname, lastname, gender, dateofbirth, credit, duration) values ('your values', ...)" },
+            new string[] { "get", "get all record", "The 'get' command get all record." },
+            new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
+            new string[] { "update", "edit record by field(s)", "The 'update' command edit record by field(s). Syntax: update set field = value, field2 = value2 where field3 = value3 (and field4 = value4 ...)" },
+            new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file." },
+            new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file." },
+            new string[] { "remove", "delete record by id", "The 'remove' command delete record by id." },
+            new string[] { "delete", "delete record by any field", "The 'remove' command delete record by any field. Syntax: delete where firstname/lastname/... = value" },
+            new string[] { "purge", "purge the file", "The 'purge' command purge the file." },
+            new string[]
+            {
+                "find", "find record by firstname/lastname/dateofbirth",
+                "The 'find' command find record by firstname/lastname/dateofbirth.",
+            },
+        };
 
         /// <summary>
         /// Gets or sets validatorParams.
@@ -114,8 +137,9 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
+            var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 3 == 0).ToArray();
             var recordPrinter = new DefaultRecordPrinter();
-            var helpCommand = new HelpCommandHandler();
+            var helpCommand = new HelpCommandHandler(helpMessages);
             var createCommand = new CreateCommandHandler(fileCabinetService);
             var insertCommand = new InsertCommandHandler(fileCabinetService);
             var getCommand = new GetCommandHandler(fileCabinetService, recordPrinter);
@@ -129,7 +153,7 @@ namespace FileCabinetApp
             var exportCommand = new ExportCommandHandler(fileCabinetService);
             var purgeCommand = new PurgeCommandHandler(fileCabinetService);
             var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
-            var missedCommand = new MissedCommandHandler();
+            var missedCommand = new MissedCommandHandler(commands);
 
             helpCommand.SetNext(createCommand);
             createCommand.SetNext(insertCommand);
