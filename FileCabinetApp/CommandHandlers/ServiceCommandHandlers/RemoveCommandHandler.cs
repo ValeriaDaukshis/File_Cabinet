@@ -7,16 +7,17 @@ using FileCabinetApp.Service;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// EditCommandHandler.
+    /// CommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
-    public class EditCommandHandler : ServiceCommandHandlerBase
+    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    public class RemoveCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
+        /// Initializes a new instance of the <see cref="RemoveCommandHandler"/> class.
+        /// DeleteCommandHandler constructor.
         /// </summary>
-        /// <param name="cabinetService">The file cabinet service.</param>
-        public EditCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="cabinetService">fileCabinetService.</param>
+        public RemoveCommandHandler(IFileCabinetService cabinetService)
             : base(cabinetService)
         {
         }
@@ -25,6 +26,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
+        /// <exception cref="ArgumentNullException">commandRequest.</exception>
         public override void Handle(AppCommandRequest commandRequest)
         {
             if (commandRequest is null)
@@ -32,9 +34,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
             }
 
-            if (commandRequest.Command == "edit")
+            if (commandRequest.Command == "remove")
             {
-                this.Edit(commandRequest.Parameters);
+                this.Delete(commandRequest.Parameters);
             }
             else
             {
@@ -42,7 +44,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
-        private void Edit(string parameters)
+        private void Delete(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
             {
@@ -62,26 +64,24 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 FileCabinetRecord record;
                 if ((record = records.Find(x => x.Id == id)) != null)
                 {
-                    PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    record = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
-                    this.CabinetService.EditRecord(record);
-                    Console.WriteLine($"Record #{parameters} is updated");
+                    this.CabinetService.RemoveRecord(record);
+                    Console.WriteLine($"Record #{parameters} was deleted");
                 }
             }
             catch (FileRecordNotFoundException ex)
             {
                 Console.WriteLine($"{ex.Value} was not found");
-                Console.WriteLine($"Record #{parameters} was not updated ");
+                Console.WriteLine($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not updated ");
+                Console.WriteLine($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not updated");
+                Console.WriteLine($"Record #{parameters} was not deleted");
             }
         }
     }

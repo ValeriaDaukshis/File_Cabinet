@@ -9,17 +9,20 @@ namespace FileCabinetApp.CommandHandlers
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>
-        /// IFileCabinetService.
-        /// </summary>
-        protected readonly IFileCabinetService FileCabinetService;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
-        protected ServiceCommandHandlerBase(IFileCabinetService fileCabinetService)
+        /// <param name="cabinetService">The file cabinet service.</param>
+        protected ServiceCommandHandlerBase(IFileCabinetService cabinetService)
         {
-            this.FileCabinetService = fileCabinetService;
+            this.CabinetService = cabinetService;
         }
+
+        /// <summary>
+        /// Gets or sets iFileCabinetService.
+        /// </summary>
+        /// <value>
+        /// IFileCabinetService.
+        /// </value>
+        protected IFileCabinetService CabinetService { get; set; }
     }
 }

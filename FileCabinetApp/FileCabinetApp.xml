@@ -209,16 +209,19 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
-        <member name="F:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.FileCabinetService">
-            <summary>
-            IFileCabinetService.
-            </summary>
-        </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.Service.IFileCabinetService)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.CabinetService">
+            <summary>
+            Gets or sets iFileCabinetService.
+            </summary>
+            <value>
+            IFileCabinetService.
+            </value>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler">
             <summary>
@@ -230,7 +233,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -240,16 +243,15 @@
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler">
             <summary>
-            CommandHandler.
+            DeleteCommandHandler.
             </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler"/> class.
             DeleteCommandHandler constructor.
             </summary>
-            <param name="fileCabinetService">fileCabinetService.</param>
+            <param name="cabinetService">fileCabinetService.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -268,7 +270,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -286,7 +288,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -304,7 +306,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
             <param name="printer">The printer.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
@@ -323,7 +325,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
             <param name="printer">The printer.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
@@ -342,7 +344,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -360,7 +362,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -378,13 +380,33 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.PurgeCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.PurgeCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the specified command request.
             </summary>
             <param name="commandRequest">The command request.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler">
+            <summary>
+            CommandHandler.
+            </summary>
+            <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler"/> class.
+            DeleteCommandHandler constructor.
+            </summary>
+            <param name="cabinetService">fileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler">
             <summary>
@@ -396,7 +418,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler"/> class.
             </summary>
-            <param name="fileCabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -662,6 +684,7 @@
             Removes the record.
             </summary>
             <param name="record">The record.</param>
+            <returns>record id.</returns>
         </member>
         <member name="M:FileCabinetApp.Logger.ServiceLogger.PurgeDeletedRecords">
             <summary>
@@ -947,6 +970,7 @@
             Removes the record.
             </summary>
             <param name="record">The record.</param>
+            <returns>record id.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetFilesystemService.PurgeDeletedRecords">
             <summary>
@@ -1040,6 +1064,7 @@
             RemoveRecord.
             </summary>
             <param name="record">record.</param>
+            <returns>record id.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetMemoryService.PurgeDeletedRecords">
             <summary>
@@ -1114,7 +1139,7 @@
         </member>
         <member name="P:FileCabinetApp.Service.FileCabinetServiceSnapshot.ReadRecords">
             <summary>
-            Gets or sets the read records.
+            Gets the read records.
             </summary>
             <value>
             The read records.
@@ -1221,6 +1246,7 @@
             Removes the record.
             </summary>
             <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>record id.</returns>
         </member>
         <member name="M:FileCabinetApp.Service.IFileCabinetService.PurgeDeletedRecords">
             <summary>
@@ -1356,6 +1382,7 @@
             Removes the record.
             </summary>
             <param name="fileCabinetRecord">The file cabinet record.</param>
+            <returns>record id.</returns>
         </member>
         <member name="M:FileCabinetApp.Timer.ServiceMeter.PurgeDeletedRecords">
             <summary>

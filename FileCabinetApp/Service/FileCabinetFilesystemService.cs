@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
@@ -80,12 +81,15 @@ namespace FileCabinetApp.Service
         /// Removes the record.
         /// </summary>
         /// <param name="record">The record.</param>
-        public void RemoveRecord(FileCabinetRecord record)
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord record)
         {
             if (record is null)
             {
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
+
+            int id = record.Id;
 
             long position = this.recordIndexPosition[record.Id];
             this.writer.BaseStream.Position = position;
@@ -108,6 +112,8 @@ namespace FileCabinetApp.Service
             {
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
             }
+
+            return id;
         }
 
         /// <summary>

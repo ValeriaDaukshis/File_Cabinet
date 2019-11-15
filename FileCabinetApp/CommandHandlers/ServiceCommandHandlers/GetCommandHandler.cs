@@ -15,10 +15,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="GetCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
+        /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="printer">The printer.</param>
-        public GetCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
-            : base(fileCabinetService)
+        public GetCommandHandler(IFileCabinetService cabinetService, IRecordPrinter printer)
+            : base(cabinetService)
         {
             this.printer = printer;
         }
@@ -46,7 +46,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Get(string parameters)
         {
-            var records = this.FileCabinetService.GetRecords();
+            var records = this.CabinetService.GetRecords();
             if (records.Count == 0)
             {
                 Console.WriteLine("There is no records.");

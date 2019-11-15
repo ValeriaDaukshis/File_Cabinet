@@ -184,7 +184,8 @@ namespace FileCabinetApp.Logger
         /// Removes the record.
         /// </summary>
         /// <param name="record">The record.</param>
-        public void RemoveRecord(FileCabinetRecord record)
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord record)
         {
             if (record is null)
             {
@@ -192,8 +193,9 @@ namespace FileCabinetApp.Logger
             }
 
             this.writer.WriteLine(this.CreateTextWithParameters("delete", record));
-            this.service.RemoveRecord(record);
+            int id = this.service.RemoveRecord(record);
             this.writer.Flush();
+            return id;
         }
 
         /// <summary>

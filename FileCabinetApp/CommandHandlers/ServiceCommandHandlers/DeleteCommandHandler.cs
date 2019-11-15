@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -7,18 +12,17 @@ using FileCabinetApp.Service;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// CommandHandler.
+    /// DeleteCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// DeleteCommandHandler constructor.
         /// </summary>
-        /// <param name="fileCabinetService">fileCabinetService.</param>
-        public DeleteCommandHandler(IFileCabinetService fileCabinetService)
-            : base(fileCabinetService)
+        /// <param name="cabinetService">fileCabinetService.</param>
+        public DeleteCommandHandler(IFileCabinetService cabinetService)
+            : base(cabinetService)
         {
         }
 
@@ -44,6 +48,35 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static string CreateOutputText(int[] recordsId)
+        {
+            StringBuilder builder = new StringBuilder();
+            if (recordsId.Length > 1)
+            {
+                builder.Append("Records ");
+            }
+            else
+            {
+                builder.Append("Record ");
+            }
+
+            for (int i = 0; i < recordsId.Length; i++)
+            {
+                builder.Append($"#{recordsId[i]} ");
+            }
+
+            if (recordsId.Length > 1)
+            {
+                builder.Append(" are deleted");
+            }
+            else
+            {
+                builder.Append("is deleted");
+            }
+
+            return builder.ToString();
+        }
+
         private void Delete(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -52,21 +85,31 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            if (!int.TryParse(parameters.Trim(), out var id))
+            char[] separator = { ' ', '=' };
+            string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            if (inputs.Length != 3)
             {
-                Console.WriteLine($"#{parameters} record is not found");
+                Console.WriteLine("Not enough parameters after command 'delete'");
                 return;
+            }
+
+            string fieldName = inputs[1];
+            string parameter = inputs[2];
+            if (parameter[0] == '\'' || parameter[0] == '"')
+            {
+                parameter = parameter.Substring(1, parameter.Length - 2);
             }
 
             try
             {
-                var records = this.FileCabinetService.GetRecords().ToList();
-                FileCabinetRecord record;
-                if ((record = records.Find(x => x.Id == id)) != null)
+                List<int> recordsId = new List<int>();
+                var records = this.DeleteRecord(parameter, fieldName).ToArray();
+                for (int i = 0; i < records.Length; i++)
                 {
-                    this.FileCabinetService.RemoveRecord(record);
-                    Console.WriteLine($"Record #{parameters} was deleted");
+                    recordsId.Add(this.CabinetService.RemoveRecord(records[i]));
                 }
+
+                Console.WriteLine(CreateOutputText(recordsId.ToArray()));
             }
             catch (FileRecordNotFoundException ex)
             {
@@ -83,6 +126,37 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 Console.WriteLine(ex.Message);
                 Console.WriteLine($"Record #{parameters} was not deleted");
             }
+        }
+
+        private IEnumerable<FileCabinetRecord> DeleteRecord(string parameter, string fieldName)
+        {
+            Type type = typeof(FileCabinetRecord);
+
+            ParameterExpression parameterValue = Expression.Parameter(type, "field");
+            PropertyInfo propertyInfo = type.GetProperty(fieldName);
+
+            if (propertyInfo is null)
+            {
+                throw new ArgumentNullException(nameof(fieldName), $"{nameof(propertyInfo)} is null");
+            }
+
+            MemberExpression property = Expression.MakeMemberAccess(parameterValue, propertyInfo);
+
+            TypeConverter typeConverter = TypeDescriptor.GetConverter(propertyInfo.PropertyType);
+            var convertedParameter = typeConverter.ConvertFrom(parameter);
+            ConstantExpression value = Expression.Constant(convertedParameter, propertyInfo.PropertyType);
+
+            BinaryExpression greaterThanConstantValue = Expression.Equal(property, value);
+
+            Expression<Func<FileCabinetRecord, bool>> whereExpression =
+                Expression.Lambda<Func<FileCabinetRecord, bool>>(greaterThanConstantValue, parameterValue);
+
+            Func<FileCabinetRecord, bool> delegateForWhere = whereExpression.Compile();
+            var records = from n in this.CabinetService.GetRecords()
+                where delegateForWhere.Invoke(n)
+                select n;
+
+            return records;
         }
     }
 }

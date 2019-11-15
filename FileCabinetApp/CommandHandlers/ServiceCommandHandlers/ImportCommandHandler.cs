@@ -14,9 +14,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
-        public ImportCommandHandler(IFileCabinetService fileCabinetService)
-            : base(fileCabinetService)
+        /// <param name="cabinetService">The file cabinet service.</param>
+        public ImportCommandHandler(IFileCabinetService cabinetService)
+            : base(cabinetService)
         {
         }
 
@@ -54,16 +54,16 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot = this.CabinetService.MakeSnapshot();
                         Snapshot.LoadFromCsv(stream, RecordValidator);
-                        int count = this.FileCabinetService.Restore(Snapshot);
+                        int count = this.CabinetService.Restore(Snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
-                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot = this.CabinetService.MakeSnapshot();
                         Snapshot.LoadFromXml(stream, RecordValidator);
-                        int count = this.FileCabinetService.Restore(Snapshot);
+                        int count = this.CabinetService.Restore(Snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
                     }
                     else

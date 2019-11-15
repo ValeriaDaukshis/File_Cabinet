@@ -26,12 +26,12 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Gets or sets the read records.
+        /// Gets the read records.
         /// </summary>
         /// <value>
         /// The read records.
         /// </value>
-        public IList<FileCabinetRecord> ReadRecords { get; set; }
+        public IList<FileCabinetRecord> ReadRecords { get; private set; }
 
         /// <summary>
         /// Makes the snapshot.

@@ -23,7 +23,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             new string[] { "edit", "edit record by id", "The 'edit' command edit record by id." },
             new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file." },
             new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file." },
-            new string[] { "delete", "delete record by id", "The 'delete' command delete record by id." },
+            new string[] { "remove", "delete record by id", "The 'remove' command delete record by id." },
             new string[] { "purge", "purge the file", "The 'purge' command purge the file." },
             new string[]
             {

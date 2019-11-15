@@ -54,12 +54,15 @@ namespace FileCabinetApp.Service
         /// RemoveRecord.
         /// </summary>
         /// <param name="record">record.</param>
-        public void RemoveRecord(FileCabinetRecord record)
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord record)
         {
             if (record is null)
             {
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
+
+            int id = record.Id;
 
             int position = this.list.FindIndex(x => x.Id == record.Id);
             this.list.RemoveAt(position);
@@ -78,6 +81,8 @@ namespace FileCabinetApp.Service
             {
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
             }
+
+            return id;
         }
 
         /// <summary>

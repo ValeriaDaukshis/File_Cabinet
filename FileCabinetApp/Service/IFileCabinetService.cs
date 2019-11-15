@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
@@ -74,7 +75,8 @@ namespace FileCabinetApp.Service
         /// Removes the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
-        void RemoveRecord(FileCabinetRecord fileCabinetRecord);
+        /// <returns>record id.</returns>
+        int RemoveRecord(FileCabinetRecord fileCabinetRecord);
 
         /// <summary>
         /// Purges the deleted records.

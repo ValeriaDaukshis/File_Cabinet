@@ -19,10 +19,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
+        /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="printer">The printer.</param>
-        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
-            : base(fileCabinetService)
+        public FindCommandHandler(IFileCabinetService cabinetService, IRecordPrinter printer)
+            : base(cabinetService)
         {
             this.printer = printer;
         }
@@ -76,16 +76,16 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (field == "firstname")
             {
-                foundResult = this.FileCabinetService.FindByFirstName(value);
+                foundResult = this.CabinetService.FindByFirstName(value);
             }
             else if (field == "lastname")
             {
-                foundResult = this.FileCabinetService.FindByLastName(value);
+                foundResult = this.CabinetService.FindByLastName(value);
             }
             else if (field == "dateofbirth")
             {
                 DateTime.TryParse(value, DateTimeCulture, DateTimeStyles.None, out var date);
-                foundResult = this.FileCabinetService.FindByDateOfBirth(date);
+                foundResult = this.CabinetService.FindByDateOfBirth(date);
             }
 
             if (!(foundResult is null))

@@ -12,9 +12,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
-        public PurgeCommandHandler(IFileCabinetService fileCabinetService)
-            : base(fileCabinetService)
+        /// <param name="cabinetService">The file cabinet service.</param>
+        public PurgeCommandHandler(IFileCabinetService cabinetService)
+            : base(cabinetService)
         {
         }
 
@@ -41,7 +41,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Purge(string parameters)
         {
-            (int countOfDeletedRecords, int countOfRecords) = this.FileCabinetService.PurgeDeletedRecords();
+            (int countOfDeletedRecords, int countOfRecords) = this.CabinetService.PurgeDeletedRecords();
             Console.WriteLine($"Data file processing is completed: {countOfDeletedRecords} of {countOfRecords} records were purged");
         }
     }

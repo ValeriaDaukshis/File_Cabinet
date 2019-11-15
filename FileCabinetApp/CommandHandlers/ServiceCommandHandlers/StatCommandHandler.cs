@@ -12,9 +12,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
-        public StatCommandHandler(IFileCabinetService fileCabinetService)
-            : base(fileCabinetService)
+        /// <param name="cabinetService">The file cabinet service.</param>
+        public StatCommandHandler(IFileCabinetService cabinetService)
+            : base(cabinetService)
         {
         }
 
@@ -41,7 +41,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Stat(string parameters)
         {
-            (int purgedRecords, int recordsCount) = this.FileCabinetService.GetStat();
+            (int purgedRecords, int recordsCount) = this.CabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s), where {purgedRecords} are purged.");
         }
     }

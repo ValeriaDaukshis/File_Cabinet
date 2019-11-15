@@ -13,9 +13,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
-        /// <param name="fileCabinetService">The file cabinet service.</param>
-        public ExportCommandHandler(IFileCabinetService fileCabinetService)
-            : base(fileCabinetService)
+        /// <param name="cabinetService">The file cabinet service.</param>
+        public ExportCommandHandler(IFileCabinetService cabinetService)
+            : base(cabinetService)
         {
         }
 
@@ -53,12 +53,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot = this.CabinetService.MakeSnapshot();
                         Snapshot.SaveToCsv(stream);
                     }
                     else if (fileFormat == "xml")
                     {
-                        Snapshot = this.FileCabinetService.MakeSnapshot();
+                        Snapshot = this.CabinetService.MakeSnapshot();
                         Snapshot.SaveToXml(stream);
                     }
                     else

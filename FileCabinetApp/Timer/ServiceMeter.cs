@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -186,13 +187,15 @@ namespace FileCabinetApp.Timer
         /// Removes the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
-        public void RemoveRecord(FileCabinetRecord fileCabinetRecord)
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord fileCabinetRecord)
         {
             this.stopwatch.StartTimer();
-            this.service.RemoveRecord(fileCabinetRecord);
+            int id = this.service.RemoveRecord(fileCabinetRecord);
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             Console.WriteLine($"Remove method execution duration is {this.TimeInMilliseconds} ticks.");
+            return id;
         }
 
         /// <summary>
