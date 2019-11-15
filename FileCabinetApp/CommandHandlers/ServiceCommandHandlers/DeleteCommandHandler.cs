@@ -77,6 +77,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return builder.ToString();
         }
 
+        private static string ChangeFieldCase(string value)
+        {
+            value = value.ToLower(Culture);
+            if (!FieldsCaseDictionary.ContainsKey(value))
+            {
+                throw new ArgumentException($"No field with name {nameof(value)}", nameof(value));
+            }
+
+            value = FieldsCaseDictionary[value];
+            return value;
+        }
+
         private void Delete(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -93,7 +105,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            string fieldName = inputs[1];
+            string fieldName = ChangeFieldCase(inputs[1]);
             string parameter = inputs[2];
             if (parameter[0] == '\'' || parameter[0] == '"')
             {

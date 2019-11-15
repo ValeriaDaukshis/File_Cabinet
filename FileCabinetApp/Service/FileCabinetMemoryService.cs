@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -125,6 +124,9 @@ namespace FileCabinetApp.Service
                 this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
                 this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
             }
+
+            int position = this.list.FindIndex(x => x.Id == fileCabinetRecord.Id);
+            this.list[position] = fileCabinetRecord;
         }
 
         /// <summary>

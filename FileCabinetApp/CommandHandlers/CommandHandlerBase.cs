@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -23,6 +24,20 @@ namespace FileCabinetApp.CommandHandlers
         /// DateTimeCulture.
         /// </summary>
         protected static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
+
+        /// <summary>
+        /// The fields case dictionary.
+        /// </summary>
+        protected static readonly Dictionary<string, string> FieldsCaseDictionary = new Dictionary<string, string>
+        {
+            { "firstname", "FirstName" },
+            { "lastname", "LastName" },
+            { "id", "Id" },
+            { "creditsum", "CreditSum" },
+            { "gender", "Gender" },
+            { "dateofbirth", "DateOfBirth" },
+            { "duration", "Duration" },
+        };
 
         private static readonly Func<string, Tuple<bool, string, string>> StringConverter = input =>
         {
@@ -135,12 +150,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> FirstNameSearcher = (fields, values) =>
         {
-            if (!fields.Contains("firstname"))
+            if (!fields.Contains("FirstName"))
             {
-                return new Tuple<bool, string>(false, "Can not find firstname member");
+                return new Tuple<bool, string>(false, "Can not find FirstName member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "firstname");
+            var index = fields.ToList().FindIndex(x => x == "FirstName");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -148,12 +163,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> LastNameSearcher = (fields, values) =>
         {
-            if (!fields.Contains("lastname"))
+            if (!fields.Contains("LastName"))
             {
-                return new Tuple<bool, string>(false, "Can not find lastname member");
+                return new Tuple<bool, string>(false, "Can not find LastName member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "lastname");
+            var index = fields.ToList().FindIndex(x => x == "LastName");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -161,12 +176,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> GenderSearcher = (fields, values) =>
         {
-            if (!fields.Contains("gender"))
+            if (!fields.Contains("Gender"))
             {
-                return new Tuple<bool, string>(false, "Can not find gender member");
+                return new Tuple<bool, string>(false, "Can not find Gender member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "gender");
+            var index = fields.ToList().FindIndex(x => x == "Gender");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -174,12 +189,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> CreditSumSearcher = (fields, values) =>
         {
-            if (!fields.Contains("credit"))
+            if (!fields.Contains("CreditSum"))
             {
-                return new Tuple<bool, string>(false, "Can not find credit member");
+                return new Tuple<bool, string>(false, "Can not find CreditSum member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "credit");
+            var index = fields.ToList().FindIndex(x => x == "CreditSum");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -187,12 +202,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> DateOfBirthSearcher = (fields, values) =>
         {
-            if (!fields.Contains("dateofbirth"))
+            if (!fields.Contains("DateOfBirth"))
             {
-                return new Tuple<bool, string>(false, "Can not find dateofbirth member");
+                return new Tuple<bool, string>(false, "Can not find DateOfBirth member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "dateofbirth");
+            var index = fields.ToList().FindIndex(x => x == "DateOfBirth");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -200,12 +215,12 @@ namespace FileCabinetApp.CommandHandlers
 
         private static readonly Func<string[], string[], Tuple<bool, string>> DurationSearcher = (fields, values) =>
         {
-            if (!fields.Contains("duration"))
+            if (!fields.Contains("Duration"))
             {
-                return new Tuple<bool, string>(false, "Can not find duration member");
+                return new Tuple<bool, string>(false, "Can not find Duration member");
             }
 
-            var index = fields.ToList().FindIndex(x => x == "duration");
+            var index = fields.ToList().FindIndex(x => x == "Duration");
             var item = values[index];
 
             return new Tuple<bool, string>(true, $"{item}");
@@ -305,6 +320,33 @@ namespace FileCabinetApp.CommandHandlers
         }
 
         /// <summary>
+        /// Checks the input fields.
+        /// </summary>
+        /// <param name="fields">The fields.</param>
+        /// <param name="values">The values.</param>
+        /// <param name="record">The record.</param>
+        /// <param name="firstName">The first name.</param>
+        /// <param name="lastName">The last name.</param>
+        /// <param name="gender">The gender.</param>
+        /// <param name="dateOfBirth">The date of birth.</param>
+        /// <param name="credit">The credit.</param>
+        /// <param name="duration">The duration.</param>
+        protected static void CheckInputFields(string[] fields, string[] values, FileCabinetRecord record, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
+
+            firstName = ReadInput(fields, values, record.FirstName, FirstNameSearcher, StringConverter, FirstNameValidator);
+            lastName = ReadInput(fields, values, record.LastName, LastNameSearcher, StringConverter, LastNameValidator);
+            gender = ReadInput(fields, values, record.Gender, GenderSearcher, CharConverter, GenderValidator);
+            dateOfBirth = ReadInput(fields, values, record.DateOfBirth, DateOfBirthSearcher, DateTimeConverter, DateOfBirthValidator);
+            credit = ReadInput(fields, values, record.CreditSum, CreditSumSearcher, DecimalConverter, CreditSumValidator);
+            duration = ReadInput(fields, values, record.Duration, DurationSearcher, ShortConverter, DurationValidator);
+        }
+
+        /// <summary>
         /// Imports the export parameters spliter.
         /// </summary>
         /// <param name="parameters">The parameters.</param>
@@ -341,6 +383,35 @@ namespace FileCabinetApp.CommandHandlers
             if (!inputResult.Item1)
             {
                 throw new ArgumentException($"Conversion failed: {inputResult.Item2}. Please, correct your input.");
+            }
+
+            string input = inputResult.Item2;
+
+            var conversionResult = converter(input);
+
+            if (!conversionResult.Item1)
+            {
+                throw new ArgumentException($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+            }
+
+            value = conversionResult.Item3;
+
+            var validationResult = validator(value);
+            if (!validationResult.Item1)
+            {
+                throw new ArgumentException($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+            }
+
+            return value;
+        }
+
+        private static T ReadInput<T>(string[] fields, string[] values, T record, Func<string[], string[], Tuple<bool, string>> finder, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
+        {
+            T value;
+            var inputResult = finder(fields, values);
+            if (!inputResult.Item1)
+            {
+                return record;
             }
 
             string input = inputResult.Item2;

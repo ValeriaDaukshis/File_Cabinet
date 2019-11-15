@@ -51,11 +51,26 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static void ChangeFieldCase(string[] fields)
+        {
+            for (int i = 0; i < fields.Length; i++)
+            {
+                var value = fields[i].ToLower(Culture);
+                if (!FieldsCaseDictionary.ContainsKey(value))
+                {
+                    throw new ArgumentException($"No field with name {nameof(fields)}", nameof(fields));
+                }
+
+                fields[i] = FieldsCaseDictionary[value];
+            }
+        }
+
         private void Create(string parameters)
         {
             char[] separators = { '(', ')', ',', ' ' };
             string[] inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
             string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            ChangeFieldCase(fields);
             string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             CorrectValuesInput(values);

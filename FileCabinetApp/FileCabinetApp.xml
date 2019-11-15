@@ -41,6 +41,11 @@
             DateTimeCulture.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.FieldsCaseDictionary">
+            <summary>
+            The fields case dictionary.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.RecordValidator">
             <summary>
             Gets or sets the record validator.
@@ -102,6 +107,20 @@
             </summary>
             <param name="fields">The fields.</param>
             <param name="values">The values.</param>
+            <param name="firstName">The first name.</param>
+            <param name="lastName">The last name.</param>
+            <param name="gender">The gender.</param>
+            <param name="dateOfBirth">The date of birth.</param>
+            <param name="credit">The credit.</param>
+            <param name="duration">The duration.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CheckInputFields(System.String[],System.String[],FileCabinetApp.Records.FileCabinetRecord,System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
+            <summary>
+            Checks the input fields.
+            </summary>
+            <param name="fields">The fields.</param>
+            <param name="values">The values.</param>
+            <param name="record">The record.</param>
             <param name="firstName">The first name.</param>
             <param name="lastName">The last name.</param>
             <param name="gender">The gender.</param>
@@ -425,6 +444,25 @@
             Handles the specified command request.
             </summary>
             <param name="commandRequest">The command request.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler">
+            <summary>
+            UpdateCommandHandler.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler"/> class.
+            DeleteCommandHandler constructor.
+            </summary>
+            <param name="cabinetService">fileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
         </member>
         <member name="T:FileCabinetApp.CommandLineOptions">
             <summary>
