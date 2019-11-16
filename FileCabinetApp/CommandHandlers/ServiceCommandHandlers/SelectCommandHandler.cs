@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -167,6 +168,21 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return updates;
         }
 
+        private static (bool, IEnumerable<FileCabinetRecord>) SearchDataInCache(string[] conditionFields)
+        {
+            if (Cache.Contains(conditionFields))
+            {
+                return (true, Cache.GetValueByKey(conditionFields));
+            }
+
+            return (false, null);
+        }
+
+        private static void PushDataInCache(string[] conditionFields, IEnumerable<FileCabinetRecord> records)
+        {
+            Cache.Add(new DataCachingKey(conditionFields), records);
+        }
+
         // select id, firstname, lastname where firstname = 'John' and lastname = 'Doe'
         private void Select(string parameters)
         {
@@ -193,6 +209,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
+                (bool founded, IEnumerable<FileCabinetRecord> record) = SearchDataInCache(conditionFields);
+                if (founded)
+                {
+                    this.printer.Print(record, printedFields);
+                    return;
+                }
+
                 CheckInputConditionFields(conditionFields);
                 string conditionSeparator = CheckConditionSeparator(conditionFields);
                 Dictionary<string, string> conditions = CreateFieldsDictionary(conditionFields, conditionSeparator);
@@ -201,6 +224,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 var records = this.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator).ToArray();
 
                 this.printer.Print(records, printedFields);
+                PushDataInCache(conditionFields, records);
             }
             catch (FileRecordNotFoundException ex)
             {

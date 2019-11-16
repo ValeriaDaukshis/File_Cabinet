@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
+using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -40,6 +41,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (commandRequest.Command == "update")
             {
+                Cache = new DataCaching();
                 this.Update(commandRequest.Parameters);
             }
             else

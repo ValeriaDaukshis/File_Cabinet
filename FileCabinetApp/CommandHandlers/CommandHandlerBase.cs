@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
@@ -241,6 +242,14 @@ namespace FileCabinetApp.CommandHandlers
         /// The service storage file stream.
         /// </value>
         public static FileStream ServiceStorageFileStream { get;  set; }
+
+        /// <summary>
+        /// Gets or sets cache.
+        /// </summary>
+        /// <value>
+        /// Cache.
+        /// </value>
+        protected static DataCaching Cache { get; set; }
 
         /// <summary>
         /// Gets or sets fileCabinetServiceSnapshot.

@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -32,6 +33,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (commandRequest.Command == "insert")
             {
+                Cache = new DataCaching();
                 this.Create(commandRequest.Parameters);
             }
             else

@@ -62,6 +62,14 @@
             The service storage file stream.
             </value>
         </member>
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Cache">
+            <summary>
+            Gets or sets cache.
+            </summary>
+            <value>
+            Cache.
+            </value>
+        </member>
         <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Snapshot">
             <summary>
             Gets or sets fileCabinetServiceSnapshot.
@@ -792,6 +800,82 @@
             <summary>
             Dispose.
             </summary>
+        </member>
+        <member name="T:FileCabinetApp.Memoization.DataCaching">
+            <summary>
+            DataCaching.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCaching.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Memoization.DataCaching"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCaching.GetValueByKey(System.String[])">
+            <summary>
+            Gets the value by key.
+            </summary>
+            <param name="fields">The fields.</param>
+            <returns>value by key.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCaching.Add(FileCabinetApp.Memoization.DataCachingKey,System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord})">
+            <summary>
+            Adds the specified key.
+            </summary>
+            <param name="key">The key.</param>
+            <param name="records">The records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCaching.Contains(System.String[])">
+            <summary>
+            Determines whether this instance contains the object.
+            </summary>
+            <param name="fields">The fields.</param>
+            <returns>
+              <c>true</c> if [contains] [the specified fields]; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:FileCabinetApp.Memoization.DataCachingKey">
+            <summary>
+            DataCachingKey.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCachingKey.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Memoization.DataCachingKey"/> class.
+            </summary>
+            <param name="fields">The fields.</param>
+        </member>
+        <member name="P:FileCabinetApp.Memoization.DataCachingKey.Fields">
+            <summary>
+            Gets or sets the fields.
+            </summary>
+            <value>
+            The fields.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCachingKey.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCachingKey.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.DataCachingKey.Equals(FileCabinetApp.Memoization.DataCachingKey)">
+            <summary>
+            Equalses the specified other.
+            </summary>
+            <param name="other">The other.</param>
+            <returns>true if other equals to DataCachingKey.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
