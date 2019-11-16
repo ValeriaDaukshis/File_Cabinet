@@ -51,6 +51,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         private static string CreateOutputText(int[] recordsId)
         {
             StringBuilder builder = new StringBuilder();
+            if (recordsId.Length == 0)
+            {
+                return "Records with this parameters not found";
+            }
+
             if (recordsId.Length > 1)
             {
                 builder.Append("Records ");
@@ -88,7 +93,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
-        private static Func<FileCabinetRecord, bool> MakeExpressionTree(string parameter, string fieldName, Type type)
+        private static Expression<Func<FileCabinetRecord, bool>> MakeExpressionTree(string parameter, string fieldName, Type type)
         {
             ParameterExpression parameterValue = Expression.Parameter(type, "field");
             PropertyInfo propertyInfo = type.GetProperty(fieldName);
@@ -109,8 +114,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             Expression<Func<FileCabinetRecord, bool>> whereExpression =
                 Expression.Lambda<Func<FileCabinetRecord, bool>>(greaterThanConstantValue, parameterValue);
 
-            Func<FileCabinetRecord, bool> delegateForWhere = whereExpression.Compile();
-            return delegateForWhere;
+            return whereExpression;
         }
 
         private static void CheckInputConditionFields(string[] conditionFields)
@@ -120,10 +124,30 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'", nameof(conditionFields));
             }
 
-            if (conditionFields.Length > 2 && !conditionFields.Contains("and"))
+            if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
             {
-                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and''", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)''", nameof(conditionFields));
             }
+        }
+
+        private static string CheckConditionSeparator(string[] conditionFields)
+        {
+            if (conditionFields.Contains("and") && conditionFields.Contains("or"))
+            {
+                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together", nameof(conditionFields));
+            }
+
+            if (conditionFields.Contains("and"))
+            {
+                return "and";
+            }
+
+            if (conditionFields.Contains("or"))
+            {
+                return "or";
+            }
+
+            return string.Empty;
         }
 
         private static void CheckInputUpdateFields(string[] updatedFields)
@@ -167,8 +191,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return updates;
         }
 
-        // > update set firstname = 'John', lastname = 'Doe' , dateofbirth = '5/18/1986' where id = '1'
-        // > update set DateOfBirth = '5/18/1986' where FirstName='Stan' and LastName='Smith'
         private void Update(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -186,15 +208,19 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             {
                 CheckInputConditionFields(conditionFields);
                 CheckInputUpdateFields(updatedFields);
+
+                // finds separator (or/and)
+                string conditionSeparator = CheckConditionSeparator(conditionFields);
                 Dictionary<string, string> updates = CreateFieldsDictionary(updatedFields, "set");
-                Dictionary<string, string> conditions = CreateFieldsDictionary(conditionFields, "and");
+                Dictionary<string, string> conditions = CreateFieldsDictionary(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
-                var records = this.DeleteRecord(conditions.Values.ToArray(), conditions.Keys.ToArray()).ToArray();
+
+                // finds records that satisfy the condition
+                var records = this.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator).ToArray();
 
                 for (int i = 0; i < records.Length; i++)
                 {
-                    // логика внедрения новых значений
                     CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     int id = records[i].Id;
                     this.CabinetService.EditRecord(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
@@ -206,36 +232,52 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 Console.WriteLine($"{ex.Value} was not found");
-                Console.WriteLine($"Record #{parameters} was not updated ");
             }
             catch (ArgumentNullException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not updated ");
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not updated");
             }
         }
 
-        private IEnumerable<FileCabinetRecord> DeleteRecord(string[] parameter, string[] fieldName)
+        private IEnumerable<FileCabinetRecord> FindSuitableRecords(string[] parameter, string[] fieldName, string conditionSeparator)
         {
             Type type = typeof(FileCabinetRecord);
 
-            List<Func<FileCabinetRecord, bool>> expressions = new List<Func<FileCabinetRecord, bool>>();
-            for (int i = 0; i < parameter.Length; i++)
+            var expressionTree = MakeExpressionTree(parameter[0], fieldName[0], type);
+            Expression<Func<FileCabinetRecord, bool>> delegateForSearch = expressionTree;
+
+            for (int i = 1; i < parameter.Length; i++)
             {
-                expressions.Add(MakeExpressionTree(parameter[i], fieldName[i], type));
+                var expression = MakeExpressionTree(parameter[i], fieldName[i], type);
+                var invokedExpr = Expression.Invoke(expression, expressionTree.Parameters.Cast<Expression>());
+
+                if (conditionSeparator == "and")
+                {
+                    delegateForSearch = Expression.Lambda<Func<FileCabinetRecord, bool>>(
+                        Expression.AndAlso(expressionTree.Body, invokedExpr), expressionTree.Parameters);
+                }
+                else if (conditionSeparator == "or")
+                {
+                    delegateForSearch = Expression.Lambda<Func<FileCabinetRecord, bool>>(
+                        Expression.OrElse(expressionTree.Body, invokedExpr), expressionTree.Parameters);
+                }
+                else
+                {
+                    throw new ArgumentException($"Incorrect condition separator {nameof(conditionSeparator)}. Use 'and' || 'or'", nameof(conditionSeparator));
+                }
             }
 
+            Func<FileCabinetRecord, bool> delegateForWhere = delegateForSearch.Compile();
+
             var records = from n in this.CabinetService.GetRecords()
-                from k in expressions
-                where k.Invoke(n)
+                where delegateForWhere.Invoke(n)
                 select n;
 
-            return records.Distinct();
+            return records;
         }
     }
 }
