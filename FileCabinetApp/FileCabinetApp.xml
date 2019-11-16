@@ -234,6 +234,30 @@
             <param name="records">The records.</param>
             <returns>true if records was printed.</returns>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Printer.ITablePrinter">
+            <summary>
+            ITablePrinter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Printer.ITablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
+            <summary>
+            Prints the specified records.
+            </summary>
+            <param name="record">The records.</param>
+            <param name="fields">The fields.</param>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Printer.TablePrinter">
+            <summary>
+            TablePrinter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Printer.TablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
+            <summary>
+            Prints the specified records.
+            </summary>
+            <param name="record">The records.</param>
+            <param name="fields">The fields.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
             ServiceCommandHandlerBase.
@@ -433,6 +457,26 @@
             <param name="cabinetService">fileCabinetService.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler">
+            <summary>
+            SelectCommandHandler.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Printer.ITablePrinter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler"/> class.
+            DeleteCommandHandler constructor.
+            </summary>
+            <param name="cabinetService">fileCabinetService.</param>
+            <param name="printer">The printer.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the specified command request.
             </summary>
