@@ -15,5 +15,5 @@
 | 11| Журналирование | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 12| Поиск записей в файле | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 13| Новые команды управления записями | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
-| 14| Улучшенный поиск | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
+| 14| Улучшенный поиск | ![Done](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-ok.png) | [*Solution*](https://github.com/ValeriaDaukshis/File_Cabinet/tree/master/FileCabinetApp) |  |
 | 15| Рефакторинг | ![Scheduled](https://github.com/AnzhelikaKravchuk/.NET-Training.-Spring-2019/blob/master/Pictures/icons-target.png) | [*Solution*](#) |  |
