@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
@@ -13,18 +14,22 @@ using FileCabinetApp.Service;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// UpdateCommandHandler.
+    /// SelectCommandHandler.
     /// </summary>
-    public class UpdateCommandHandler : ServiceCommandHandlerBase
+    public class SelectCommandHandler : ServiceCommandHandlerBase
     {
+        private ITablePrinter printer;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
+        /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
         /// DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="printer">The printer.</param>
+        public SelectCommandHandler(IFileCabinetService cabinetService, ITablePrinter printer)
             : base(cabinetService)
         {
+            this.printer = printer;
         }
 
         /// <summary>
@@ -39,49 +44,14 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 throw new ArgumentNullException(nameof(commandRequest), $"{nameof(commandRequest)} is null");
             }
 
-            if (commandRequest.Command == "update")
+            if (commandRequest.Command == "select")
             {
-                Cache = new DataCaching();
-                this.Update(commandRequest.Parameters);
+                this.Select(commandRequest.Parameters);
             }
             else
             {
                 this.NextHandler.Handle(commandRequest);
             }
-        }
-
-        private static string CreateOutputText(int[] recordsId)
-        {
-            StringBuilder builder = new StringBuilder();
-            if (recordsId.Length == 0)
-            {
-                return "Records with this parameters not found";
-            }
-
-            if (recordsId.Length > 1)
-            {
-                builder.Append("Records ");
-            }
-            else
-            {
-                builder.Append("Record ");
-            }
-
-            for (int i = 0; i < recordsId.Length; i++)
-            {
-                builder.Append($"#{recordsId[i]} ");
-            }
-
-            if (recordsId.Length > 1)
-            {
-                builder.Append("were updated");
-            }
-            else
-            {
-                builder.Append("was updated");
-            }
-
-            return builder.ToString();
         }
 
         private static void CorrectValuesInput(string[] values)
@@ -121,11 +91,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private static void CheckInputConditionFields(string[] conditionFields)
         {
-            if (conditionFields.Length < 2)
-            {
-                throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'", nameof(conditionFields));
-            }
-
             if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
             {
                 throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)''", nameof(conditionFields));
@@ -154,14 +119,24 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private static void CheckInputUpdateFields(string[] updatedFields)
         {
-            if (updatedFields.Length < 3)
+            if (updatedFields.Length == 0)
             {
-                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after condition command 'update'", nameof(updatedFields));
+                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after command 'select'", nameof(updatedFields));
             }
+        }
 
-            if (updatedFields.Length > 2 && !updatedFields.Contains("set"))
+        private static void UpdatePrintedFields(string[] printedFields)
+        {
+            for (int i = 0; i < printedFields.Length; i++)
             {
-                throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set''", nameof(updatedFields));
+                var key = printedFields[i].ToLower(Culture);
+
+                if (!FieldsCaseDictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException($"No field with name {nameof(printedFields)}", nameof(printedFields));
+                }
+
+                printedFields[i] = FieldsCaseDictionary[key];
             }
         }
 
@@ -193,7 +168,23 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return updates;
         }
 
-        private void Update(string parameters)
+        private static (bool, IEnumerable<FileCabinetRecord>) SearchDataInCache(string[] conditionFields)
+        {
+            if (Cache.Contains(conditionFields))
+            {
+                return (true, Cache.GetValueByKey(conditionFields));
+            }
+
+            return (false, null);
+        }
+
+        private static void PushDataInCache(string[] conditionFields, IEnumerable<FileCabinetRecord> records)
+        {
+            Cache.Add(new DataCachingKey(conditionFields), records);
+        }
+
+        // select id, firstname, lastname where firstname = 'John' and lastname = 'Doe'
+        private void Select(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
             {
@@ -203,33 +194,37 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             char[] separators = { '=', ',', ' ' };
             string[] inputs = parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
-            string[] updatedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            string[] conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            string[] printedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
+                CheckInputUpdateFields(printedFields);
+                UpdatePrintedFields(printedFields);
+                string[] conditionFields;
+                if (inputs.Length == 1)
+                {
+                    this.printer.Print(this.CabinetService.GetRecords(), printedFields);
+                    return;
+                }
+
+                conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
+                (bool founded, IEnumerable<FileCabinetRecord> record) = SearchDataInCache(conditionFields);
+                if (founded)
+                {
+                    this.printer.Print(record, printedFields);
+                    return;
+                }
+
                 CheckInputConditionFields(conditionFields);
-                CheckInputUpdateFields(updatedFields);
-
-                // finds separator (or/and)
                 string conditionSeparator = CheckConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = CreateFieldsDictionary(updatedFields, "set");
                 Dictionary<string, string> conditions = CreateFieldsDictionary(conditionFields, conditionSeparator);
-
-                List<int> recordsId = new List<int>();
 
                 // finds records that satisfy the condition
                 var records = this.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator).ToArray();
 
-                for (int i = 0; i < records.Length; i++)
-                {
-                    CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    int id = records[i].Id;
-                    this.CabinetService.EditRecord(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
-                    recordsId.Add(id);
-                }
-
-                Console.WriteLine(CreateOutputText(recordsId.ToArray()));
+                this.printer.Print(records, printedFields);
+                PushDataInCache(conditionFields, records);
             }
             catch (FileRecordNotFoundException ex)
             {

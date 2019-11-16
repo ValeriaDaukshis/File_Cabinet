@@ -45,6 +45,7 @@ namespace FileCabinetApp
             new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file." },
             new string[] { "remove", "delete record by id", "The 'remove' command delete record by id." },
             new string[] { "delete", "delete record by any field", "The 'remove' command delete record by any field. Syntax: delete where firstname/lastname/... = value" },
+            new string[] { "select", "select records by fields", "The 'select' command select records by fields. Syntax: select firstname, lastname, ... where firstname/lastname/... = value" },
             new string[] { "purge", "purge the file", "The 'purge' command purge the file." },
             new string[]
             {
@@ -139,6 +140,7 @@ namespace FileCabinetApp
         {
             var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 3 == 0).ToArray();
             var recordPrinter = new DefaultRecordPrinter();
+            var tablePrinter = new TablePrinter();
             var helpCommand = new HelpCommandHandler(helpMessages);
             var createCommand = new CreateCommandHandler(fileCabinetService);
             var insertCommand = new InsertCommandHandler(fileCabinetService);
@@ -148,6 +150,7 @@ namespace FileCabinetApp
             var removeCommand = new RemoveCommandHandler(fileCabinetService);
             var deleteCommand = new DeleteCommandHandler(fileCabinetService);
             var findCommand = new FindCommandHandler(fileCabinetService, recordPrinter);
+            var selectCommand = new SelectCommandHandler(fileCabinetService, tablePrinter);
             var statCommand = new StatCommandHandler(fileCabinetService);
             var importCommand = new ImportCommandHandler(fileCabinetService);
             var exportCommand = new ExportCommandHandler(fileCabinetService);
@@ -163,7 +166,8 @@ namespace FileCabinetApp
             updateCommand.SetNext(removeCommand);
             removeCommand.SetNext(deleteCommand);
             deleteCommand.SetNext(findCommand);
-            findCommand.SetNext(statCommand);
+            findCommand.SetNext(selectCommand);
+            selectCommand.SetNext(statCommand);
             statCommand.SetNext(importCommand);
             importCommand.SetNext(exportCommand);
             exportCommand.SetNext(purgeCommand);
