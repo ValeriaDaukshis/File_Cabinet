@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
@@ -20,7 +18,7 @@ namespace FileCabinetApp.Service
     public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
         private const int SizeOfStringRecord = 120;
-        private const long RecordSize = 278;
+        private const long RecordSize = 278 + 1;
         private readonly FileStream fileStream;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -91,10 +89,10 @@ namespace FileCabinetApp.Service
 
             int id = record.Id;
 
-            long position = this.recordIndexPosition[record.Id];
+            long position = this.recordIndexPosition[record.Id] + 2;
             this.writer.BaseStream.Position = position;
-            short reserved = 1;
-            this.writer.Write(reserved);
+            byte isDeleted = 1;
+            this.writer.Write(isDeleted);
             this.writer.Flush();
 
             this.recordIndexPosition.Remove(record.Id);
@@ -132,7 +130,7 @@ namespace FileCabinetApp.Service
             long sizeOfFile = 0;
             int countOfDeletedRecords = 0;
 
-            while (readerPosition != this.reader.BaseStream.Length)
+            while (readerPosition < this.countOfRecords * RecordSize)
             {
                 rewriteRecord.Enqueue(readerPosition);
                 FileCabinetRecord record = this.FileReader(readerPosition);
@@ -430,7 +428,8 @@ namespace FileCabinetApp.Service
         {
             this.reader.BaseStream.Position = pointer;
             short reserved = this.reader.ReadInt16();
-            if (reserved == 1)
+            byte isDeleted = this.reader.ReadByte();
+            if (isDeleted == 1)
             {
                 return null;
             }
@@ -458,6 +457,7 @@ namespace FileCabinetApp.Service
         {
             this.writer.BaseStream.Position = position;
             this.writer.Write((short)0);
+            this.writer.Write((byte)0);
             this.writer.Write(fileCabinetRecord.Id);
 
             var buffer = Encoding.Unicode.GetBytes(CreateEmptyString(fileCabinetRecord.FirstName, 60));
