@@ -21,7 +21,7 @@ namespace FileCabinetApp
     public static class Program
     {
         private const string DeveloperName = "Valeria Daukshis";
-        private const string HintMessage = "Enter your command, or enter 'help' to get help.";
+        private const string HintMessage = "Enter your command, or enter 'help'/'syntax' to get help.";
         private const string ServiceStorageFile = "cabinet-records.db";
         private const string ValidationRulesFile = "validation-rules.json";
 
@@ -37,10 +37,10 @@ namespace FileCabinetApp
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen.", "Syntax: help" },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application.", "Syntax: exit" },
             new string[] { "stat", "prints the record statistics", "The 'stat' command prints the record statistics.", "Syntax: stat" },
-            new string[] { "create", "creates a new record", "The 'create' command creates a new record.", "Syntax create" },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new record.", "Syntax: create" },
             new string[] { "insert", "creates a new record", "The 'insert' command creates a new record.", "Syntax: insert (firstname, lastname, gender, dateofbirth, credit, duration) values ('your values', ...)" },
             new string[] { "get", "get all record", "The 'get' command get all record.", "Syntax: get" },
-            new string[] { "edit", "edit record by id", "The 'edit' command edit record by id.", "Syntax edit (id number)" },
+            new string[] { "edit", "edit record by id", "The 'edit' command edit record by id.", "Syntax: edit (id number)" },
             new string[] { "update", "edit record by field(s)", "The 'update' command edit record by field(s).", "Syntax: update set field = value, field2 = value2 where field3 = value3 (and field4 = value4 ...)" },
             new string[] { "export", "export data to csv/xml file", "The 'export' command export data to csv/xml file.", "Syntax: export csv/xml (nameOfFile)" },
             new string[] { "import", "import data to csv/xml file", "The 'import' command import data from csv/xml file.", "Syntax: import csv/xml (nameOfFile)" },
@@ -48,6 +48,7 @@ namespace FileCabinetApp
             new string[] { "delete", "delete record by any field", "The 'remove' command delete record by any field.", "Syntax: delete where firstname/lastname/... = value" },
             new string[] { "select", "select records by fields", "The 'select' command select records by fields.", "Syntax: select firstname, lastname, ... where firstname/lastname/... = value" },
             new string[] { "purge", "purge the file", "The 'purge' command purge the file.", "Syntax: purge" },
+            new string[] { "syntax", "prints the help syntax screen", "The 'syntax' command prints the help syntax screen.", "Syntax: syntax" },
             new string[]
             {
                 "find", "find record by firstname/lastname/dateofbirth",
@@ -159,6 +160,7 @@ namespace FileCabinetApp
             var exportCommand = new ExportCommandHandler(fileCabinetService);
             var purgeCommand = new PurgeCommandHandler(fileCabinetService);
             var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
+            var syntaxCommand = new SyntaxCommandHandler(helpMessages);
             var missedCommand = new MissedCommandHandler(commands);
 
             helpCommand.SetNext(createCommand);
@@ -174,7 +176,8 @@ namespace FileCabinetApp
             statCommand.SetNext(importCommand);
             importCommand.SetNext(exportCommand);
             exportCommand.SetNext(purgeCommand);
-            purgeCommand.SetNext(exitCommand);
+            purgeCommand.SetNext(syntaxCommand);
+            syntaxCommand.SetNext(exitCommand);
             exitCommand.SetNext(missedCommand);
 
             return helpCommand;

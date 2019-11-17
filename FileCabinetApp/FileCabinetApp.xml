@@ -246,6 +246,23 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler">
+            <summary>
+            SyntaxCommandHandler.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.#ctor(System.String[][])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler"/> class.
+            </summary>
+            <param name="help">The help.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
             <summary>
             ICommandHandler.

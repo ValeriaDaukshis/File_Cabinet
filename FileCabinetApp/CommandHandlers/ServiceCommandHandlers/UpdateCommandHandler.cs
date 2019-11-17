@@ -92,12 +92,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (conditionFields.Length < 2)
             {
-                throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'. Use 'help' or 'syntax'", nameof(conditionFields));
             }
 
             if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
             {
-                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)''", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)'. Use 'help' or 'syntax'", nameof(conditionFields));
             }
         }
 
@@ -105,7 +105,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (conditionFields.Contains("and") && conditionFields.Contains("or"))
             {
-                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together. Use 'help' or 'syntax'", nameof(conditionFields));
             }
 
             if (conditionFields.Contains("and"))
@@ -125,12 +125,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (updatedFields.Length < 3)
             {
-                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after condition command 'update'", nameof(updatedFields));
+                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after condition command 'update'. Use 'help' or 'syntax'", nameof(updatedFields));
             }
 
             if (updatedFields.Length > 2 && !updatedFields.Contains("set"))
             {
-                throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set''", nameof(updatedFields));
+                throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set'. Use 'help' or 'syntax.'", nameof(updatedFields));
             }
         }
 

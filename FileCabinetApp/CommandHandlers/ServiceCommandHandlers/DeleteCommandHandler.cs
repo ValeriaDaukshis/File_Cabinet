@@ -113,13 +113,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             if (inputs.Length < 3)
             {
-                Console.WriteLine("Not enough parameters after command 'delete'");
+                Console.WriteLine("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
             if (inputs.Length > 3)
             {
-                Console.WriteLine("A lot of parameters after command 'delete'");
+                Console.WriteLine("A lot of parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
