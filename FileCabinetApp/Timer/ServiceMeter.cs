@@ -10,7 +10,7 @@ namespace FileCabinetApp.Timer
     /// ServiceMeter.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
-    public class ServiceMeter : IFileCabinetService
+    public sealed class ServiceMeter : IFileCabinetService
     {
         private readonly IFileCabinetService service;
         private IStopWatcher stopwatch;

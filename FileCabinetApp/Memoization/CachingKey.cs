@@ -6,15 +6,15 @@ namespace FileCabinetApp.Memoization
     /// <summary>
     /// DataCachingKey.
     /// </summary>
-    public class DataCachingKey
+    public class CachingKey
     {
         private IEnumerable<string> fields;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataCachingKey"/> class.
+        /// Initializes a new instance of the <see cref="CachingKey"/> class.
         /// </summary>
         /// <param name="fields">The fields.</param>
-        public DataCachingKey(string[] fields)
+        public CachingKey(string[] fields)
         {
             this.Fields = fields.AsEnumerable();
         }
@@ -61,7 +61,7 @@ namespace FileCabinetApp.Memoization
                 return false;
             }
 
-            return this.Equals((DataCachingKey)obj);
+            return this.Equals((CachingKey)obj);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace FileCabinetApp.Memoization
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>true if other equals to DataCachingKey.</returns>
-        public bool Equals(DataCachingKey other)
+        public bool Equals(CachingKey other)
         {
             if (ReferenceEquals(null, other))
             {

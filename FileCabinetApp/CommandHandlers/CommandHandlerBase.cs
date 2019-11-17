@@ -244,12 +244,12 @@ namespace FileCabinetApp.CommandHandlers
         public static FileStream ServiceStorageFileStream { get;  set; }
 
         /// <summary>
-        /// Gets or sets cache.
+        /// Gets cache.
         /// </summary>
         /// <value>
         /// Cache.
         /// </value>
-        protected static DataCaching Cache { get; set; }
+        protected static DataCaching Cache { get; } = new DataCaching();
 
         /// <summary>
         /// Gets or sets fileCabinetServiceSnapshot.
@@ -281,6 +281,119 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public abstract void Handle(AppCommandRequest commandRequest);
+
+        /// <summary>
+        /// Deletes the quotes from input values.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        protected static void DeleteQuotesFromInputValues(string[] values)
+        {
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
+            }
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i][0] == '\'' || values[i][0] == '"')
+                {
+                    values[i] = values[i].Substring(1, values[i].Length - 2);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Changes the field case.
+        /// </summary>
+        /// <param name="printedFields">The printed fields.</param>
+        /// <exception cref="ArgumentNullException">printedFields.</exception>
+        /// <exception cref="ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
+        protected static void ChangeFieldCase(string[] printedFields)
+        {
+            if (printedFields is null)
+            {
+                throw new ArgumentNullException(nameof(printedFields), $"{nameof(printedFields)} is null");
+            }
+
+            for (int i = 0; i < printedFields.Length; i++)
+            {
+                var key = printedFields[i].ToLower(Culture);
+
+                if (!FieldsCaseDictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException($"No field with name {nameof(printedFields)}", nameof(printedFields));
+                }
+
+                printedFields[i] = FieldsCaseDictionary[key];
+            }
+        }
+
+        /// <summary>
+        /// Creates the dictionary of fields.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <param name="separator">The separator.</param>
+        /// <returns>dictionary of values.</returns>
+        /// <exception cref="ArgumentNullException">values.</exception>
+        /// <exception cref="ArgumentException">No field with name {nameof(values)} - values.</exception>
+        protected static Dictionary<string, string> CreateDictionaryOfFields(string[] values, string separator)
+        {
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
+            }
+
+            Dictionary<string, string> updates = new Dictionary<string, string>();
+            DeleteQuotesFromInputValues(values);
+
+            int counter = 0;
+            while (counter < values.Length)
+            {
+                if (values[counter] == separator)
+                {
+                    counter++;
+                    continue;
+                }
+
+                var key = values[counter].ToLower(Culture);
+
+                if (!FieldsCaseDictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException($"No field with name {nameof(values)}", nameof(values));
+                }
+
+                updates.Add(FieldsCaseDictionary[key], values[++counter]);
+                counter++;
+            }
+
+            return updates;
+        }
+
+        /// <summary>
+        /// Finds the condition separator.
+        /// </summary>
+        /// <param name="conditionFields">The condition fields.</param>
+        /// <returns>separator.</returns>
+        /// <exception cref="ArgumentException">conditionFields.</exception>
+        protected static string FindConditionSeparator(string[] conditionFields)
+        {
+            if (conditionFields.Contains("and") && conditionFields.Contains("or"))
+            {
+                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together. Use 'help' or 'syntax'", nameof(conditionFields));
+            }
+
+            if (conditionFields.Contains("and"))
+            {
+                return "and";
+            }
+
+            if (conditionFields.Contains("or"))
+            {
+                return "or";
+            }
+
+            return string.Empty;
+        }
 
         /// <summary>
         /// PrintInputFields.

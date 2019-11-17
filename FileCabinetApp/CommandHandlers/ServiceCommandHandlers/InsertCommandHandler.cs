@@ -33,37 +33,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (commandRequest.Command == "insert")
             {
-                Cache = new DataCaching();
+                Cache.Clear();
                 this.Create(commandRequest.Parameters);
             }
             else
             {
                 this.NextHandler.Handle(commandRequest);
-            }
-        }
-
-        private static void CorrectValuesInput(string[] values)
-        {
-            for (int i = 0; i < values.Length; i++)
-            {
-                if (values[i][0] == '\'' || values[i][0] == '"')
-                {
-                    values[i] = values[i].Substring(1, values[i].Length - 2);
-                }
-            }
-        }
-
-        private static void ChangeFieldCase(string[] fields)
-        {
-            for (int i = 0; i < fields.Length; i++)
-            {
-                var value = fields[i].ToLower(Culture);
-                if (!FieldsCaseDictionary.ContainsKey(value))
-                {
-                    throw new ArgumentException($"No field with name {nameof(fields)}", nameof(fields));
-                }
-
-                fields[i] = FieldsCaseDictionary[value];
             }
         }
 
@@ -75,7 +50,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             ChangeFieldCase(fields);
             string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-            CorrectValuesInput(values);
+            DeleteQuotesFromInputValues(values);
 
             try
             {

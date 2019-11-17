@@ -64,7 +64,7 @@
         </member>
         <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Cache">
             <summary>
-            Gets or sets cache.
+            Gets cache.
             </summary>
             <value>
             Cache.
@@ -97,6 +97,38 @@
             Handles the specified command request.
             </summary>
             <param name="commandRequest">The command request.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DeleteQuotesFromInputValues(System.String[])">
+            <summary>
+            Deletes the quotes from input values.
+            </summary>
+            <param name="values">The values.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ChangeFieldCase(System.String[])">
+            <summary>
+            Changes the field case.
+            </summary>
+            <param name="printedFields">The printed fields.</param>
+            <exception cref="T:System.ArgumentNullException">printedFields.</exception>
+            <exception cref="T:System.ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CreateDictionaryOfFields(System.String[],System.String)">
+            <summary>
+            Creates the dictionary of fields.
+            </summary>
+            <param name="values">The values.</param>
+            <param name="separator">The separator.</param>
+            <returns>dictionary of values.</returns>
+            <exception cref="T:System.ArgumentNullException">values.</exception>
+            <exception cref="T:System.ArgumentException">No field with name {nameof(values)} - values.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.FindConditionSeparator(System.String[])">
+            <summary>
+            Finds the condition separator.
+            </summary>
+            <param name="conditionFields">The condition fields.</param>
+            <returns>separator.</returns>
+            <exception cref="T:System.ArgumentException">conditionFields.</exception>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
             <summary>
@@ -144,6 +176,38 @@
             <param name="fileFormat">The file format.</param>
             <param name="path">The path.</param>
             <returns>true if params are valid.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.ExpressionExtensions">
+            <summary>
+            ExpressionExtensions.
+            </summary>
+            <seealso cref="T:FileCabinetApp.CommandHandlers.IExpressionExtensions" />
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExpressionExtensions"/> class.
+            </summary>
+            <param name="fileCabinetService">The file cabinet service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="conditionSeparator">The condition separator.</param>
+            <param name="type">The type.</param>
+            <returns>records that suits the condition.</returns>
+            <exception cref="T:System.ArgumentException">Incorrect condition separator {nameof(conditionSeparator)}. Use 'and' || 'or' - conditionSeparator.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="type">The type.</param>
+            <returns>records that suits the condition.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler">
             <summary>
@@ -200,6 +264,23 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler">
+            <summary>
+            SyntaxCommandHandler.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.#ctor(System.String[][])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler"/> class.
+            </summary>
+            <param name="help">The help.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
+            <summary>
+            Handles the specified command request.
+            </summary>
+            <param name="commandRequest">The command request.</param>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ICommandHandler">
             <summary>
             ICommandHandler.
@@ -217,30 +298,41 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Printer.DefaultRecordPrinter">
+        <member name="T:FileCabinetApp.CommandHandlers.IExpressionExtensions">
             <summary>
-            DefaultRecordPrinter.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.Printer.IRecordPrinter" />
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord})">
-            <summary>
-            Prints the specified record.
-            </summary>
-            <param name="record">The record.</param>
-            <returns>true if records was printed.</returns>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Printer.IRecordPrinter">
-            <summary>
-            IRecordPrinter.
+            IExpressionExtensions.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord})">
+        <member name="M:FileCabinetApp.CommandHandlers.IExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="conditionSeparator">The condition separator.</param>
+            <param name="classType">Type of the class.</param>
+            <returns>records that suits the condition.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.IExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="classType">Type of the class.</param>
+            <returns>records that suits the condition.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter">
+            <summary>
+            TablePrinter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
             <summary>
             Prints the specified records.
             </summary>
-            <param name="records">The records.</param>
-            <returns>true if records was printed.</returns>
+            <param name="record">The records.</param>
+            <param name="fields">The fields.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.Printer.ITablePrinter">
             <summary>
@@ -248,18 +340,6 @@
             </summary>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.Printer.ITablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
-            <summary>
-            Prints the specified records.
-            </summary>
-            <param name="record">The records.</param>
-            <param name="fields">The fields.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Printer.TablePrinter">
-            <summary>
-            TablePrinter.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.TablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
             <summary>
             Prints the specified records.
             </summary>
@@ -309,12 +389,13 @@
             DeleteCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler"/> class.
             DeleteCommandHandler constructor.
             </summary>
             <param name="cabinetService">fileCabinetService.</param>
+            <param name="expressionExtensions">expressionExtensions.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -322,24 +403,6 @@
             </summary>
             <param name="commandRequest">The command request.</param>
             <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler">
-            <summary>
-            EditCommandHandler.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler"/> class.
-            </summary>
-            <param name="cabinetService">The file cabinet service.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.EditCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the specified command request.
-            </summary>
-            <param name="commandRequest">The command request.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler">
             <summary>
@@ -354,44 +417,6 @@
             <param name="cabinetService">The file cabinet service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the specified command request.
-            </summary>
-            <param name="commandRequest">The command request.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler">
-            <summary>
-            FindCommandHandler.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Printer.IRecordPrinter)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler"/> class.
-            </summary>
-            <param name="cabinetService">The file cabinet service.</param>
-            <param name="printer">The printer.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.FindCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the specified command request.
-            </summary>
-            <param name="commandRequest">The command request.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler">
-            <summary>
-            GetCommandHandler.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Printer.IRecordPrinter)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler"/> class.
-            </summary>
-            <param name="cabinetService">The file cabinet service.</param>
-            <param name="printer">The printer.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.GetCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
             Handles the specified command request.
             </summary>
@@ -451,38 +476,19 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler">
-            <summary>
-            CommandHandler.
-            </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler"/> class.
-            DeleteCommandHandler constructor.
-            </summary>
-            <param name="cabinetService">fileCabinetService.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.RemoveCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
-            <summary>
-            Handles the specified command request.
-            </summary>
-            <param name="commandRequest">The command request.</param>
-            <exception cref="T:System.ArgumentNullException">commandRequest.</exception>
-        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler">
             <summary>
             SelectCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Printer.ITablePrinter)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.CommandHandlers.Printer.ITablePrinter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler"/> class.
             DeleteCommandHandler constructor.
             </summary>
             <param name="cabinetService">fileCabinetService.</param>
             <param name="printer">The printer.</param>
+            <param name="expressionExtensions">expressionExtensions.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -514,12 +520,13 @@
             UpdateCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler"/> class.
             DeleteCommandHandler constructor.
             </summary>
             <param name="cabinetService">fileCabinetService.</param>
+            <param name="expressionExtensions">expressionExtensions.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -801,6 +808,49 @@
             Dispose.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Memoization.CachingKey">
+            <summary>
+            DataCachingKey.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.CachingKey.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Memoization.CachingKey"/> class.
+            </summary>
+            <param name="fields">The fields.</param>
+        </member>
+        <member name="P:FileCabinetApp.Memoization.CachingKey.Fields">
+            <summary>
+            Gets or sets the fields.
+            </summary>
+            <value>
+            The fields.
+            </value>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.CachingKey.Equals(System.Object)">
+            <summary>
+            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
+            </summary>
+            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
+            <returns>
+              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.CachingKey.GetHashCode">
+            <summary>
+            Returns a hash code for this instance.
+            </summary>
+            <returns>
+            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+            </returns>
+        </member>
+        <member name="M:FileCabinetApp.Memoization.CachingKey.Equals(FileCabinetApp.Memoization.CachingKey)">
+            <summary>
+            Equalses the specified other.
+            </summary>
+            <param name="other">The other.</param>
+            <returns>true if other equals to DataCachingKey.</returns>
+        </member>
         <member name="T:FileCabinetApp.Memoization.DataCaching">
             <summary>
             DataCaching.
@@ -818,7 +868,7 @@
             <param name="fields">The fields.</param>
             <returns>value by key.</returns>
         </member>
-        <member name="M:FileCabinetApp.Memoization.DataCaching.Add(FileCabinetApp.Memoization.DataCachingKey,System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord})">
+        <member name="M:FileCabinetApp.Memoization.DataCaching.Add(FileCabinetApp.Memoization.CachingKey,System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord})">
             <summary>
             Adds the specified key.
             </summary>
@@ -834,48 +884,10 @@
               <c>true</c> if [contains] [the specified fields]; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:FileCabinetApp.Memoization.DataCachingKey">
+        <member name="M:FileCabinetApp.Memoization.DataCaching.Clear">
             <summary>
-            DataCachingKey.
+            Clears this instance.
             </summary>
-        </member>
-        <member name="M:FileCabinetApp.Memoization.DataCachingKey.#ctor(System.String[])">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Memoization.DataCachingKey"/> class.
-            </summary>
-            <param name="fields">The fields.</param>
-        </member>
-        <member name="P:FileCabinetApp.Memoization.DataCachingKey.Fields">
-            <summary>
-            Gets or sets the fields.
-            </summary>
-            <value>
-            The fields.
-            </value>
-        </member>
-        <member name="M:FileCabinetApp.Memoization.DataCachingKey.Equals(System.Object)">
-            <summary>
-            Determines whether the specified <see cref="T:System.Object" />, is equal to this instance.
-            </summary>
-            <param name="obj">The <see cref="T:System.Object" /> to compare with this instance.</param>
-            <returns>
-              <c>true</c> if the specified <see cref="T:System.Object" /> is equal to this instance; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="M:FileCabinetApp.Memoization.DataCachingKey.GetHashCode">
-            <summary>
-            Returns a hash code for this instance.
-            </summary>
-            <returns>
-            A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
-            </returns>
-        </member>
-        <member name="M:FileCabinetApp.Memoization.DataCachingKey.Equals(FileCabinetApp.Memoization.DataCachingKey)">
-            <summary>
-            Equalses the specified other.
-            </summary>
-            <param name="other">The other.</param>
-            <returns>true if other equals to DataCachingKey.</returns>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

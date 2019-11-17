@@ -10,12 +10,11 @@ namespace FileCabinetApp.CommandHandlers.Printer
     /// <summary>
     /// TablePrinter.
     /// </summary>
-    public class TablePrinter : ITablePrinter
+    public class DefaultTablePrinter : ITablePrinter
     {
         private static string angle = "+";
         private static string wall = "|";
         private static string border = "-";
-        private static int dateTimeLength = 10;
 
         /// <summary>
         /// Prints the specified records.
@@ -47,16 +46,17 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
             foreach (var rec in record)
             {
-                Console.WriteLine(PrintRecord(rec, fields));
+                Console.WriteLine(PrintRecord(rec, fields, horizontalBorder));
             }
 
             Console.WriteLine(horizontalBorder);
         }
 
-        private static string PrintRecord(FileCabinetRecord record, string[] fields)
+        private static string PrintRecord(FileCabinetRecord record, string[] fields, string horizontalBorder)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(wall);
+            string[] recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < fields.Length; i++)
             {
                 var value = record.GetType().GetProperty(fields[i])?.GetValue(record, null);
@@ -66,17 +66,24 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 }
 
                 builder.Append(" ");
+                string stringValue = value.ToString();
+                if (value is DateTime)
+                {
+                    stringValue = ((DateTime)value).ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
+                }
+
+                int horizontalBorderLength = recordsLength[i].Length - stringValue.Length - 2;
                 if (value is string || value is char)
                 {
-                    builder.Append(PrintStringValues(fields[i], value.ToString()));
+                    builder.Append(PrintStringValues(stringValue, horizontalBorderLength));
                 }
                 else if (value is DateTime)
                 {
-                    builder.Append(PrintDateTimeValue(fields[i], (DateTime)value));
+                    builder.Append(PrintDateTimeValue(stringValue, horizontalBorderLength));
                 }
                 else
                 {
-                    builder.Append(PrintDigitValues(fields[i], value.ToString()));
+                    builder.Append(PrintDigitValues(stringValue, horizontalBorderLength));
                 }
 
                 builder.Append(" ");
@@ -136,13 +143,13 @@ namespace FileCabinetApp.CommandHandlers.Printer
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(wall);
-            string[] a = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
+            string[] recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < fields.Length; i++)
             {
                 builder.Append(" ");
                 builder.Append(fields[i]);
                 builder.Append(" ");
-                for (int j = 0; j < a[i].Length - fields[i].Length - 2; j++)
+                for (int j = 0; j < recordsLength[i].Length - fields[i].Length - 2; j++)
                 {
                     builder.Append(" ");
                 }
@@ -153,11 +160,11 @@ namespace FileCabinetApp.CommandHandlers.Printer
             return builder.ToString();
         }
 
-        private static string PrintStringValues(string fields, string values)
+        private static string PrintStringValues(string values, int horizontalBorderLength)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append(values);
-            for (int j = 0; j < fields.Length - values.Length; j++)
+            for (int j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
@@ -165,10 +172,10 @@ namespace FileCabinetApp.CommandHandlers.Printer
             return builder.ToString();
         }
 
-        private static string PrintDigitValues(string fields, string values)
+        private static string PrintDigitValues(string values, int horizontalBorderLength)
         {
             StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < fields.Length - values.Length; j++)
+            for (int j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
@@ -178,15 +185,15 @@ namespace FileCabinetApp.CommandHandlers.Printer
             return builder.ToString();
         }
 
-        private static string PrintDateTimeValue(string fields, DateTime values)
+        private static string PrintDateTimeValue(string values, int horizontalBorderLength)
         {
             StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < fields.Length - dateTimeLength; j++)
+            for (int j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
 
-            builder.Append($"{values:yyyy-MMMM-dd}");
+            builder.Append($"{values}");
 
             return builder.ToString();
         }

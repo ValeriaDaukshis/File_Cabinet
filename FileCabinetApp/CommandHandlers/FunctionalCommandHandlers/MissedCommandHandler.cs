@@ -64,7 +64,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             builder.Append($"There is no '{command}' command.\n");
             if (!commands.Any())
             {
-                builder.Append("Use help");
+                builder.Append("Use 'help' or 'syntax'.");
                 return builder.ToString();
             }
 
