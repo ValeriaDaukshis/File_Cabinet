@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
     /// <summary>
     /// TablePrinter.
     /// </summary>
-    public class TablePrinter : ITablePrinter
+    public class DefaultTablePrinter : ITablePrinter
     {
         private static string angle = "+";
         private static string wall = "|";
@@ -67,7 +67,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
                 builder.Append(" ");
                 string stringValue = value.ToString();
-                if(value is DateTime)
+                if (value is DateTime)
                 {
                     stringValue = ((DateTime)value).ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
                 }

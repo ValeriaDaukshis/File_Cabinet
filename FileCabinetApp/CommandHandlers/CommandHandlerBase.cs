@@ -328,8 +328,21 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
+        /// <summary>
+        /// Creates the dictionary of fields.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <param name="separator">The separator.</param>
+        /// <returns>dictionary of values.</returns>
+        /// <exception cref="ArgumentNullException">values.</exception>
+        /// <exception cref="ArgumentException">No field with name {nameof(values)} - values.</exception>
         protected static Dictionary<string, string> CreateDictionaryOfFields(string[] values, string separator)
         {
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
+            }
+
             Dictionary<string, string> updates = new Dictionary<string, string>();
             DeleteQuotesFromInputValues(values);
 
@@ -356,7 +369,12 @@ namespace FileCabinetApp.CommandHandlers
             return updates;
         }
 
-
+        /// <summary>
+        /// Finds the condition separator.
+        /// </summary>
+        /// <param name="conditionFields">The condition fields.</param>
+        /// <returns>separator.</returns>
+        /// <exception cref="ArgumentException">conditionFields.</exception>
         protected static string FindConditionSeparator(string[] conditionFields)
         {
             if (conditionFields.Contains("and") && conditionFields.Contains("or"))
