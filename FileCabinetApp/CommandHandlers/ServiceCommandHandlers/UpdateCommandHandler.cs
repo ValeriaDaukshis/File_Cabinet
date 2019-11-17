@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Text;
 using FileCabinetApp.ExceptionClasses;
-using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -88,7 +84,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return builder.ToString();
         }
 
-        private static void CheckInputConditionFields(string[] conditionFields)
+        private static void CheckConditionFieldsInput(string[] conditionFields)
         {
             if (conditionFields.Length < 2)
             {
@@ -101,27 +97,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
-        private static string CheckConditionSeparator(string[] conditionFields)
-        {
-            if (conditionFields.Contains("and") && conditionFields.Contains("or"))
-            {
-                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together. Use 'help' or 'syntax'", nameof(conditionFields));
-            }
-
-            if (conditionFields.Contains("and"))
-            {
-                return "and";
-            }
-
-            if (conditionFields.Contains("or"))
-            {
-                return "or";
-            }
-
-            return string.Empty;
-        }
-
-        private static void CheckInputUpdateFields(string[] updatedFields)
+        private static void CheckUpdateFieldsInput(string[] updatedFields)
         {
             if (updatedFields.Length < 3)
             {
@@ -132,34 +108,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             {
                 throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set'. Use 'help' or 'syntax.'", nameof(updatedFields));
             }
-        }
-
-        private static Dictionary<string, string> CreateFieldsDictionary(string[] values, string separator)
-        {
-            Dictionary<string, string> updates = new Dictionary<string, string>();
-            DeleteQuotesFromInputValues(values);
-
-            int counter = 0;
-            while (counter < values.Length)
-            {
-                if (values[counter] == separator)
-                {
-                    counter++;
-                    continue;
-                }
-
-                var key = values[counter].ToLower(Culture);
-
-                if (!FieldsCaseDictionary.ContainsKey(key))
-                {
-                    throw new ArgumentException($"No field with name {nameof(values)}", nameof(values));
-                }
-
-                updates.Add(FieldsCaseDictionary[key], values[++counter]);
-                counter++;
-            }
-
-            return updates;
         }
 
         private void Update(string parameters)
@@ -177,13 +125,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                CheckInputConditionFields(conditionFields);
-                CheckInputUpdateFields(updatedFields);
+                CheckConditionFieldsInput(conditionFields);
+                CheckUpdateFieldsInput(updatedFields);
 
                 // finds separator (or/and)
-                string conditionSeparator = CheckConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = CreateFieldsDictionary(updatedFields, "set");
-                Dictionary<string, string> conditions = CreateFieldsDictionary(conditionFields, conditionSeparator);
+                string conditionSeparator = FindConditionSeparator(conditionFields);
+                Dictionary<string, string> updates = CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions = CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
 

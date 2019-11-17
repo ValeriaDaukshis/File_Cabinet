@@ -328,6 +328,55 @@ namespace FileCabinetApp.CommandHandlers
             }
         }
 
+        protected static Dictionary<string, string> CreateDictionaryOfFields(string[] values, string separator)
+        {
+            Dictionary<string, string> updates = new Dictionary<string, string>();
+            DeleteQuotesFromInputValues(values);
+
+            int counter = 0;
+            while (counter < values.Length)
+            {
+                if (values[counter] == separator)
+                {
+                    counter++;
+                    continue;
+                }
+
+                var key = values[counter].ToLower(Culture);
+
+                if (!FieldsCaseDictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException($"No field with name {nameof(values)}", nameof(values));
+                }
+
+                updates.Add(FieldsCaseDictionary[key], values[++counter]);
+                counter++;
+            }
+
+            return updates;
+        }
+
+
+        protected static string FindConditionSeparator(string[] conditionFields)
+        {
+            if (conditionFields.Contains("and") && conditionFields.Contains("or"))
+            {
+                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together. Use 'help' or 'syntax'", nameof(conditionFields));
+            }
+
+            if (conditionFields.Contains("and"))
+            {
+                return "and";
+            }
+
+            if (conditionFields.Contains("or"))
+            {
+                return "or";
+            }
+
+            return string.Empty;
+        }
+
         /// <summary>
         /// PrintInputFields.
         /// </summary>
