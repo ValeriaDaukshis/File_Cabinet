@@ -17,14 +17,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// </summary>
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly IExpressionExtensions expressionExtensions;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
         /// DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="expressionExtensions">expressionExtensions.</param>
+        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions)
             : base(cabinetService)
         {
+            this.expressionExtensions = expressionExtensions;
         }
 
         /// <summary>
@@ -41,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (commandRequest.Command == "update")
             {
-                Cache = new DataCaching();
+                Cache.Clear();
                 this.Update(commandRequest.Parameters);
             }
             else
@@ -82,41 +86,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
 
             return builder.ToString();
-        }
-
-        private static void CorrectValuesInput(string[] values)
-        {
-            for (int i = 0; i < values.Length; i++)
-            {
-                if (values[i][0] == '\'' || values[i][0] == '"')
-                {
-                    values[i] = values[i].Substring(1, values[i].Length - 2);
-                }
-            }
-        }
-
-        private static Expression<Func<FileCabinetRecord, bool>> MakeExpressionTree(string parameter, string fieldName, Type type)
-        {
-            ParameterExpression parameterValue = Expression.Parameter(type, "field");
-            PropertyInfo propertyInfo = type.GetProperty(fieldName);
-
-            if (propertyInfo is null)
-            {
-                throw new ArgumentNullException(nameof(fieldName), $"{nameof(propertyInfo)} is null");
-            }
-
-            MemberExpression property = Expression.MakeMemberAccess(parameterValue, propertyInfo);
-
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(propertyInfo.PropertyType);
-            var convertedParameter = typeConverter.ConvertFrom(parameter);
-            ConstantExpression value = Expression.Constant(convertedParameter, propertyInfo.PropertyType);
-
-            BinaryExpression greaterThanConstantValue = Expression.Equal(property, value);
-
-            Expression<Func<FileCabinetRecord, bool>> whereExpression =
-                Expression.Lambda<Func<FileCabinetRecord, bool>>(greaterThanConstantValue, parameterValue);
-
-            return whereExpression;
         }
 
         private static void CheckInputConditionFields(string[] conditionFields)
@@ -168,7 +137,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         private static Dictionary<string, string> CreateFieldsDictionary(string[] values, string separator)
         {
             Dictionary<string, string> updates = new Dictionary<string, string>();
-            CorrectValuesInput(values);
+            DeleteQuotesFromInputValues(values);
 
             int counter = 0;
             while (counter < values.Length)
@@ -219,7 +188,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 List<int> recordsId = new List<int>();
 
                 // finds records that satisfy the condition
-                var records = this.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 for (int i = 0; i < records.Length; i++)
                 {
@@ -243,43 +212,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             {
                 Console.WriteLine(ex.Message);
             }
-        }
-
-        private IEnumerable<FileCabinetRecord> FindSuitableRecords(string[] parameter, string[] fieldName, string conditionSeparator)
-        {
-            Type type = typeof(FileCabinetRecord);
-
-            var expressionTree = MakeExpressionTree(parameter[0], fieldName[0], type);
-            Expression<Func<FileCabinetRecord, bool>> delegateForSearch = expressionTree;
-
-            for (int i = 1; i < parameter.Length; i++)
-            {
-                var expression = MakeExpressionTree(parameter[i], fieldName[i], type);
-                var invokedExpr = Expression.Invoke(expression, expressionTree.Parameters.Cast<Expression>());
-
-                if (conditionSeparator == "and")
-                {
-                    delegateForSearch = Expression.Lambda<Func<FileCabinetRecord, bool>>(
-                        Expression.AndAlso(expressionTree.Body, invokedExpr), expressionTree.Parameters);
-                }
-                else if (conditionSeparator == "or")
-                {
-                    delegateForSearch = Expression.Lambda<Func<FileCabinetRecord, bool>>(
-                        Expression.OrElse(expressionTree.Body, invokedExpr), expressionTree.Parameters);
-                }
-                else
-                {
-                    throw new ArgumentException($"Incorrect condition separator {nameof(conditionSeparator)}. Use 'and' || 'or'", nameof(conditionSeparator));
-                }
-            }
-
-            Func<FileCabinetRecord, bool> delegateForWhere = delegateForSearch.Compile();
-
-            var records = from n in this.CabinetService.GetRecords()
-                where delegateForWhere.Invoke(n)
-                select n;
-
-            return records;
         }
     }
 }

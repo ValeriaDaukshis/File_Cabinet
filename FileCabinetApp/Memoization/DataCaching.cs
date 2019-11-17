@@ -9,14 +9,14 @@ namespace FileCabinetApp.Memoization
     /// </summary>
     public class DataCaching
     {
-        private readonly Dictionary<DataCachingKey, IEnumerable<FileCabinetRecord>> cacheDictionary;
+        private readonly Dictionary<CachingKey, IEnumerable<FileCabinetRecord>> cacheDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataCaching"/> class.
         /// </summary>
         public DataCaching()
         {
-            this.cacheDictionary = new Dictionary<DataCachingKey, IEnumerable<FileCabinetRecord>>();
+            this.cacheDictionary = new Dictionary<CachingKey, IEnumerable<FileCabinetRecord>>();
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace FileCabinetApp.Memoization
         /// <returns>value by key.</returns>
         public IEnumerable<FileCabinetRecord> GetValueByKey(string[] fields)
         {
-            return this.cacheDictionary[this.cacheDictionary.Keys.First(t => t.Equals(new DataCachingKey(fields)))];
+            return this.cacheDictionary[this.cacheDictionary.Keys.First(t => t.Equals(new CachingKey(fields)))];
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace FileCabinetApp.Memoization
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="records">The records.</param>
-        public void Add(DataCachingKey key, IEnumerable<FileCabinetRecord> records)
+        public void Add(CachingKey key, IEnumerable<FileCabinetRecord> records)
         {
             this.cacheDictionary.Add(key, records);
         }
@@ -48,7 +48,7 @@ namespace FileCabinetApp.Memoization
         /// </returns>
         public bool Contains(string[] fields)
         {
-            var isValueInDictionary = this.cacheDictionary.Keys.FirstOrDefault(t => t.Equals(new DataCachingKey(fields)));
+            var isValueInDictionary = this.cacheDictionary.Keys.FirstOrDefault(t => t.Equals(new CachingKey(fields)));
 
             if (isValueInDictionary == null)
             {
@@ -56,6 +56,14 @@ namespace FileCabinetApp.Memoization
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            this.cacheDictionary.Clear();
         }
     }
 }

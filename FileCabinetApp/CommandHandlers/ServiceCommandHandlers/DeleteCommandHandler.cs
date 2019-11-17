@@ -17,14 +17,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly IExpressionExtensions expressionExtensions;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
         /// DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
-        public DeleteCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="expressionExtensions">expressionExtensions.</param>
+        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions)
             : base(cabinetService)
         {
+            this.expressionExtensions = expressionExtensions;
         }
 
         /// <summary>
@@ -41,7 +45,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             if (commandRequest.Command == "delete")
             {
-                Cache = new DataCaching();
+                Cache.Clear();
                 this.Delete(commandRequest.Parameters);
             }
             else
@@ -52,7 +56,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private static string CreateOutputText(int[] recordsId)
         {
+            if (recordsId.Length == 0)
+            {
+                return "No records found";
+            }
+
             StringBuilder builder = new StringBuilder();
+
             if (recordsId.Length > 1)
             {
                 builder.Append("Records ");
@@ -101,9 +111,15 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             char[] separator = { ' ', '=' };
             string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
-            if (inputs.Length != 3)
+            if (inputs.Length < 3)
             {
                 Console.WriteLine("Not enough parameters after command 'delete'");
+                return;
+            }
+
+            if (inputs.Length > 3)
+            {
+                Console.WriteLine("A lot of parameters after command 'delete'");
                 return;
             }
 
@@ -117,7 +133,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             try
             {
                 List<int> recordsId = new List<int>();
-                var records = this.DeleteRecord(parameter, fieldName).ToArray();
+                var records = this.expressionExtensions
+                    .FindSuitableRecords(parameter, fieldName, typeof(FileCabinetRecord)).ToArray();
+
                 for (int i = 0; i < records.Length; i++)
                 {
                     recordsId.Add(this.CabinetService.RemoveRecord(records[i]));
@@ -140,37 +158,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 Console.WriteLine(ex.Message);
                 Console.WriteLine($"Record #{parameters} was not deleted");
             }
-        }
-
-        private IEnumerable<FileCabinetRecord> DeleteRecord(string parameter, string fieldName)
-        {
-            Type type = typeof(FileCabinetRecord);
-
-            ParameterExpression parameterValue = Expression.Parameter(type, "field");
-            PropertyInfo propertyInfo = type.GetProperty(fieldName);
-
-            if (propertyInfo is null)
-            {
-                throw new ArgumentNullException(nameof(fieldName), $"{nameof(propertyInfo)} is null");
-            }
-
-            MemberExpression property = Expression.MakeMemberAccess(parameterValue, propertyInfo);
-
-            TypeConverter typeConverter = TypeDescriptor.GetConverter(propertyInfo.PropertyType);
-            var convertedParameter = typeConverter.ConvertFrom(parameter);
-            ConstantExpression value = Expression.Constant(convertedParameter, propertyInfo.PropertyType);
-
-            BinaryExpression greaterThanConstantValue = Expression.Equal(property, value);
-
-            Expression<Func<FileCabinetRecord, bool>> whereExpression =
-                Expression.Lambda<Func<FileCabinetRecord, bool>>(greaterThanConstantValue, parameterValue);
-
-            Func<FileCabinetRecord, bool> delegateForWhere = whereExpression.Compile();
-            var records = from n in this.CabinetService.GetRecords()
-                where delegateForWhere.Invoke(n)
-                select n;
-
-            return records;
         }
     }
 }

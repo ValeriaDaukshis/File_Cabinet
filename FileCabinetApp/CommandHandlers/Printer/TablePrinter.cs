@@ -15,7 +15,6 @@ namespace FileCabinetApp.CommandHandlers.Printer
         private static string angle = "+";
         private static string wall = "|";
         private static string border = "-";
-        private static int dateTimeLength = 10;
 
         /// <summary>
         /// Prints the specified records.
@@ -181,12 +180,13 @@ namespace FileCabinetApp.CommandHandlers.Printer
         private static string PrintDateTimeValue(string fields, DateTime values)
         {
             StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < fields.Length - dateTimeLength; j++)
+            var dateOfBirth = values.ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
+            for (int j = 0; j < fields.Length - dateOfBirth.Length; j++)
             {
                 builder.Append(" ");
             }
 
-            builder.Append($"{values:yyyy-MMMM-dd}");
+            builder.Append($"{dateOfBirth}");
 
             return builder.ToString();
         }

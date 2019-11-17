@@ -244,12 +244,12 @@ namespace FileCabinetApp.CommandHandlers
         public static FileStream ServiceStorageFileStream { get;  set; }
 
         /// <summary>
-        /// Gets or sets cache.
+        /// Gets cache.
         /// </summary>
         /// <value>
         /// Cache.
         /// </value>
-        protected static DataCaching Cache { get; set; }
+        protected static DataCaching Cache { get; } = new DataCaching();
 
         /// <summary>
         /// Gets or sets fileCabinetServiceSnapshot.
@@ -281,6 +281,52 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public abstract void Handle(AppCommandRequest commandRequest);
+
+        /// <summary>
+        /// Deletes the quotes from input values.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        protected static void DeleteQuotesFromInputValues(string[] values)
+        {
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
+            }
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i][0] == '\'' || values[i][0] == '"')
+                {
+                    values[i] = values[i].Substring(1, values[i].Length - 2);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Changes the field case.
+        /// </summary>
+        /// <param name="printedFields">The printed fields.</param>
+        /// <exception cref="ArgumentNullException">printedFields.</exception>
+        /// <exception cref="ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
+        protected static void ChangeFieldCase(string[] printedFields)
+        {
+            if (printedFields is null)
+            {
+                throw new ArgumentNullException(nameof(printedFields), $"{nameof(printedFields)} is null");
+            }
+
+            for (int i = 0; i < printedFields.Length; i++)
+            {
+                var key = printedFields[i].ToLower(Culture);
+
+                if (!FieldsCaseDictionary.ContainsKey(key))
+                {
+                    throw new ArgumentException($"No field with name {nameof(printedFields)}", nameof(printedFields));
+                }
+
+                printedFields[i] = FieldsCaseDictionary[key];
+            }
+        }
 
         /// <summary>
         /// PrintInputFields.
