@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Xml.Serialization;
+using FileCabinetApp.Records;
 
 namespace FileCabinetGenerator.Records
 {
@@ -20,7 +22,7 @@ namespace FileCabinetGenerator.Records
         public Record(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             this.Name = new Names { FirstName = firstName, LastName = lastName };
-            this.DateOfBirth = dateOfBirth;
+            this.DateOfBirth = dateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
             this.Gender = gender;
             this.CreditSum = credit;
             this.Duration = duration;
@@ -77,13 +79,11 @@ namespace FileCabinetGenerator.Records
         public char Gender { get; set; }
 
         /// <summary>
-        /// Gets the date of birth.
+        /// Gets or sets Date of birth of <see cref="FileCabinetRecord"/>.
         /// </summary>
-        /// <value>
-        /// The date of birth.
-        /// </value>
-        [XmlElement(typeof(DateTime), ElementName = "dateOfBirth")]
-        public DateTime DateOfBirth { get; set; }
+        /// <value>Date of birth.</value>
+        [XmlElement(ElementName = "dateOfBirth")]
+        public string DateOfBirth { get; set; }
 
         /// <summary>
         /// Gets credit sum.
