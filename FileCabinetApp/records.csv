@@ -1,0 +1,11 @@
+id,firstName,lastName,gender,dateOfBirth,creditSum,duration
+1,FirstName0,LastName0,T,1977-06-04,2588,89
+2,FirstName1,LastName1,M,1985-11-02,4886,84
+3,FirstName2,LastName2,M,2011-03-10,2710,59
+4,FirstName3,LastName3,M,2002-12-30,3649,42
+5,FirstName4,LastName4,M,2002-03-04,2979,86
+6,FirstName5,LastName5,F,1998-10-12,1558,100
+7,FirstName6,LastName6,M,1991-12-17,2197,31
+8,FirstName7,LastName7,M,1986-09-27,1775,97
+9,FirstName8,LastName8,M,1993-08-31,1831,95
+10,FirstName9,LastName9,M,1977-12-17,4390,62

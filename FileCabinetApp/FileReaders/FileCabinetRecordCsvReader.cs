@@ -62,41 +62,41 @@ namespace FileCabinetApp.FileReaders
             lastName = string.Empty;
             if (!int.TryParse(row[0], out id))
             {
-                throw new ArgumentException("Id has not digit format");
+                throw new ArgumentException($" {row[0]} Id has not digit format");
             }
 
             if (string.IsNullOrEmpty(row[1]))
             {
-                throw new ArgumentException("firstName is null or empty");
+                throw new ArgumentException($"{id} firstName is null or empty");
             }
 
             firstName = row[1];
 
             if (string.IsNullOrEmpty(row[2]))
             {
-                throw new ArgumentException("lastName is null or empty");
+                throw new ArgumentException($"{id} lastName is null or empty");
             }
 
             lastName = row[2];
 
             if (!char.TryParse(row[3], out gender))
             {
-                throw new ArgumentException("gender is not char");
+                throw new ArgumentException($"{id} gender is not char");
             }
 
             if (!DateTime.TryParse(row[4], CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBirth))
             {
-                throw new ArgumentException("Incorrect DateTime value");
+                throw new ArgumentException($"{id} Incorrect DateTime value");
             }
 
             if (!decimal.TryParse(row[5], out credit))
             {
-                throw new ArgumentException("creditSum has no decimal format");
+                throw new ArgumentException($"{id} creditSum has no decimal format");
             }
 
             if (!short.TryParse(row[6], out duration))
             {
-                throw new ArgumentException("duration has not short format");
+                throw new ArgumentException($"{id} duration has not short format");
             }
 
             this.validator.ValidateParameters(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<records xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <record id="1">
+    <name first="FirstName0" last="LastName0" />
+    <gender>70</gender>
+    <dateOfBirth>1960-02-07T00:00:00</dateOfBirth>
+    <creditSum>12025</creditSum>
+    <duration>230</duration>
+  </record>
+  <record id="2">
+    <name first="FirstName1" last="LastName1" />
+    <gender>77</gender>
+    <dateOfBirth>1952-12-02T00:00:00</dateOfBirth>
+    <creditSum>47960</creditSum>
+    <duration>216</duration>
+  </record>
+  <record id="3">
+    <name first="FirstName2" last="LastName2" />
+    <gender>77</gender>
+    <dateOfBirth>1985-04-14T00:00:00</dateOfBirth>
+    <creditSum>16020</creditSum>
+    <duration>185</duration>
+  </record>
+  <record id="4">
+    <name first="FirstName3" last="LastName3" />
+    <gender>77</gender>
+    <dateOfBirth>1991-04-16T00:00:00</dateOfBirth>
+    <creditSum>28879</creditSum>
+    <duration>246</duration>
+  </record>
+  <record id="5">
+    <name first="FirstName4" last="LastName4" />
+    <gender>77</gender>
+    <dateOfBirth>1995-01-17T00:00:00</dateOfBirth>
+    <creditSum>12331</creditSum>
+    <duration>126</duration>
+  </record>
+  <record id="6">
+    <name first="FirstName5" last="LastName5" />
+    <gender>70</gender>
+    <dateOfBirth>2005-01-10T00:00:00</dateOfBirth>
+    <creditSum>21112</creditSum>
+    <duration>68</duration>
+  </record>
+  <record id="7">
+    <name first="FirstName6" last="LastName6" />
+    <gender>77</gender>
+    <dateOfBirth>1963-03-30T00:00:00</dateOfBirth>
+    <creditSum>25519</creditSum>
+    <duration>30</duration>
+  </record>
+  <record id="8">
+    <name first="FirstName7" last="LastName7" />
+    <gender>77</gender>
+    <dateOfBirth>1966-07-22T00:00:00</dateOfBirth>
+    <creditSum>17651</creditSum>
+    <duration>16</duration>
+  </record>
+  <record id="9">
+    <name first="FirstName8" last="LastName8" />
+    <gender>77</gender>
+    <dateOfBirth>2005-01-18T00:00:00</dateOfBirth>
+    <creditSum>20707</creditSum>
+    <duration>215</duration>
+  </record>
+  <record id="10">
+    <name first="FirstName9" last="LastName9" />
+    <gender>77</gender>
+    <dateOfBirth>1957-04-10T00:00:00</dateOfBirth>
+    <creditSum>42081</creditSum>
+    <duration>284</duration>
+  </record>
+</records>

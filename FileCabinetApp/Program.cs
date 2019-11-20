@@ -73,31 +73,37 @@ namespace FileCabinetApp
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
                         (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
+                        Console.WriteLine("Custom validator");
                     }
                     else
                     {
                         (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
+                        Console.WriteLine("Default validator");
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
                         CommandHandlerBase.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream, CommandHandlerBase.RecordValidator);
+                        Console.WriteLine("Used filesystem service");
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
+                        Console.WriteLine("Used memory service");
                     }
 
                     if (o.StopWatcher == true)
                     {
                         fileCabinetService = new ServiceMeter(fileCabinetService);
+                        Console.WriteLine("Used timer");
                     }
 
                     if (o.Logger == true)
                     {
                         string sourceFilePath = CreateValidPath("logger.log");
                         fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
+                        Console.WriteLine("Used logger");
                     }
                 });
 
