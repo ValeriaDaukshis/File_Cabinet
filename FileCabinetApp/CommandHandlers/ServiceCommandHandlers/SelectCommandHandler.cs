@@ -89,7 +89,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write information");
+                this.printer.Print(this.CabinetService.GetRecords(), FieldsCaseDictionary.Values.ToArray());
                 return;
             }
 

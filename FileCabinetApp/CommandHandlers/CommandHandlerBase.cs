@@ -31,12 +31,12 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         protected static readonly Dictionary<string, string> FieldsCaseDictionary = new Dictionary<string, string>
         {
+            { "id", "Id" },
             { "firstname", "FirstName" },
             { "lastname", "LastName" },
-            { "id", "Id" },
-            { "creditsum", "CreditSum" },
             { "gender", "Gender" },
             { "dateofbirth", "DateOfBirth" },
+            { "creditsum", "CreditSum" },
             { "duration", "Duration" },
         };
 
