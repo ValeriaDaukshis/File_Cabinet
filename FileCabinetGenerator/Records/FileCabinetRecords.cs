@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace FileCabinetApp.Records
+namespace FileCabinetGenerator.Records
 {
     /// <summary>
     /// FileCabinetRecords.
@@ -15,7 +14,7 @@ namespace FileCabinetApp.Records
         /// </summary>
         public FileCabinetRecords()
         {
-            this.Record = new List<Record>();
+            this.Record = new List<FileCabinetGenerator.Records.Record>();
         }
 
         /// <summary>
@@ -25,6 +24,6 @@ namespace FileCabinetApp.Records
         /// The record.
         /// </value>
         [XmlElement("record")]
-        public List<Record> Record { get; set; }
+        public List<FileCabinetGenerator.Records.Record> Record { get; set; }
     }
 }

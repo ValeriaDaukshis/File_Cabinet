@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace FileCabinetApp.Records
+namespace FileCabinetGenerator.Records
 {
     /// <summary>
     /// Record.
@@ -50,7 +50,7 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        /// Gets the identifier.
         /// </summary>
         /// <value>
         /// The identifier.
@@ -59,7 +59,7 @@ namespace FileCabinetApp.Records
         public int Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the name.
+        /// Gets the name.
         /// </summary>
         /// <value>
         /// The name.
@@ -68,7 +68,7 @@ namespace FileCabinetApp.Records
         public Names Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the gender.
+        /// Gets the gender.
         /// </summary>
         /// <value>
         /// The gender.
@@ -77,7 +77,7 @@ namespace FileCabinetApp.Records
         public char Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets the date of birth.
+        /// Gets the date of birth.
         /// </summary>
         /// <value>
         /// The date of birth.
@@ -86,7 +86,7 @@ namespace FileCabinetApp.Records
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets credit sum.
+        /// Gets credit sum.
         /// </summary>
         /// <value>
         /// Credit sum.
@@ -95,7 +95,7 @@ namespace FileCabinetApp.Records
         public decimal CreditSum { get; set; }
 
         /// <summary>
-        /// Gets or sets duration.
+        /// Gets duration.
         /// </summary>
         /// <value>
         /// The duration.

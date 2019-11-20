@@ -1087,7 +1087,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.Id">
             <summary>
-            Gets the identifier.
+            Gets or sets the identifier.
             </summary>
             <value>
             The identifier.
@@ -1095,7 +1095,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.Name">
             <summary>
-            Gets the name.
+            Gets or sets the name.
             </summary>
             <value>
             The name.
@@ -1103,7 +1103,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.Gender">
             <summary>
-            Gets the gender.
+            Gets or sets the gender.
             </summary>
             <value>
             The gender.
@@ -1111,7 +1111,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.DateOfBirth">
             <summary>
-            Gets the date of birth.
+            Gets or sets the date of birth.
             </summary>
             <value>
             The date of birth.
@@ -1119,7 +1119,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.CreditSum">
             <summary>
-            Gets credit sum.
+            Gets or sets credit sum.
             </summary>
             <value>
             Credit sum.
@@ -1127,7 +1127,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.Record.Duration">
             <summary>
-            Gets duration.
+            Gets or sets duration.
             </summary>
             <value>
             The duration.

@@ -10,8 +10,4 @@
       <PackageReference Include="CommandLineParser" Version="2.6.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\FileCabinetApp\FileCabinetApp.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Xml.Serialization;
 using CommandLine;
-using FileCabinetApp;
-using FileCabinetApp.Records;
 using FileCabinetGenerator.FileImporters;
+using FileCabinetGenerator.Records;
 
 namespace FileCabinetGenerator
 {
@@ -18,16 +16,16 @@ namespace FileCabinetGenerator
         private static readonly DateTime BirthDayMinValue = new DateTime(1950, 01, 01);
         private static readonly FileCabinetRecords FileCabinetRecords = new FileCabinetRecords();
         private static IFileCabinetSerializer serializer;
-        private static string outputFormat;
-        private static string outputFileName;
-        private static int recordsAmount;
-        private static int startId;
+        private static string outputFormat = "xml";
+        private static string outputFileName = "records.xml";
+        private static int recordsAmount = 10;
+        private static int startId = 1;
         private static string firstNameTemplate = "FirstName";
         private static string lastNameTemplate = "LastName";
-        private static int durationMinValue = 6;
-        private static int durationMaxValue = 120;
-        private static int creditSumMinValue = 10;
-        private static int creditSumMaxValue = 5000;
+        private static int durationMinValue = 12;
+        private static int durationMaxValue = 300;
+        private static int creditSumMinValue = 120;
+        private static int creditSumMaxValue = 50000;
 
         /// <summary>
         /// Main.
@@ -35,31 +33,40 @@ namespace FileCabinetGenerator
         /// <param name="args"></param>
         static void Main(string[] args)
         {
+            bool inputs = true;
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
-                    o.OutputFormat = o.OutputFormat.ToLower(Culture);
-                    if (o.OutputFormat != "xml" && o.OutputFormat != "csv")
+                    if (o.OutputFormat is null)
                     {
-                        Console.WriteLine($"Invalid output format type {o.OutputFormat}");
                         return;
                     }
-                    
+
+                    if (o.OutputFormat.ToLower(Culture) != "xml" && o.OutputFormat.ToLower(Culture) != "csv")
+                    {
+                        Console.WriteLine($"Invalid output format type {o.OutputFormat}");
+                        inputs = false;
+                        return;
+                    }
+
                     if (string.IsNullOrEmpty(o.OutputFileName))
                     {
                         Console.WriteLine($"Invalid output file name {o.OutputFileName}");
+                        inputs = false;
                         return;
                     }
 
                     if (o.RecordsAmount <= 0)
                     {
                         Console.WriteLine($"Invalid records amount {o.RecordsAmount}");
+                        inputs = false;
                         return;
                     }
-                    
+
                     if (o.StartId <= 0)
                     {
                         Console.WriteLine($"Invalid id {o.StartId}");
+                        inputs = false;
                         return;
                     }
                     outputFormat = o.OutputFormat;
@@ -67,9 +74,13 @@ namespace FileCabinetGenerator
                     recordsAmount = o.RecordsAmount;
                     startId = o.StartId;
                 });
-            GenerateFileCabinetRecordsFields();
-            ExportToFile();
-            Console.WriteLine($"{recordsAmount} records were written to {outputFileName}");
+
+            if (inputs)
+            {
+                GenerateFileCabinetRecordsFields();
+                ExportToFile();
+                Console.WriteLine($"{recordsAmount} records were written to {outputFileName}");
+            }
         }
         
         private static void ExportToFile()
