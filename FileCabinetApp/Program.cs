@@ -138,7 +138,7 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 3 == 0).ToArray();
+            var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 4 == 0).ToArray();
             var tablePrinter = new DefaultTablePrinter();
             expressionExtensions = new ExpressionExtensions(fileCabinetService);
 
