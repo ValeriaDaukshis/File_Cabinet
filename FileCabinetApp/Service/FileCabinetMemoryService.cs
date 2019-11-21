@@ -107,6 +107,11 @@ namespace FileCabinetApp.Service
 
             FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
 
+            if (record.Id != fileCabinetRecord.Id)
+            {
+                throw new ArgumentException($"{nameof(fileCabinetRecord)} can't update record id.", nameof(fileCabinetRecord));
+            }
+
             if (fileCabinetRecord.FirstName != record.FirstName)
             {
                 this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);

@@ -110,6 +110,14 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static void CheckUpdateId(string oldId, string newId)
+        {
+            if (oldId != newId)
+            {
+                throw new ArgumentException("Can't update record id.");
+            }
+        }
+
         private void Update(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -142,6 +150,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     int id = records[i].Id;
+                    if (updates.ContainsKey("Id"))
+                    {
+                        string newId = updates["Id"];
+                        CheckUpdateId(id.ToString(Culture), newId);
+                    }
+
                     this.CabinetService.EditRecord(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
                     recordsId.Add(id);
                 }

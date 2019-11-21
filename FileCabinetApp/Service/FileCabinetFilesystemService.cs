@@ -174,6 +174,11 @@ namespace FileCabinetApp.Service
             long position = this.recordIndexPosition[fileCabinetRecord.Id];
             FileCabinetRecord oldRecord = this.FileReader(position);
 
+            if (oldRecord.Id != fileCabinetRecord.Id)
+            {
+                throw new ArgumentException($"{nameof(fileCabinetRecord)} can't update record id.", nameof(fileCabinetRecord));
+            }
+
             this.writer.BaseStream.Position = position + sizeof(short) + sizeof(int);
             if (fileCabinetRecord.FirstName != oldRecord.FirstName)
             {
