@@ -63,7 +63,7 @@ namespace FileCabinetApp.CommandHandlers
         private static readonly Func<string, Tuple<bool, string, decimal>> DecimalConverter = input =>
         {
             var result = 0.0m;
-            bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, out result);
+            bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, NumberStyles.AllowDecimalPoint, Culture, out result);
             return new Tuple<bool, string, decimal>(success, input, result);
         };
 

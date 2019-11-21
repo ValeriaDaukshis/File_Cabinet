@@ -18,7 +18,7 @@ namespace FileCabinetApp.Service
     public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
         private const int SizeOfStringRecord = 120;
-        private const long RecordSize = 278 + 1;
+        private const long RecordSize = 278;
         private readonly FileStream fileStream;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -89,10 +89,9 @@ namespace FileCabinetApp.Service
 
             int id = record.Id;
 
-            long position = this.recordIndexPosition[record.Id] + 2;
+            long position = this.recordIndexPosition[record.Id];
             this.writer.BaseStream.Position = position;
-            byte isDeleted = 1;
-            this.writer.Write(isDeleted);
+            this.writer.Write((short)1);
             this.writer.Flush();
 
             this.recordIndexPosition.Remove(record.Id);
@@ -433,8 +432,7 @@ namespace FileCabinetApp.Service
         {
             this.reader.BaseStream.Position = pointer;
             short reserved = this.reader.ReadInt16();
-            byte isDeleted = this.reader.ReadByte();
-            if (isDeleted == 1)
+            if (reserved == 1)
             {
                 return null;
             }
@@ -462,7 +460,6 @@ namespace FileCabinetApp.Service
         {
             this.writer.BaseStream.Position = position;
             this.writer.Write((short)0);
-            this.writer.Write((byte)0);
             this.writer.Write(fileCabinetRecord.Id);
 
             var buffer = Encoding.Unicode.GetBytes(CreateEmptyString(fileCabinetRecord.FirstName, 60));
