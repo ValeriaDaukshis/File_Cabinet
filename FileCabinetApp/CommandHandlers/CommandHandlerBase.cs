@@ -271,9 +271,11 @@ namespace FileCabinetApp.CommandHandlers
         /// Sets the next.
         /// </summary>
         /// <param name="commandHandler">The command handler.</param>
-        public void SetNext(ICommandHandler commandHandler)
+        /// <returns>ICommandHandler.</returns>
+        public ICommandHandler SetNext(ICommandHandler commandHandler)
         {
             this.NextHandler = commandHandler;
+            return this.NextHandler;
         }
 
         /// <summary>

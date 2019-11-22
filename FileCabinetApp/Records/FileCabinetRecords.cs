@@ -19,7 +19,7 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Gets the record.
+        /// Gets or sets the record.
         /// </summary>
         /// <value>
         /// The record.

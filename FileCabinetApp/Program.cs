@@ -143,31 +143,19 @@ namespace FileCabinetApp
             expressionExtensions = new ExpressionExtensions(fileCabinetService);
 
             var helpCommand = new HelpCommandHandler(helpMessages);
-            var createCommand = new CreateCommandHandler(fileCabinetService);
-            var insertCommand = new InsertCommandHandler(fileCabinetService);
-            var updateCommand = new UpdateCommandHandler(fileCabinetService, expressionExtensions);
-            var deleteCommand = new DeleteCommandHandler(fileCabinetService, expressionExtensions);
-            var selectCommand = new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter);
-            var statCommand = new StatCommandHandler(fileCabinetService);
-            var importCommand = new ImportCommandHandler(fileCabinetService);
-            var exportCommand = new ExportCommandHandler(fileCabinetService);
-            var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
-            var syntaxCommand = new SyntaxCommandHandler(helpMessages);
-            var missedCommand = new MissedCommandHandler(commands);
 
-            helpCommand.SetNext(createCommand);
-            createCommand.SetNext(insertCommand);
-            insertCommand.SetNext(updateCommand);
-            updateCommand.SetNext(deleteCommand);
-            deleteCommand.SetNext(selectCommand);
-            selectCommand.SetNext(statCommand);
-            statCommand.SetNext(importCommand);
-            importCommand.SetNext(exportCommand);
-            exportCommand.SetNext(purgeCommand);
-            purgeCommand.SetNext(syntaxCommand);
-            syntaxCommand.SetNext(exitCommand);
-            exitCommand.SetNext(missedCommand);
+            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService))
+                .SetNext(new InsertCommandHandler(fileCabinetService))
+                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions))
+                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions))
+                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter))
+                .SetNext(new StatCommandHandler(fileCabinetService))
+                .SetNext(new ImportCommandHandler(fileCabinetService))
+                .SetNext(new ExportCommandHandler(fileCabinetService))
+                .SetNext(new PurgeCommandHandler(fileCabinetService))
+                .SetNext(new SyntaxCommandHandler(helpMessages))
+                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, running))
+                .SetNext(new MissedCommandHandler(commands));
 
             return helpCommand;
         }

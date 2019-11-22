@@ -83,7 +83,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 }
                 else
                 {
-                    builder.Append(PrintDigitValues(stringValue, horizontalBorderLength));
+                    builder.Append(PrintDigitValues(value, horizontalBorderLength));
                 }
 
                 builder.Append(" ");
@@ -172,7 +172,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
             return builder.ToString();
         }
 
-        private static string PrintDigitValues(string values, int horizontalBorderLength)
+        private static string PrintDigitValues(object values, int horizontalBorderLength)
         {
             StringBuilder builder = new StringBuilder();
             for (int j = 0; j < horizontalBorderLength; j++)

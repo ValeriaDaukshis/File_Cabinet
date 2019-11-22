@@ -91,6 +91,7 @@
             Sets the next.
             </summary>
             <param name="commandHandler">The command handler.</param>
+            <returns>ICommandHandler.</returns>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -291,6 +292,7 @@
             Sets the next.
             </summary>
             <param name="commandHandler">The command handler.</param>
+            <returns>ICommandHandler.</returns>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ICommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -1025,7 +1027,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.FileCabinetRecords.Record">
             <summary>
-            Gets the record.
+            Gets or sets the record.
             </summary>
             <value>
             The record.

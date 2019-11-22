@@ -9,7 +9,8 @@
         /// Sets the next.
         /// </summary>
         /// <param name="commandHandler">The command handler.</param>
-        void SetNext(ICommandHandler commandHandler);
+        /// <returns>ICommandHandler.</returns>
+        ICommandHandler SetNext(ICommandHandler commandHandler);
 
         /// <summary>
         /// Handles the specified command request.
