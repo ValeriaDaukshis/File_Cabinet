@@ -42,18 +42,25 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static void CompareFieldsAndInputArraysLength(string[] fields, string[] values)
+        {
+            if (fields.Length != values.Length)
+            {
+                throw new ArgumentException($"Length of values and fields not equal.");
+            }
+        }
+
         private void Create(string parameters)
         {
             char[] separators = { '(', ')', ',', ' ' };
             string[] inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
             string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            ChangeFieldCase(fields);
             string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            DeleteQuotesFromInputValues(values);
-
             try
             {
+                CompareFieldsAndInputArraysLength(fields, values);
+                ChangeFieldCase(fields);
+                DeleteQuotesFromInputValues(values);
                 PrintInputFields(fields, values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
 
                 var recordNumber =

@@ -323,7 +323,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (!FieldsCaseDictionary.ContainsKey(key))
                 {
-                    throw new ArgumentException($"No field with name {nameof(printedFields)}", nameof(printedFields));
+                    throw new ArgumentException($"No field with name {printedFields.GetValue(i)}", printedFields.GetValue(i).ToString());
                 }
 
                 printedFields[i] = FieldsCaseDictionary[key];
