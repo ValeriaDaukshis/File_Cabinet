@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Xml;
 using FileCabinetApp.Service;
+using FileCabinetApp.Validators.XsdValidator;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
@@ -11,13 +11,20 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
+        private string xsdValidatorFile;
+        private IXsdValidator xsdValidator;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
-        /// <param name="cabinetService">The file cabinet service.</param>
-        public ImportCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="cabinetService">The cabinet service.</param>
+        /// <param name="xsdValidator">The XSD validator.</param>
+        /// <param name="xsdValidatorFile">The XSD validator file.</param>
+        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile)
             : base(cabinetService)
         {
+            this.xsdValidatorFile = xsdValidatorFile;
+            this.xsdValidator = xsdValidator;
         }
 
         /// <summary>
@@ -62,6 +69,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     else if (fileFormat == "xml")
                     {
                         Snapshot = this.CabinetService.MakeSnapshot();
+                        this.xsdValidator.ValidateXml(this.xsdValidatorFile, path);
                         Snapshot.LoadFromXml(stream, RecordValidator);
                         int count = this.CabinetService.Restore(Snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
@@ -75,10 +83,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (IOException ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("File wasn't imported");
             }
             catch (UnauthorizedAccessException ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("File wasn't imported");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("File wasn't imported");
             }
         }
     }

@@ -430,11 +430,13 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XsdValidator.IXsdValidator,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler"/> class.
             </summary>
-            <param name="cabinetService">The file cabinet service.</param>
+            <param name="cabinetService">The cabinet service.</param>
+            <param name="xsdValidator">The XSD validator.</param>
+            <param name="xsdValidatorFile">The XSD validator file.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -2003,6 +2005,31 @@
             <param name="validatorBuilder">The validator builder.</param>
             <param name="config">The configuration.</param>
             <returns>(IRecordValidator, ValidatorParameters).</returns>
+        </member>
+        <member name="T:FileCabinetApp.Validators.XsdValidator.IXsdValidator">
+            <summary>
+            IXsdValidator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.XsdValidator.IXsdValidator.ValidateXml(System.String,System.String)">
+            <summary>
+            Validates the XML.
+            </summary>
+            <param name="validator">The validator.</param>
+            <param name="fileName">Name of the file.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.XmlFileValidator.XmlValidator">
+            <summary>
+            XsdValidator.
+            </summary>
+            <seealso cref="T:FileCabinetApp.Validators.XsdValidator.IXsdValidator" />
+        </member>
+        <member name="M:FileCabinetApp.Validators.XmlFileValidator.XmlValidator.ValidateXml(System.String,System.String)">
+            <summary>
+            Validates the XML.
+            </summary>
+            <param name="validator">The validator.</param>
+            <param name="fileName">Name of the file.</param>
         </member>
     </members>
 </doc>

@@ -11,6 +11,8 @@ using FileCabinetApp.Logger;
 using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
+using FileCabinetApp.Validators.XmlFileValidator;
+using FileCabinetApp.Validators.XsdValidator;
 using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
@@ -24,11 +26,16 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help'/'syntax' to get help.";
         private const string ServiceStorageFile = "cabinet-records.db";
         private const string ValidationRulesFile = "validation-rules.json";
+        private const string XsdCustomValidatorFile = "customRecords.xsd";
+        private const string XsdDefaultValidatorFile = "defaultRecords.xsd";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static bool isRunning = true;
         private static IFileCabinetService fileCabinetService;
         private static IExpressionExtensions expressionExtensions;
+        private static string xsdValidatorFile;
+        private static IXsdValidator xsdValidator;
+        private static ITablePrinter tablePrinter;
 
         private static Action<bool> running = b => isRunning = b;
 
@@ -73,11 +80,13 @@ namespace FileCabinetApp
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
                         (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
+                        xsdValidatorFile = XsdCustomValidatorFile;
                         Console.WriteLine("Custom validator");
                     }
                     else
                     {
                         (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
+                        xsdValidatorFile = XsdDefaultValidatorFile;
                         Console.WriteLine("Default validator");
                     }
 
@@ -93,13 +102,13 @@ namespace FileCabinetApp
                         Console.WriteLine("Used memory service");
                     }
 
-                    if (o.StopWatcher == true)
+                    if (o.StopWatcher)
                     {
                         fileCabinetService = new ServiceMeter(fileCabinetService);
                         Console.WriteLine("Used timer");
                     }
 
-                    if (o.Logger == true)
+                    if (o.Logger)
                     {
                         string sourceFilePath = CreateValidPath("logger.log");
                         fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
@@ -110,6 +119,10 @@ namespace FileCabinetApp
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
+
+            tablePrinter = new DefaultTablePrinter();
+            expressionExtensions = new ExpressionExtensions(fileCabinetService);
+            xsdValidator = new XmlValidator();
 
             ICommandHandler commandHandler = CreateCommandHandlers();
             do
@@ -139,8 +152,6 @@ namespace FileCabinetApp
         private static ICommandHandler CreateCommandHandlers()
         {
             var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 4 == 0).ToArray();
-            var tablePrinter = new DefaultTablePrinter();
-            expressionExtensions = new ExpressionExtensions(fileCabinetService);
 
             var helpCommand = new HelpCommandHandler(helpMessages);
 
@@ -150,7 +161,7 @@ namespace FileCabinetApp
                 .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions))
                 .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter))
                 .SetNext(new StatCommandHandler(fileCabinetService))
-                .SetNext(new ImportCommandHandler(fileCabinetService))
+                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile))
                 .SetNext(new ExportCommandHandler(fileCabinetService))
                 .SetNext(new PurgeCommandHandler(fileCabinetService))
                 .SetNext(new SyntaxCommandHandler(helpMessages))

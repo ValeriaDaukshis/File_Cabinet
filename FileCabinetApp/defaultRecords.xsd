@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+  <xsd:element name="records">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="unbounded" name="record">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="name">
+                <xsd:complexType>
+                  <xsd:attribute name="first" use="required">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:minLength value="4" />
+                      <xsd:maxLength value="60" /> </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+                  <xsd:attribute name="last" use="required">
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                      <xsd:minLength value="4" />
+                      <xsd:maxLength value="60" /> </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:attribute>
+                </xsd:complexType>
+              </xsd:element>
+              <xsd:element name="gender">
+                <xsd:simpleType>
+                  <xsd:restriction base="xs:unsignedByte">
+                    <xsd:enumeration value="77"/>
+                    <xsd:enumeration value="70"/>
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:element>
+              <xsd:element name="dateOfBirth" type="xsd:date"/>
+              <xsd:element name="creditSum">
+                <xsd:simpleType>
+                  <xsd:restriction base="xsd:decimal">
+                    <xsd:minInclusive value="120"/>
+                    <xsd:maxInclusive value="50000"/>
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:element>
+              <xsd:element name="duration">
+                <xsd:simpleType>
+                  <xsd:restriction base="xsd:unsignedShort">
+                    <xsd:minInclusive value="15"/>
+                    <xsd:maxInclusive value="300"/>
+                  </xsd:restriction>
+                </xsd:simpleType>
+              </xsd:element>
+            </xsd:sequence>
+            <xsd:attribute name="id" type="xsd:unsignedByte" use="required" />
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xs:schema>

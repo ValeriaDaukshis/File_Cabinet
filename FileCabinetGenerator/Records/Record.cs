@@ -22,7 +22,7 @@ namespace FileCabinetGenerator.Records
         public Record(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
             this.Name = new Names { FirstName = firstName, LastName = lastName };
-            this.DateOfBirth = dateOfBirth.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture);
+            this.DateOfBirth = dateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
             this.Gender = gender;
             this.CreditSum = credit;
             this.Duration = duration;
