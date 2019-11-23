@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Xml;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators.XsdValidator;
 
@@ -91,6 +92,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 Console.WriteLine("File wasn't imported");
             }
             catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("File wasn't imported");
+            }
+            catch (XmlException ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("File wasn't imported");
