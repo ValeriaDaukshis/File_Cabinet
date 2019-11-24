@@ -37,7 +37,7 @@ namespace FileCabinetApp.Validators.CommonValidators
             decimal creditSum = record.CreditSum;
             if (creditSum > this.maxCreditSum || creditSum < this.minCreditSum)
             {
-                throw new ArgumentException($"{nameof(creditSum)}: Credit sum is upper than {this.maxCreditSum} or under than {this.minCreditSum} BYN");
+                throw new ArgumentException($"Id #{record.Id}: Credit sum is upper than {this.maxCreditSum} or under than {this.minCreditSum} BYN ({nameof(creditSum)})");
             }
         }
     }

@@ -86,6 +86,22 @@
             ICommandHandler.
             </value>
         </member>
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.Converter">
+            <summary>
+            Gets the converter.
+            </summary>
+            <value>
+            The converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.CommandHandlersExpressions">
+            <summary>
+            Gets the command handlers expressions.
+            </summary>
+            <value>
+            The command handlers expressions.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
             <summary>
             Sets the next.
@@ -98,38 +114,6 @@
             Handles the specified command request.
             </summary>
             <param name="commandRequest">The command request.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DeleteQuotesFromInputValues(System.String[])">
-            <summary>
-            Deletes the quotes from input values.
-            </summary>
-            <param name="values">The values.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ChangeFieldCase(System.String[])">
-            <summary>
-            Changes the field case.
-            </summary>
-            <param name="printedFields">The printed fields.</param>
-            <exception cref="T:System.ArgumentNullException">printedFields.</exception>
-            <exception cref="T:System.ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CreateDictionaryOfFields(System.String[],System.String)">
-            <summary>
-            Creates the dictionary of fields.
-            </summary>
-            <param name="values">The values.</param>
-            <param name="separator">The separator.</param>
-            <returns>dictionary of values.</returns>
-            <exception cref="T:System.ArgumentNullException">values.</exception>
-            <exception cref="T:System.ArgumentException">No field with name {nameof(values)} - values.</exception>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.FindConditionSeparator(System.String[])">
-            <summary>
-            Finds the condition separator.
-            </summary>
-            <param name="conditionFields">The condition fields.</param>
-            <returns>separator.</returns>
-            <exception cref="T:System.ArgumentException">conditionFields.</exception>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
             <summary>
@@ -169,7 +153,24 @@
             <param name="credit">The credit.</param>
             <param name="duration">The duration.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ImportExportParametersSpliter(System.String,System.String@,System.String@)">
+        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlersExpressions">
+            <summary>
+            CommandHandlersExpressions.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.CommandHandlersExpressions"/> class.
+            </summary>
+            <param name="fieldsCaseDictionary">The fields case dictionary.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.DeleteQuotesFromInputValues(System.String[])">
+            <summary>
+            Deletes the quotes from input values.
+            </summary>
+            <param name="values">The values.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.ImportExportParametersSpliter(System.String,System.String@,System.String@)">
             <summary>
             Imports the export parameters spliter.
             </summary>
@@ -177,6 +178,32 @@
             <param name="fileFormat">The file format.</param>
             <param name="path">The path.</param>
             <returns>true if params are valid.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.FindConditionSeparator(System.String[])">
+            <summary>
+            Finds the condition separator.
+            </summary>
+            <param name="conditionFields">The condition fields.</param>
+            <returns>separator.</returns>
+            <exception cref="T:System.ArgumentException">conditionFields.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.CreateDictionaryOfFields(System.String[],System.String)">
+            <summary>
+            Creates the dictionary of fields.
+            </summary>
+            <param name="values">The values.</param>
+            <param name="separator">The separator.</param>
+            <returns>dictionary of values.</returns>
+            <exception cref="T:System.ArgumentNullException">values.</exception>
+            <exception cref="T:System.ArgumentException">No field with name {nameof(values)} - values.</exception>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.ChangeFieldCase(System.String[])">
+            <summary>
+            Changes the field case.
+            </summary>
+            <param name="printedFields">The printed fields.</param>
+            <exception cref="T:System.ArgumentNullException">printedFields.</exception>
+            <exception cref="T:System.ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ExpressionExtensions">
             <summary>
@@ -576,6 +603,59 @@
               <c>true</c> if logger; otherwise, <c>false</c>.
             </value>
         </member>
+        <member name="T:FileCabinetApp.Converters.Converter">
+            <summary>
+            Converter.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.StringConverter">
+            <summary>
+            Gets the string converter.
+            </summary>
+            <value>
+            The string converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.CharConverter">
+            <summary>
+            Gets the character converter.
+            </summary>
+            <value>
+            The character converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.DateTimeConverter">
+            <summary>
+            Gets the date time converter.
+            </summary>
+            <value>
+            The date time converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.DecimalConverter">
+            <summary>
+            Gets the decimal converter.
+            </summary>
+            <value>
+            The decimal converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.ShortConverter">
+            <summary>
+            Gets the short converter.
+            </summary>
+            <value>
+            The short converter.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Converters.Converter.IntConverter">
+            <summary>
+            Gets the int converter.
+            </summary>
+            <value>
+            The int converter.
+            </value>
+        </member>
         <member name="T:FileCabinetApp.ExceptionClasses.FileRecordNotFoundException">
             <summary>
             FileRecordNotFound.
@@ -618,12 +698,13 @@
             FileCabinetRecordCsvReader.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader"/> class.
             </summary>
             <param name="reader">The reader.</param>
             <param name="validator">The validator.</param>
+            <param name="converter">The converter.</param>
         </member>
         <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.ReadAll">
             <summary>
@@ -939,27 +1020,6 @@
             <param name="dateOfBirth">The date of birth.</param>
             <param name="credit">The credit.</param>
             <param name="duration">The duration.</param>
-        </member>
-        <member name="M:FileCabinetApp.Records.FileCabinetRecord.#ctor(System.Int16,System.Int32,System.String,System.String,System.Char,System.DateTime,System.Decimal,System.Int16)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Records.FileCabinetRecord"/> class.
-            </summary>
-            <param name="reserved">The reserved.</param>
-            <param name="id">The identifier.</param>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="gender">The gender.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <param name="credit">The credit.</param>
-            <param name="duration">The duration.</param>
-        </member>
-        <member name="P:FileCabinetApp.Records.FileCabinetRecord.Reserved">
-            <summary>
-            Gets or sets the reserved.
-            </summary>
-            <value>
-            The identifier.
-            </value>
         </member>
         <member name="P:FileCabinetApp.Records.FileCabinetRecord.Id">
             <summary>
@@ -1357,12 +1417,13 @@
             </summary>
             <param name="writer">The writer.</param>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter)">
             <summary>
             Loads from CSV.
             </summary>
             <param name="reader">The reader.</param>
             <param name="validator">The validator.</param>
+            <param name="converter">The converter.</param>
         </member>
         <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator)">
             <summary>

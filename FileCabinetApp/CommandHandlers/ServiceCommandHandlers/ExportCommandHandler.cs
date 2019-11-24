@@ -42,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Export(string parameters)
         {
-            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
             {
                 return;
             }

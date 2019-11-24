@@ -51,7 +51,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Import(string parameters)
         {
-            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
             {
                 return;
             }
@@ -63,7 +63,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     if (fileFormat == "csv")
                     {
                         Snapshot = this.CabinetService.MakeSnapshot();
-                        Snapshot.LoadFromCsv(stream, RecordValidator);
+                        Snapshot.LoadFromCsv(stream, RecordValidator, this.Converter);
                         int count = this.CabinetService.Restore(Snapshot);
                         Console.WriteLine($"{count} records were imported from {path}");
                     }

@@ -59,9 +59,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             try
             {
                 CompareFieldsAndInputArraysLength(fields, values);
-                ChangeFieldCase(fields);
-                DeleteQuotesFromInputValues(values);
-                PrintInputFields(fields, values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                this.CommandHandlersExpressions.ChangeFieldCase(fields);
+                CommandHandlersExpressions.DeleteQuotesFromInputValues(values);
+                this.PrintInputFields(fields, values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
 
                 var recordNumber =
                     this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));

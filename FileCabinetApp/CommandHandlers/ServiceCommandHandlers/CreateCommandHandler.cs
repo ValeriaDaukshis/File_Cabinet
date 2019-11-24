@@ -43,7 +43,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Create(string parameters)
         {
-            PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+            this.PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
             try
             {
                 var recordNumber =

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using FileCabinetApp.Converters;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -38,40 +40,6 @@ namespace FileCabinetApp.CommandHandlers
             { "dateofbirth", "DateOfBirth" },
             { "creditsum", "CreditSum" },
             { "duration", "Duration" },
-        };
-
-        private static readonly Func<string, Tuple<bool, string, string>> StringConverter = input =>
-        {
-            bool success = !string.IsNullOrEmpty(input) && input.Trim().Length != 0;
-            return new Tuple<bool, string, string>(success, input, input.Trim());
-        };
-
-        private static readonly Func<string, Tuple<bool, string, char>> CharConverter = input =>
-        {
-            var result = '\x0000';
-            bool success = char.TryParse(input?.Trim().ToUpper(Culture), out result);
-            return new Tuple<bool, string, char>(success, input, result);
-        };
-
-        private static readonly Func<string, Tuple<bool, string, DateTime>> DateTimeConverter = input =>
-        {
-            var result = DateTime.Now;
-            bool success = !string.IsNullOrEmpty(input) && DateTime.TryParse(input, DateTimeCulture, DateTimeStyles.None, out result);
-            return new Tuple<bool, string, DateTime>(success, input, result);
-        };
-
-        private static readonly Func<string, Tuple<bool, string, decimal>> DecimalConverter = input =>
-        {
-            var result = 0.0m;
-            bool success = !string.IsNullOrEmpty(input) && decimal.TryParse(input, NumberStyles.AllowDecimalPoint, Culture, out result);
-            return new Tuple<bool, string, decimal>(success, input, result);
-        };
-
-        private static readonly Func<string, Tuple<bool, string, short>> ShortConverter = input =>
-        {
-            short result = 0;
-            bool success = !string.IsNullOrEmpty(input) && short.TryParse(input, out result);
-            return new Tuple<bool, string, short>(success, input, result);
         };
 
         private static readonly Func<string, Tuple<bool, string>> FirstNameValidator = input =>
@@ -268,6 +236,22 @@ namespace FileCabinetApp.CommandHandlers
         protected ICommandHandler NextHandler { get; set; }
 
         /// <summary>
+        /// Gets the converter.
+        /// </summary>
+        /// <value>
+        /// The converter.
+        /// </value>
+        protected Converter Converter { get; } = new Converter();
+
+        /// <summary>
+        /// Gets the command handlers expressions.
+        /// </summary>
+        /// <value>
+        /// The command handlers expressions.
+        /// </value>
+        protected CommandHandlersExpressions CommandHandlersExpressions { get; } = new CommandHandlersExpressions(FieldsCaseDictionary);
+
+        /// <summary>
         /// Sets the next.
         /// </summary>
         /// <param name="commandHandler">The command handler.</param>
@@ -285,119 +269,6 @@ namespace FileCabinetApp.CommandHandlers
         public abstract void Handle(AppCommandRequest commandRequest);
 
         /// <summary>
-        /// Deletes the quotes from input values.
-        /// </summary>
-        /// <param name="values">The values.</param>
-        protected static void DeleteQuotesFromInputValues(string[] values)
-        {
-            if (values is null)
-            {
-                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
-            }
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                if (values[i][0] == '\'' || values[i][0] == '"')
-                {
-                    values[i] = values[i].Substring(1, values[i].Length - 2);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Changes the field case.
-        /// </summary>
-        /// <param name="printedFields">The printed fields.</param>
-        /// <exception cref="ArgumentNullException">printedFields.</exception>
-        /// <exception cref="ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
-        protected static void ChangeFieldCase(string[] printedFields)
-        {
-            if (printedFields is null)
-            {
-                throw new ArgumentNullException(nameof(printedFields), $"{nameof(printedFields)} is null");
-            }
-
-            for (int i = 0; i < printedFields.Length; i++)
-            {
-                var key = printedFields[i].ToLower(Culture);
-
-                if (!FieldsCaseDictionary.ContainsKey(key))
-                {
-                    throw new ArgumentException($"No field with name {printedFields.GetValue(i)}", printedFields.GetValue(i).ToString());
-                }
-
-                printedFields[i] = FieldsCaseDictionary[key];
-            }
-        }
-
-        /// <summary>
-        /// Creates the dictionary of fields.
-        /// </summary>
-        /// <param name="values">The values.</param>
-        /// <param name="separator">The separator.</param>
-        /// <returns>dictionary of values.</returns>
-        /// <exception cref="ArgumentNullException">values.</exception>
-        /// <exception cref="ArgumentException">No field with name {nameof(values)} - values.</exception>
-        protected static Dictionary<string, string> CreateDictionaryOfFields(string[] values, string separator)
-        {
-            if (values is null)
-            {
-                throw new ArgumentNullException(nameof(values), $"{nameof(values)} is null");
-            }
-
-            Dictionary<string, string> updates = new Dictionary<string, string>();
-            DeleteQuotesFromInputValues(values);
-
-            int counter = 0;
-            while (counter < values.Length)
-            {
-                if (values[counter] == separator)
-                {
-                    counter++;
-                    continue;
-                }
-
-                var key = values[counter].ToLower(Culture);
-
-                if (!FieldsCaseDictionary.ContainsKey(key))
-                {
-                    throw new ArgumentException($"No field with name {nameof(values)}", nameof(values));
-                }
-
-                updates.Add(FieldsCaseDictionary[key], values[++counter]);
-                counter++;
-            }
-
-            return updates;
-        }
-
-        /// <summary>
-        /// Finds the condition separator.
-        /// </summary>
-        /// <param name="conditionFields">The condition fields.</param>
-        /// <returns>separator.</returns>
-        /// <exception cref="ArgumentException">conditionFields.</exception>
-        protected static string FindConditionSeparator(string[] conditionFields)
-        {
-            if (conditionFields.Contains("and") && conditionFields.Contains("or"))
-            {
-                throw new ArgumentException($"{nameof(conditionFields)} request can not contains separator 'and', 'or' together. Use 'help' or 'syntax'", nameof(conditionFields));
-            }
-
-            if (conditionFields.Contains("and"))
-            {
-                return "and";
-            }
-
-            if (conditionFields.Contains("or"))
-            {
-                return "or";
-            }
-
-            return string.Empty;
-        }
-
-        /// <summary>
         /// PrintInputFields.
         /// </summary>
         /// <param name="firstName">first name.</param>
@@ -406,20 +277,20 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="dateOfBirth">date of birth.</param>
         /// <param name="credit">credit sum.</param>
         /// <param name="duration">duration.</param>
-        protected static void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        protected void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             Console.Write("First name: ");
-            firstName = ReadInput(StringConverter, FirstNameValidator);
+            firstName = ReadInput(this.Converter.StringConverter, FirstNameValidator);
             Console.Write("Last name: ");
-            lastName = ReadInput(StringConverter, LastNameValidator);
+            lastName = ReadInput(this.Converter.StringConverter, LastNameValidator);
             Console.Write("Gender(M/F): ");
-            gender = ReadInput(CharConverter, GenderValidator);
+            gender = ReadInput(this.Converter.CharConverter, GenderValidator);
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = ReadInput(DateTimeConverter, DateOfBirthValidator);
+            dateOfBirth = ReadInput(this.Converter.DateTimeConverter, DateOfBirthValidator);
             Console.Write("Credit sum(bel rub): ");
-            credit = ReadInput(DecimalConverter, CreditSumValidator);
+            credit = ReadInput(this.Converter.DecimalConverter, CreditSumValidator);
             Console.Write("Credit duration(month): ");
-            duration = ReadInput(ShortConverter, DurationValidator);
+            duration = ReadInput(this.Converter.ShortConverter, DurationValidator);
         }
 
         /// <summary>
@@ -433,14 +304,14 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <param name="credit">The credit.</param>
         /// <param name="duration">The duration.</param>
-        protected static void PrintInputFields(string[] fields, string[] values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        protected void PrintInputFields(string[] fields, string[] values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
-            firstName = ReadInput(fields, values, FirstNameSearcher, StringConverter, FirstNameValidator);
-            lastName = ReadInput(fields, values, LastNameSearcher, StringConverter, LastNameValidator);
-            gender = ReadInput(fields, values, GenderSearcher, CharConverter, GenderValidator);
-            dateOfBirth = ReadInput(fields, values, DateOfBirthSearcher, DateTimeConverter, DateOfBirthValidator);
-            credit = ReadInput(fields, values, CreditSumSearcher, DecimalConverter, CreditSumValidator);
-            duration = ReadInput(fields, values, DurationSearcher, ShortConverter, DurationValidator);
+            firstName = ReadInput(fields, values, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
+            lastName = ReadInput(fields, values, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
+            gender = ReadInput(fields, values, GenderSearcher, this.Converter.CharConverter, GenderValidator);
+            dateOfBirth = ReadInput(fields, values, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
+            credit = ReadInput(fields, values, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
+            duration = ReadInput(fields, values, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
         }
 
         /// <summary>
@@ -455,49 +326,19 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="dateOfBirth">The date of birth.</param>
         /// <param name="credit">The credit.</param>
         /// <param name="duration">The duration.</param>
-        protected static void CheckInputFields(string[] fields, string[] values, FileCabinetRecord record, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        protected void CheckInputFields(string[] fields, string[] values, FileCabinetRecord record, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
             if (record is null)
             {
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            firstName = ReadInput(fields, values, record.FirstName, FirstNameSearcher, StringConverter, FirstNameValidator);
-            lastName = ReadInput(fields, values, record.LastName, LastNameSearcher, StringConverter, LastNameValidator);
-            gender = ReadInput(fields, values, record.Gender, GenderSearcher, CharConverter, GenderValidator);
-            dateOfBirth = ReadInput(fields, values, record.DateOfBirth, DateOfBirthSearcher, DateTimeConverter, DateOfBirthValidator);
-            credit = ReadInput(fields, values, record.CreditSum, CreditSumSearcher, DecimalConverter, CreditSumValidator);
-            duration = ReadInput(fields, values, record.Duration, DurationSearcher, ShortConverter, DurationValidator);
-        }
-
-        /// <summary>
-        /// Imports the export parameters spliter.
-        /// </summary>
-        /// <param name="parameters">The parameters.</param>
-        /// <param name="fileFormat">The file format.</param>
-        /// <param name="path">The path.</param>
-        /// <returns>true if params are valid.</returns>
-        protected static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
-        {
-            fileFormat = string.Empty;
-            path = string.Empty;
-            if (string.IsNullOrEmpty(parameters))
-            {
-                Console.WriteLine("No parameters after command 'export'");
-                return false;
-            }
-
-            string[] inputParameters = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-
-            if (inputParameters.Length < 2)
-            {
-                Console.WriteLine("Not enough parameters after command 'find'");
-                return false;
-            }
-
-            fileFormat = inputParameters[0].ToLower(Culture);
-            path = inputParameters[1];
-            return true;
+            firstName = ReadInput(fields, values, record.FirstName, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
+            lastName = ReadInput(fields, values, record.LastName, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
+            gender = ReadInput(fields, values, record.Gender, GenderSearcher, this.Converter.CharConverter, GenderValidator);
+            dateOfBirth = ReadInput(fields, values, record.DateOfBirth, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
+            credit = ReadInput(fields, values, record.CreditSum, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
+            duration = ReadInput(fields, values, record.Duration, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
         }
 
         private static T ReadInput<T>(string[] fields, string[] values, Func<string[], string[], Tuple<bool, string>> finder, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)

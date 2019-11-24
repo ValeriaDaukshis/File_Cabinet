@@ -137,9 +137,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 CheckUpdateFieldsInput(updatedFields);
 
                 // finds separator (or/and)
-                string conditionSeparator = FindConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = CreateDictionaryOfFields(updatedFields, "set");
-                Dictionary<string, string> conditions = CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExpressions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> updates = this.CommandHandlersExpressions.CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions = this.CommandHandlersExpressions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
 
@@ -148,7 +148,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 for (int i = 0; i < records.Length; i++)
                 {
-                    CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                    this.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
                     int id = records[i].Id;
                     if (updates.ContainsKey("Id"))
                     {

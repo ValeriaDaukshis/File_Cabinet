@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using FileCabinetApp.Converters;
 using FileCabinetApp.FileReaders;
 using FileCabinetApp.FIleWriters;
 using FileCabinetApp.Records;
@@ -79,9 +80,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        public void LoadFromCsv(StreamReader reader, IRecordValidator validator)
+        /// <param name="converter">The converter.</param>
+        public void LoadFromCsv(StreamReader reader, IRecordValidator validator, Converter converter)
         {
-            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator);
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator, converter);
             this.ReadRecords = csvReader.ReadAll();
         }
 

@@ -24,7 +24,7 @@ namespace FileCabinetApp.Validators.CommonValidators
             char gender = record.Gender;
             if (gender != 'M' && gender != 'F')
             {
-                throw new ArgumentException(nameof(gender), $"{nameof(gender)}: Indefinite gender");
+                throw new ArgumentException($"Id #{record.Id} : indefinite gender ({nameof(gender)}) ");
             }
         }
     }

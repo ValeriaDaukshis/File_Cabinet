@@ -100,7 +100,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             try
             {
                 CheckUpdateFieldsInput(printedFields);
-                ChangeFieldCase(printedFields);
+                this.CommandHandlersExpressions.ChangeFieldCase(printedFields);
                 if (inputs.Length == 1)
                 {
                     this.printer.Print(this.CabinetService.GetRecords(), printedFields);
@@ -117,8 +117,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 }
 
                 CheckConditionFieldsInput(conditionFields);
-                string conditionSeparator = FindConditionSeparator(conditionFields);
-                Dictionary<string, string> conditions = CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExpressions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> conditions = this.CommandHandlersExpressions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
                 var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
