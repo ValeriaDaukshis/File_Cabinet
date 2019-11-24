@@ -12,14 +12,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     public class MissedCommandHandler : CommandHandlerBase
     {
         private static string[] commands;
+        private static Action<string> consoleWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MissedCommandHandler"/> class.
         /// </summary>
         /// <param name="commands">The commands.</param>
-        public MissedCommandHandler(string[] commands)
+        /// <param name="consoleWriter">console writer.</param>
+        public MissedCommandHandler(string[] commands, Action<string> consoleWriter)
         {
             MissedCommandHandler.commands = commands;
+            MissedCommandHandler.consoleWriter = consoleWriter;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private static void PrintMissedCommandInfo(string command)
         {
             var mostSimilarCommands = FindCommands(command);
-            Console.WriteLine(PrintCommands(mostSimilarCommands, command));
+            consoleWriter.Invoke(PrintCommands(mostSimilarCommands, command));
         }
 
         private static IEnumerable<string> FindCommands(string command)

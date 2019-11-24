@@ -18,6 +18,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
+        private readonly Action<string> consoleWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -25,10 +26,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
-        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions)
+        /// <param name="consoleWriter">console writer.</param>
+        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, Action<string> consoleWriter)
             : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
+            this.consoleWriter = consoleWriter;
         }
 
         /// <summary>
@@ -105,7 +108,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write a record number");
+                this.consoleWriter.Invoke("Write a record number");
                 return;
             }
 
@@ -113,13 +116,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             if (inputs.Length < 3)
             {
-                Console.WriteLine("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
+                this.consoleWriter.Invoke("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
             if (inputs.Length > 3)
             {
-                Console.WriteLine("A lot of parameters after command 'delete'. Use 'help' or 'syntax'");
+                this.consoleWriter.Invoke("A lot of parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
@@ -141,22 +144,22 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     recordsId.Add(this.CabinetService.RemoveRecord(records[i]));
                 }
 
-                Console.WriteLine(CreateOutputText(recordsId.ToArray()));
+                this.consoleWriter.Invoke(CreateOutputText(recordsId.ToArray()));
             }
             catch (FileRecordNotFoundException ex)
             {
-                Console.WriteLine($"{ex.Value} was not found");
-                Console.WriteLine($"Record #{parameters} was not deleted ");
+                this.consoleWriter.Invoke($"{ex.Value} was not found");
+                this.consoleWriter.Invoke($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not deleted ");
+                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.Invoke($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not deleted");
+                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.Invoke($"Record #{parameters} was not deleted");
             }
         }
     }

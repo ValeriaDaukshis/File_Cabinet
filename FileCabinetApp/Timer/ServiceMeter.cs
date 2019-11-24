@@ -13,15 +13,18 @@ namespace FileCabinetApp.Timer
     public sealed class ServiceMeter : IFileCabinetService
     {
         private readonly IFileCabinetService service;
+        private readonly Action<string> consoleWriter;
         private IStopWatcher stopwatch;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceMeter"/> class.
         /// </summary>
         /// <param name="service">The service.</param>
-        public ServiceMeter(IFileCabinetService service)
+        /// <param name="consoleWriter">console writer.</param>
+        public ServiceMeter(IFileCabinetService service, Action<string> consoleWriter)
         {
             this.service = service;
+            this.consoleWriter = consoleWriter;
             this.Create();
         }
 

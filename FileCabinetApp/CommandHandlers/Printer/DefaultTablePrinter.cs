@@ -15,6 +15,16 @@ namespace FileCabinetApp.CommandHandlers.Printer
         private static string angle = "+";
         private static string wall = "|";
         private static string border = "-";
+        private readonly Action<string> consoleWriter;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultTablePrinter"/> class.
+        /// </summary>
+        /// <param name="consoleWriter">The console writer.</param>
+        public DefaultTablePrinter(Action<string> consoleWriter)
+        {
+            this.consoleWriter = consoleWriter;
+        }
 
         /// <summary>
         /// Prints the specified records.
@@ -35,21 +45,21 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
             if (!record.Any())
             {
-                Console.WriteLine("No records found");
+                this.consoleWriter.Invoke("No records found");
                 return;
             }
 
             string horizontalBorder = CreateHorizontalBorder(record, fields);
-            Console.WriteLine(horizontalBorder);
-            Console.WriteLine(CreateHeader(fields, horizontalBorder));
-            Console.WriteLine(horizontalBorder);
+            this.consoleWriter.Invoke(horizontalBorder);
+            this.consoleWriter.Invoke(CreateHeader(fields, horizontalBorder));
+            this.consoleWriter.Invoke(horizontalBorder);
 
             foreach (var rec in record)
             {
-                Console.WriteLine(PrintRecord(rec, fields, horizontalBorder));
+                this.consoleWriter.Invoke(PrintRecord(rec, fields, horizontalBorder));
             }
 
-            Console.WriteLine(horizontalBorder);
+            this.consoleWriter.Invoke(horizontalBorder);
         }
 
         private static string PrintRecord(FileCabinetRecord record, string[] fields, string horizontalBorder)

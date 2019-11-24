@@ -10,13 +10,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly Action<string> consoleWriter;
+        private FileCabinetServiceSnapshot snapshot;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        public ExportCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="consoleWriter">console writer.</param>
+        public ExportCommandHandler(IFileCabinetService cabinetService, Action<string> consoleWriter)
             : base(cabinetService)
         {
+            this.consoleWriter = consoleWriter;
         }
 
         /// <summary>
@@ -53,30 +58,30 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        Snapshot = this.CabinetService.MakeSnapshot();
-                        Snapshot.SaveToCsv(stream);
+                        this.snapshot = this.CabinetService.MakeSnapshot();
+                        this.snapshot.SaveToCsv(stream);
                     }
                     else if (fileFormat == "xml")
                     {
-                        Snapshot = this.CabinetService.MakeSnapshot();
-                        Snapshot.SaveToXml(stream);
+                        this.snapshot = this.CabinetService.MakeSnapshot();
+                        this.snapshot.SaveToXml(stream);
                     }
                     else
                     {
-                        Console.WriteLine($"{fileFormat} writer is not found");
+                        this.consoleWriter.Invoke($"{fileFormat} writer is not found");
                         return;
                     }
                 }
 
-                Console.WriteLine($"File {path} was successfully exported");
+                this.consoleWriter.Invoke($"File {path} was successfully exported");
             }
             catch (IOException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.consoleWriter.Invoke(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.consoleWriter.Invoke(ex.Message);
             }
         }
     }

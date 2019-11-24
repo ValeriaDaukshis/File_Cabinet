@@ -28,14 +28,17 @@ namespace FileCabinetApp
         private const string XsdValidatorFile = "records.xsd";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
-        private static bool isRunning = true;
+        private static readonly Action<bool> Running = b => isRunning = b;
+        private static readonly Action<string> ConsoleWriter = Console.WriteLine;
+        private static readonly Action<string> Writer = Console.Write;
+        private static readonly Func<string> ConsoleReader = Console.ReadLine;
+
         private static IFileCabinetService fileCabinetService;
         private static IExpressionExtensions expressionExtensions;
-        private static string xsdValidatorFile;
         private static IXsdValidator xsdValidator;
         private static ITablePrinter tablePrinter;
-
-        private static Action<bool> running = b => isRunning = b;
+        private static string xsdValidatorFile;
+        private static bool isRunning = true;
 
         private static string[][] helpMessages = new string[][]
         {
@@ -97,14 +100,14 @@ namespace FileCabinetApp
 
                     if (o.StopWatcher)
                     {
-                        fileCabinetService = new ServiceMeter(fileCabinetService);
+                        fileCabinetService = new ServiceMeter(fileCabinetService, ConsoleWriter);
                         Console.WriteLine("Used timer");
                     }
 
                     if (o.Logger)
                     {
                         string sourceFilePath = CreateValidPath("logger.log");
-                        fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
+                        fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath, ConsoleWriter);
                         Console.WriteLine("Used logger");
                     }
                 });
@@ -113,7 +116,7 @@ namespace FileCabinetApp
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
-            tablePrinter = new DefaultTablePrinter();
+            tablePrinter = new DefaultTablePrinter(ConsoleWriter);
             expressionExtensions = new ExpressionExtensions(fileCabinetService);
             xsdValidator = new XmlValidator();
 
@@ -146,20 +149,20 @@ namespace FileCabinetApp
         {
             var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 4 == 0).ToArray();
 
-            var helpCommand = new HelpCommandHandler(helpMessages);
+            var helpCommand = new HelpCommandHandler(helpMessages, ConsoleWriter);
 
-            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService))
-                .SetNext(new InsertCommandHandler(fileCabinetService))
-                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions))
-                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions))
-                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter))
-                .SetNext(new StatCommandHandler(fileCabinetService))
-                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile))
-                .SetNext(new ExportCommandHandler(fileCabinetService))
-                .SetNext(new PurgeCommandHandler(fileCabinetService))
-                .SetNext(new SyntaxCommandHandler(helpMessages))
-                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, running))
-                .SetNext(new MissedCommandHandler(commands));
+            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService, ConsoleWriter, Console.Write, ConsoleReader))
+                .SetNext(new InsertCommandHandler(fileCabinetService, ConsoleWriter))
+                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions, ConsoleWriter))
+                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions, ConsoleWriter))
+                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter, ConsoleWriter))
+                .SetNext(new StatCommandHandler(fileCabinetService, ConsoleWriter))
+                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile, ConsoleWriter))
+                .SetNext(new ExportCommandHandler(fileCabinetService, ConsoleWriter))
+                .SetNext(new PurgeCommandHandler(fileCabinetService, ConsoleWriter))
+                .SetNext(new SyntaxCommandHandler(helpMessages, ConsoleWriter))
+                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, Running, ConsoleWriter))
+                .SetNext(new MissedCommandHandler(commands, ConsoleWriter));
 
             return helpCommand;
         }

@@ -81,9 +81,10 @@ namespace FileCabinetApp.Service
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
         /// <param name="converter">The converter.</param>
-        public void LoadFromCsv(StreamReader reader, IRecordValidator validator, Converter converter)
+        /// <param name="consoleWriter">console writer.</param>
+        public void LoadFromCsv(StreamReader reader, IRecordValidator validator, Converter converter, Action<string> consoleWriter)
         {
-            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator, converter);
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator, converter, consoleWriter);
             this.ReadRecords = csvReader.ReadAll();
         }
 
@@ -92,9 +93,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        public void LoadFromXml(StreamReader reader, IRecordValidator validator)
+        /// <param name="consoleWriter">console writer.</param>
+        public void LoadFromXml(StreamReader reader, IRecordValidator validator, Action<string> consoleWriter)
         {
-            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, validator);
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, validator, consoleWriter);
             this.ReadRecords = xmlReader.ReadAll();
         }
     }

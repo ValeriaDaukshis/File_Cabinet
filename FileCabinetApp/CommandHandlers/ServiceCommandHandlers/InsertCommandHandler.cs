@@ -11,13 +11,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly Action<string> consoleWriter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        public InsertCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="consoleWriter">console writer.</param>
+        public InsertCommandHandler(IFileCabinetService cabinetService, Action<string> consoleWriter)
             : base(cabinetService)
         {
+            this.consoleWriter = consoleWriter;
         }
 
         /// <summary>
@@ -64,23 +68,23 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 this.CommandHandlersExpressions.ChangeFieldCase(fields);
                 CommandHandlersExpressions.DeleteQuotesFromInputValues(values);
 
-                var recordNumber = this.CabinetService.CreateRecord(this.PrintInputFields(fields, values));
-                Console.WriteLine($"Record #{recordNumber} is created.");
+                var recordNumber = this.CabinetService.CreateRecord(this.InputReader.PrintInputFields(fields, values));
+                this.consoleWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.Invoke("Record is not created ");
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.Invoke("Record is not created ");
             }
             catch (IndexOutOfRangeException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.Invoke("Record is not created ");
             }
         }
     }
