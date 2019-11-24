@@ -110,43 +110,28 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields">
             <summary>
             PrintInputFields.
             </summary>
-            <param name="firstName">first name.</param>
-            <param name="lastName">last name.</param>
-            <param name="gender">gender.</param>
-            <param name="dateOfBirth">date of birth.</param>
-            <param name="credit">credit sum.</param>
-            <param name="duration">duration.</param>
+            <returns>FileCabinetRecord.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String[],System.String[],System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.PrintInputFields(System.String[],System.String[])">
             <summary>
             Prints the input fields.
             </summary>
             <param name="fields">The fields.</param>
             <param name="values">The values.</param>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="gender">The gender.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <param name="credit">The credit.</param>
-            <param name="duration">The duration.</param>
+            <returns>FileCabinetRecord.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CheckInputFields(System.String[],System.String[],FileCabinetApp.Records.FileCabinetRecord,System.String@,System.String@,System.Char@,System.DateTime@,System.Decimal@,System.Int16@)">
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CheckInputFields(System.String[],System.String[],FileCabinetApp.Records.FileCabinetRecord)">
             <summary>
             Checks the input fields.
             </summary>
             <param name="fields">The fields.</param>
             <param name="values">The values.</param>
             <param name="record">The record.</param>
-            <param name="firstName">The first name.</param>
-            <param name="lastName">The last name.</param>
-            <param name="gender">The gender.</param>
-            <param name="dateOfBirth">The date of birth.</param>
-            <param name="credit">The credit.</param>
-            <param name="duration">The duration.</param>
+            <returns>FileCabinetRecord.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.CommandHandlersExpressions">
             <summary>

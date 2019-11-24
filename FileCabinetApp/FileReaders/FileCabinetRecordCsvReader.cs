@@ -48,8 +48,13 @@ namespace FileCabinetApp.FileReaders
 
                 try
                 {
-                    this.ReaderValidator(row, out int id, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    records.Add(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
+                    FileCabinetRecord record = this.ValidateParameters(row);
+                    this.validator.ValidateParameters(record);
+                    records.Add(record);
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
                 catch (ArgumentException ex)
                 {
@@ -75,17 +80,17 @@ namespace FileCabinetApp.FileReaders
             return value;
         }
 
-        private void ReaderValidator(string[] row, out int id, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private FileCabinetRecord ValidateParameters(string[] row)
         {
-            id = ConvertValue<int>(this.converter.IntConverter, row[0], 0);
-            firstName = ConvertValue<string>(this.converter.StringConverter, row[1], id);
-            lastName = ConvertValue<string>(this.converter.StringConverter, row[2], id);
-            gender = ConvertValue<char>(this.converter.CharConverter, row[3], id);
-            dateOfBirth = ConvertValue<DateTime>(this.converter.DateTimeConverter, row[4], id);
-            credit = ConvertValue<decimal>(this.converter.DecimalConverter, row[5], id);
-            duration = ConvertValue<short>(this.converter.ShortConverter, row[6], id);
+            int id = ConvertValue<int>(this.converter.IntConverter, row[0], 0);
+            string firstName = ConvertValue<string>(this.converter.StringConverter, row[1], id);
+            string lastName = ConvertValue<string>(this.converter.StringConverter, row[2], id);
+            char gender = ConvertValue<char>(this.converter.CharConverter, row[3], id);
+            DateTime dateOfBirth = ConvertValue<DateTime>(this.converter.DateTimeConverter, row[4], id);
+            decimal credit = ConvertValue<decimal>(this.converter.DecimalConverter, row[5], id);
+            short duration = ConvertValue<short>(this.converter.ShortConverter, row[6], id);
 
-            this.validator.ValidateParameters(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
+            return new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
         }
     }
 }

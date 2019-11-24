@@ -148,7 +148,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 for (int i = 0; i < records.Length; i++)
                 {
-                    this.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                    FileCabinetRecord record = this.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
                     int id = records[i].Id;
                     if (updates.ContainsKey("Id"))
                     {
@@ -156,7 +156,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                         CheckUpdateId(id.ToString(Culture), newId);
                     }
 
-                    this.CabinetService.EditRecord(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
+                    record.Id = id;
+
+                    this.CabinetService.EditRecord(record);
                     recordsId.Add(id);
                 }
 

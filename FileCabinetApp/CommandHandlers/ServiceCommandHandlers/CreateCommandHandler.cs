@@ -43,11 +43,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Create(string parameters)
         {
-            this.PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
             try
             {
-                var recordNumber =
-                    this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
+                var recordNumber = this.CabinetService.CreateRecord(this.PrintInputFields());
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)

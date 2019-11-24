@@ -266,26 +266,22 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// PrintInputFields.
         /// </summary>
-        /// <param name="firstName">first name.</param>
-        /// <param name="lastName">last name.</param>
-        /// <param name="gender">gender.</param>
-        /// <param name="dateOfBirth">date of birth.</param>
-        /// <param name="credit">credit sum.</param>
-        /// <param name="duration">duration.</param>
-        protected void PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        /// <returns>FileCabinetRecord.</returns>
+        protected FileCabinetRecord PrintInputFields()
         {
             Console.Write("First name: ");
-            firstName = ReadInput(this.Converter.StringConverter, FirstNameValidator);
+            string firstName = ReadInput(this.Converter.StringConverter, FirstNameValidator);
             Console.Write("Last name: ");
-            lastName = ReadInput(this.Converter.StringConverter, LastNameValidator);
+            string lastName = ReadInput(this.Converter.StringConverter, LastNameValidator);
             Console.Write("Gender(M/F): ");
-            gender = ReadInput(this.Converter.CharConverter, GenderValidator);
+            char gender = ReadInput(this.Converter.CharConverter, GenderValidator);
             Console.Write("Date of birth(mm/dd/yyyy): ");
-            dateOfBirth = ReadInput(this.Converter.DateTimeConverter, DateOfBirthValidator);
+            DateTime dateOfBirth = ReadInput(this.Converter.DateTimeConverter, DateOfBirthValidator);
             Console.Write("Credit sum(bel rub): ");
-            credit = ReadInput(this.Converter.DecimalConverter, CreditSumValidator);
+            decimal credit = ReadInput(this.Converter.DecimalConverter, CreditSumValidator);
             Console.Write("Credit duration(month): ");
-            duration = ReadInput(this.Converter.ShortConverter, DurationValidator);
+            short duration = ReadInput(this.Converter.ShortConverter, DurationValidator);
+            return new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
         }
 
         /// <summary>
@@ -293,20 +289,16 @@ namespace FileCabinetApp.CommandHandlers
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <param name="values">The values.</param>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="gender">The gender.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <param name="credit">The credit.</param>
-        /// <param name="duration">The duration.</param>
-        protected void PrintInputFields(string[] fields, string[] values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        /// <returns>FileCabinetRecord.</returns>
+        protected FileCabinetRecord PrintInputFields(string[] fields, string[] values)
         {
-            firstName = ReadInput(fields, values, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
-            lastName = ReadInput(fields, values, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
-            gender = ReadInput(fields, values, GenderSearcher, this.Converter.CharConverter, GenderValidator);
-            dateOfBirth = ReadInput(fields, values, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
-            credit = ReadInput(fields, values, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
-            duration = ReadInput(fields, values, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
+            string firstName = ReadInput(fields, values, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
+            string lastName = ReadInput(fields, values, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
+            char gender = ReadInput(fields, values, GenderSearcher, this.Converter.CharConverter, GenderValidator);
+            DateTime dateOfBirth = ReadInput(fields, values, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
+            decimal credit = ReadInput(fields, values, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
+            short duration = ReadInput(fields, values, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
+            return new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
         }
 
         /// <summary>
@@ -315,25 +307,21 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="fields">The fields.</param>
         /// <param name="values">The values.</param>
         /// <param name="record">The record.</param>
-        /// <param name="firstName">The first name.</param>
-        /// <param name="lastName">The last name.</param>
-        /// <param name="gender">The gender.</param>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <param name="credit">The credit.</param>
-        /// <param name="duration">The duration.</param>
-        protected void CheckInputFields(string[] fields, string[] values, FileCabinetRecord record, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        /// <returns>FileCabinetRecord.</returns>
+        protected FileCabinetRecord CheckInputFields(string[] fields, string[] values, FileCabinetRecord record)
         {
             if (record is null)
             {
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            firstName = ReadInput(fields, values, record.FirstName, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
-            lastName = ReadInput(fields, values, record.LastName, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
-            gender = ReadInput(fields, values, record.Gender, GenderSearcher, this.Converter.CharConverter, GenderValidator);
-            dateOfBirth = ReadInput(fields, values, record.DateOfBirth, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
-            credit = ReadInput(fields, values, record.CreditSum, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
-            duration = ReadInput(fields, values, record.Duration, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
+            string firstName = ReadInput(fields, values, record.FirstName, FirstNameSearcher, this.Converter.StringConverter, FirstNameValidator);
+            string lastName = ReadInput(fields, values, record.LastName, LastNameSearcher, this.Converter.StringConverter, LastNameValidator);
+            char gender = ReadInput(fields, values, record.Gender, GenderSearcher, this.Converter.CharConverter, GenderValidator);
+            DateTime dateOfBirth = ReadInput(fields, values, record.DateOfBirth, DateOfBirthSearcher, this.Converter.DateTimeConverter, DateOfBirthValidator);
+            decimal credit = ReadInput(fields, values, record.CreditSum, CreditSumSearcher, this.Converter.DecimalConverter, CreditSumValidator);
+            short duration = ReadInput(fields, values, record.Duration, DurationSearcher, this.Converter.ShortConverter, DurationValidator);
+            return new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
         }
 
         private static T ReadInput<T>(string[] fields, string[] values, Func<string[], string[], Tuple<bool, string>> finder, Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
