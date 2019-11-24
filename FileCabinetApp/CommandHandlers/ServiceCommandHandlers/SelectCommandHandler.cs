@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
         private readonly ITablePrinter printer;
         private readonly IExpressionExtensions expressionExtensions;
 
@@ -26,7 +26,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="printer">The printer.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, Action<string> consoleWriter)
+        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ConsoleWriters consoleWriter)
             : base(cabinetService)
         {
             this.printer = printer;
@@ -131,15 +131,15 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
             catch (FileRecordNotFoundException ex)
             {
-                this.consoleWriter.Invoke($"{ex.Value} was not found");
+                this.consoleWriter.LineWriter.Invoke($"{ex.Value} was not found");
             }
             catch (ArgumentNullException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     {
         private readonly string xsdValidatorFile;
         private readonly IXsdValidator xsdValidator;
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="xsdValidator">The XSD validator.</param>
         /// <param name="xsdValidatorFile">The XSD validator file.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile, Action<string> consoleWriter)
+        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile, ConsoleWriters consoleWriter)
             : base(cabinetService)
         {
             this.xsdValidatorFile = xsdValidatorFile;
@@ -69,7 +69,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                         this.snapshot = this.CabinetService.MakeSnapshot();
                         this.snapshot.LoadFromCsv(stream, RecordValidator, Converter, this.consoleWriter);
                         int count = this.CabinetService.Restore(this.snapshot);
-                        this.consoleWriter.Invoke($"{count} records were imported from {path}");
+                        this.consoleWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
@@ -77,33 +77,33 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                         this.xsdValidator.ValidateXml(this.xsdValidatorFile, path);
                         this.snapshot.LoadFromXml(stream, RecordValidator, this.consoleWriter);
                         int count = this.CabinetService.Restore(this.snapshot);
-                        this.consoleWriter.Invoke($"{count} records were imported from {path}");
+                        this.consoleWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else
                     {
-                        this.consoleWriter.Invoke($"{fileFormat} writer is not found");
+                        this.consoleWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
                     }
                 }
             }
             catch (IOException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
-                this.consoleWriter.Invoke("File wasn't imported");
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (UnauthorizedAccessException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
-                this.consoleWriter.Invoke("File wasn't imported");
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
-                this.consoleWriter.Invoke("File wasn't imported");
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (XmlException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
-                this.consoleWriter.Invoke("File wasn't imported");
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
             }
         }
     }

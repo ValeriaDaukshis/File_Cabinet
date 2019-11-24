@@ -15,7 +15,7 @@ namespace FileCabinetApp.Logger
     public sealed class ServiceLogger : IFileCabinetService, IDisposable
     {
         private readonly IFileCabinetService service;
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
         private readonly string path;
         private TextWriter writer;
         private bool disposed = false;
@@ -26,7 +26,7 @@ namespace FileCabinetApp.Logger
         /// <param name="service">The service.</param>
         /// <param name="path">The path.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public ServiceLogger(IFileCabinetService service, string path, Action<string> consoleWriter)
+        public ServiceLogger(IFileCabinetService service, string path, ConsoleWriters consoleWriter)
         {
             this.service = service;
             this.path = path;

@@ -13,7 +13,7 @@ namespace FileCabinetApp.Timer
     public sealed class ServiceMeter : IFileCabinetService
     {
         private readonly IFileCabinetService service;
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
         private IStopWatcher stopwatch;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace FileCabinetApp.Timer
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public ServiceMeter(IFileCabinetService service, Action<string> consoleWriter)
+        public ServiceMeter(IFileCabinetService service, ConsoleWriters consoleWriter)
         {
             this.service = service;
             this.consoleWriter = consoleWriter;

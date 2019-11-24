@@ -13,14 +13,14 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private static string[][] helpMessages;
-        private static Action<string> consoleWriter;
+        private static ConsoleWriters consoleWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HelpCommandHandler"/> class.
         /// </summary>
         /// <param name="help">The help.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public HelpCommandHandler(string[][] help, Action<string> consoleWriter)
+        public HelpCommandHandler(string[][] help, ConsoleWriters consoleWriter)
         {
             helpMessages = help;
             HelpCommandHandler.consoleWriter = consoleWriter;
@@ -54,20 +54,20 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
                 var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    consoleWriter.Invoke(helpMessages[index][ExplanationHelpIndex]);
+                    consoleWriter.LineWriter.Invoke(helpMessages[index][ExplanationHelpIndex]);
                 }
                 else
                 {
-                    consoleWriter.Invoke($"There is no explanation for '{parameters}' command.");
+                    consoleWriter.LineWriter.Invoke($"There is no explanation for '{parameters}' command.");
                 }
             }
             else
             {
-                consoleWriter.Invoke("Available commands:");
+                consoleWriter.LineWriter.Invoke("Available commands:");
 
                 foreach (var helpMessage in helpMessages)
                 {
-                    consoleWriter.Invoke($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
+                    consoleWriter.LineWriter.Invoke($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
                 }
             }
         }

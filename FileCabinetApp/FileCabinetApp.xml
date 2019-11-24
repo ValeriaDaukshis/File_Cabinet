@@ -200,7 +200,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler.#ctor(System.IDisposable,System.Action{System.Boolean},System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler.#ctor(System.IDisposable,System.Action{System.Boolean},FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler"/> class.
             </summary>
@@ -220,7 +220,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler.#ctor(System.String[][],System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler.#ctor(System.String[][],FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.HelpCommandHandler"/> class.
             </summary>
@@ -239,7 +239,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.CommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler.#ctor(System.String[],System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler.#ctor(System.String[],FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.MissedCommandHandler"/> class.
             </summary>
@@ -257,7 +257,7 @@
             SyntaxCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.#ctor(System.String[][],System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler.#ctor(System.String[][],FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.SyntaxCommandHandler"/> class.
             </summary>
@@ -323,10 +323,11 @@
             </summary>
             <param name="converter">The converter.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InputReader.PrintInputFields(System.Action{System.String},System.Func{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.InputReader.PrintInputFields(FileCabinetApp.ConsoleWriters)">
             <summary>
             PrintInputFields.
             </summary>
+            <param name="consoleWriter">Console Writer.</param>
             <returns>FileCabinetRecord.</returns>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.InputReader.PrintInputFields(System.String[],System.String[])">
@@ -402,13 +403,12 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String},System.Action{System.String},System.Func{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler"/> class.
             </summary>
             <param name="cabinetService">The file cabinet service.</param>
-            <param name="consoleWriter">console writer.</param>
-            <param name="lineWriter">line writer.</param>
+            <param name="consoleWriters">console writer.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.CreateCommandHandler.Handle(FileCabinetApp.CommandHandlers.AppCommandRequest)">
             <summary>
@@ -421,7 +421,7 @@
             DeleteCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -443,7 +443,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ExportCommandHandler"/> class.
             </summary>
@@ -462,7 +462,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XmlFileValidator.IXsdValidator,System.String,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XmlFileValidator.IXsdValidator,System.String,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler"/> class.
             </summary>
@@ -483,7 +483,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.InsertCommandHandler"/> class.
             </summary>
@@ -502,7 +502,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.PurgeCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.PurgeCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.PurgeCommandHandler"/> class.
             </summary>
@@ -520,7 +520,7 @@
             SelectCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.CommandHandlers.Printer.ITablePrinter,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.CommandHandlers.Printer.ITablePrinter,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -543,7 +543,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.StatCommandHandler"/> class.
             </summary>
@@ -561,7 +561,7 @@
             UpdateCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,System.Action{System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -612,6 +612,35 @@
             </summary>
             <value>
               <c>true</c> if logger; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.ConsoleWriters">
+            <summary>
+            ConsoleWriters.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.ConsoleWriters.LineWriter">
+            <summary>
+            Gets the console writer.
+            </summary>
+            <value>
+            The console writer.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ConsoleWriters.Writer">
+            <summary>
+            Gets the writer.
+            </summary>
+            <value>
+            The writer.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.ConsoleWriters.Reader">
+            <summary>
+            Gets the console reader.
+            </summary>
+            <value>
+            The console reader.
             </value>
         </member>
         <member name="T:FileCabinetApp.Converters.Converter">
@@ -709,7 +738,7 @@
             FileCabinetRecordCsvReader.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter,System.Action{System.String})">
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordCsvReader"/> class.
             </summary>
@@ -729,7 +758,7 @@
             FileCabinetRecordXmlReader.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,System.Action{System.String})">
+        <member name="M:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader.#ctor(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileReaders.FileCabinetRecordXmlReader"/> class.
             </summary>
@@ -799,7 +828,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.Service.IFileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Logger.ServiceLogger.#ctor(FileCabinetApp.Service.IFileCabinetService,System.String,System.Action{System.String})">
+        <member name="M:FileCabinetApp.Logger.ServiceLogger.#ctor(FileCabinetApp.Service.IFileCabinetService,System.String,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Logger.ServiceLogger"/> class.
             </summary>
@@ -1431,7 +1460,7 @@
             </summary>
             <param name="writer">The writer.</param>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter,System.Action{System.String})">
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.Converters.Converter,FileCabinetApp.ConsoleWriters)">
             <summary>
             Loads from CSV.
             </summary>
@@ -1440,7 +1469,7 @@
             <param name="converter">The converter.</param>
             <param name="consoleWriter">console writer.</param>
         </member>
-        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,System.Action{System.String})">
+        <member name="M:FileCabinetApp.Service.FileCabinetServiceSnapshot.LoadFromXml(System.IO.StreamReader,FileCabinetApp.Validators.IRecordValidator,FileCabinetApp.ConsoleWriters)">
             <summary>
             Loads from XML.
             </summary>
@@ -1554,7 +1583,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.Service.IFileCabinetService" />
         </member>
-        <member name="M:FileCabinetApp.Timer.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService,System.Action{System.String})">
+        <member name="M:FileCabinetApp.Timer.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.ConsoleWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.Timer.ServiceMeter"/> class.
             </summary>

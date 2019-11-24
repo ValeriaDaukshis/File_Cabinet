@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -23,7 +23,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, Action<string> consoleWriter)
+        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ConsoleWriters consoleWriter)
             : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
@@ -125,7 +125,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write information");
+                this.consoleWriter.LineWriter.Invoke("Write information");
                 return;
             }
 
@@ -165,19 +165,19 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     recordsId.Add(id);
                 }
 
-                this.consoleWriter.Invoke(CreateOutputText(recordsId.ToArray()));
+                this.consoleWriter.LineWriter.Invoke(CreateOutputText(recordsId.ToArray()));
             }
             catch (FileRecordNotFoundException ex)
             {
-                this.consoleWriter.Invoke($"{ex.Value} was not found");
+                this.consoleWriter.LineWriter.Invoke($"{ex.Value} was not found");
             }
             catch (ArgumentNullException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

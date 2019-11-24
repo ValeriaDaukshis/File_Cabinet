@@ -10,7 +10,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly Action<string> consoleWriter;
+        private readonly ConsoleWriters consoleWriter;
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
@@ -18,7 +18,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="consoleWriter">console writer.</param>
-        public ExportCommandHandler(IFileCabinetService cabinetService, Action<string> consoleWriter)
+        public ExportCommandHandler(IFileCabinetService cabinetService, ConsoleWriters consoleWriter)
             : base(cabinetService)
         {
             this.consoleWriter = consoleWriter;
@@ -68,20 +68,20 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     }
                     else
                     {
-                        this.consoleWriter.Invoke($"{fileFormat} writer is not found");
+                        this.consoleWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
                         return;
                     }
                 }
 
-                this.consoleWriter.Invoke($"File {path} was successfully exported");
+                this.consoleWriter.LineWriter.Invoke($"File {path} was successfully exported");
             }
             catch (IOException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                this.consoleWriter.Invoke(ex.Message);
+                this.consoleWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }
