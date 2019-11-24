@@ -452,7 +452,7 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XsdValidator.IXsdValidator,System.String)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XmlFileValidator.IXsdValidator,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler"/> class.
             </summary>
@@ -1084,7 +1084,7 @@
         </member>
         <member name="P:FileCabinetApp.Records.FileCabinetRecords.Record">
             <summary>
-            Gets or sets the record.
+            Gets the record.
             </summary>
             <value>
             The record.
@@ -1824,12 +1824,12 @@
             </summary>
             <param name="record">The record.</param>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions">
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.CreditSum">
             <summary>
             CreditSumCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions.Min">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSum.Min">
             <summary>
             Gets or sets the minimum.
             </summary>
@@ -1837,7 +1837,7 @@
             The minimum.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions.Max">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSum.Max">
             <summary>
             Gets or sets the maximum.
             </summary>
@@ -1845,12 +1845,12 @@
             The maximum.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions">
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.DateOfBirth">
             <summary>
             DateOfBirthCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions.From">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirth.From">
             <summary>
             Gets or sets from.
             </summary>
@@ -1858,7 +1858,7 @@
             From.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions.To">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.DateOfBirth.To">
             <summary>
             Gets or sets to.
             </summary>
@@ -1866,12 +1866,12 @@
             To.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.DurationCriterions">
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.Duration">
             <summary>
             DurationCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.DurationCriterions.From">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.Duration.From">
             <summary>
             Gets or sets from.
             </summary>
@@ -1879,7 +1879,7 @@
             From.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.DurationCriterions.To">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.Duration.To">
             <summary>
             Gets or sets to.
             </summary>
@@ -1887,12 +1887,12 @@
             To.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions">
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.FirstName">
             <summary>
             FirstNameCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions.Min">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstName.Min">
             <summary>
             Gets or sets the minimum.
             </summary>
@@ -1900,7 +1900,7 @@
             The minimum.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions.Max">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.FirstName.Max">
             <summary>
             Gets or sets the maximum.
             </summary>
@@ -1908,12 +1908,12 @@
             The maximum.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions">
+        <member name="T:FileCabinetApp.Validators.ValidationParameters.LastName">
             <summary>
             LastNameCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions.Min">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastName.Min">
             <summary>
             Gets or sets the minimum.
             </summary>
@@ -1921,7 +1921,7 @@
             The minimum.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastNameCriterions.Max">
+        <member name="P:FileCabinetApp.Validators.ValidationParameters.LastName.Max">
             <summary>
             Gets or sets the maximum.
             </summary>
@@ -1991,51 +1991,41 @@
             ValidatorParameters.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorParameters.#ctor(FileCabinetApp.Validators.ValidationParameters.FirstNameCriterions,FileCabinetApp.Validators.ValidationParameters.LastNameCriterions,FileCabinetApp.Validators.ValidationParameters.DateOfBirthCriterions,FileCabinetApp.Validators.ValidationParameters.CreditSumCriterions,FileCabinetApp.Validators.ValidationParameters.DurationCriterions)">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.LastName">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ValidatorParameters"/> class.
-            </summary>
-            <param name="firstNameCriterions">The first name criterions.</param>
-            <param name="lastNameCriterions">The last name criterions.</param>
-            <param name="dateOfBirthCriterions">The date of birth criterions.</param>
-            <param name="creditSumCriterions">The credit sum criterions.</param>
-            <param name="durationCriterions">The duration criterions.</param>
-        </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.LastNameCriterions">
-            <summary>
-            Gets the last name criterions.
+            Gets or sets the last name criterions.
             </summary>
             <value>
             The last name criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.FirstNameCriterions">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.FirstName">
             <summary>
-            Gets the first name criterions.
+            Gets or sets the first name criterions.
             </summary>
             <value>
             The first name criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.DurationCriterions">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.Duration">
             <summary>
-            Gets the duration criterions.
+            Gets or sets the duration criterions.
             </summary>
             <value>
             The duration criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.CreditSumCriterions">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.CreditSum">
             <summary>
-            Gets the credit sum criterions.
+            Gets or sets the credit sum criterions.
             </summary>
             <value>
             The credit sum criterions.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidatorParameters.DateOfBirthCriterions">
+        <member name="P:FileCabinetApp.Validators.ValidatorParameters.DateOfBirth">
             <summary>
-            Gets the date of birth criterions.
+            Gets or sets the date of birth criterions.
             </summary>
             <value>
             The date of birth criterions.
@@ -2046,28 +2036,28 @@
             ValidatorsExtensions.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder,Microsoft.Extensions.Configuration.IConfigurationRoot)">
+        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder,System.String)">
             <summary>
             Creates the custom.
             </summary>
             <param name="validatorBuilder">The validator builder.</param>
-            <param name="config">The configuration.</param>
-            <returns>(IRecordValidator, ValidatorParameters).</returns>
+            <param name="validationRulesFile">The validation rules file.</param>
+            <returns>IRecordValidator.</returns>
         </member>
-        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder,Microsoft.Extensions.Configuration.IConfigurationRoot)">
+        <member name="M:FileCabinetApp.Validators.ValidatorsExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder,System.String)">
             <summary>
             Creates the default.
             </summary>
             <param name="validatorBuilder">The validator builder.</param>
-            <param name="config">The configuration.</param>
-            <returns>(IRecordValidator, ValidatorParameters).</returns>
+            <param name="validationRulesFile">The validation rules file.</param>
+            <returns>IRecordValidator.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.XsdValidator.IXsdValidator">
+        <member name="T:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator">
             <summary>
             IXsdValidator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.XsdValidator.IXsdValidator.ValidateXml(System.String,System.String)">
+        <member name="M:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator.ValidateXml(System.String,System.String)">
             <summary>
             Validates the XML.
             </summary>
@@ -2078,7 +2068,7 @@
             <summary>
             XsdValidator.
             </summary>
-            <seealso cref="T:FileCabinetApp.Validators.XsdValidator.IXsdValidator" />
+            <seealso cref="T:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator" />
         </member>
         <member name="M:FileCabinetApp.Validators.XmlFileValidator.XmlValidator.ValidateXml(System.String,System.String)">
             <summary>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="qualified">
+    <xsd:element name="records">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="unbounded" name="record">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="name">
+                                <xsd:complexType>
+                                    <xsd:attribute name="first" type="xsd:string" use="required"/>
+                                    <xsd:attribute name="last" type="xsd:string" use="required"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="gender" type="xs:unsignedByte"/>
+                            <xsd:element name="dateOfBirth" type="xsd:date"/>
+                            <xsd:element name="creditSum" type="xsd:decimal"/>
+                            <xsd:element name="duration" type="xsd:unsignedShort"/>
+                        </xsd:sequence>
+                        <xsd:attribute name="id" type="xsd:unsignedByte" use="required" />
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xs:schema>

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Xml;
 using FileCabinetApp.Service;
-using FileCabinetApp.Validators.XsdValidator;
+using FileCabinetApp.Validators.XmlFileValidator;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {

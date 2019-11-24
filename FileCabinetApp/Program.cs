@@ -12,7 +12,6 @@ using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
 using FileCabinetApp.Validators.XmlFileValidator;
-using FileCabinetApp.Validators.XsdValidator;
 using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
@@ -26,8 +25,7 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help'/'syntax' to get help.";
         private const string ServiceStorageFile = "cabinet-records.db";
         private const string ValidationRulesFile = "validation-rules.json";
-        private const string XsdCustomValidatorFile = "customRecords.xsd";
-        private const string XsdDefaultValidatorFile = "defaultRecords.xsd";
+        private const string XsdValidatorFile = "records.xsd";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static bool isRunning = true;
@@ -69,24 +67,19 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(ValidationRulesFile, optional: true, reloadOnChange: true);
-            var config = builder.Build();
+            xsdValidatorFile = XsdValidatorFile;
 
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
-                        xsdValidatorFile = XsdCustomValidatorFile;
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(ValidationRulesFile);
                         Console.WriteLine("Custom validator");
                     }
                     else
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
-                        xsdValidatorFile = XsdDefaultValidatorFile;
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(ValidationRulesFile);
                         Console.WriteLine("Default validator");
                     }
 

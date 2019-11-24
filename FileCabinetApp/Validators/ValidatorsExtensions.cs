@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using FileCabinetApp.Validators.ValidationParameters;
 using Microsoft.Extensions.Configuration;
 
@@ -13,74 +14,57 @@ namespace FileCabinetApp.Validators
         /// Creates the custom.
         /// </summary>
         /// <param name="validatorBuilder">The validator builder.</param>
-        /// <param name="config">The configuration.</param>
-        /// <returns>(IRecordValidator, ValidatorParameters).</returns>
-        public static (IRecordValidator, ValidatorParameters) CreateCustom(this ValidatorBuilder validatorBuilder, IConfigurationRoot config)
+        /// <param name="validationRulesFile">The validation rules file.</param>
+        /// <returns>IRecordValidator.</returns>
+        public static (IRecordValidator, ValidatorParameters) CreateCustom(this ValidatorBuilder validatorBuilder, string validationRulesFile)
         {
-            if (validatorBuilder is null)
+            if (string.IsNullOrEmpty(validationRulesFile))
             {
-                throw new ArgumentNullException(nameof(validatorBuilder), $"{nameof(validatorBuilder)} is null");
+                throw new ArgumentNullException(nameof(validationRulesFile), $"{nameof(validationRulesFile)} is null");
             }
 
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config), $"{nameof(config)} is null");
-            }
-
-            var validatorParameters = ReadParamsFromJson(config.GetSection("custom"));
-            return (CreateValidator(validatorParameters, validatorBuilder), validatorParameters);
+            return CreateValidator(validatorBuilder, "custom", validationRulesFile);
         }
 
         /// <summary>
         /// Creates the default.
         /// </summary>
         /// <param name="validatorBuilder">The validator builder.</param>
-        /// <param name="config">The configuration.</param>
-        /// <returns>(IRecordValidator, ValidatorParameters).</returns>
-        public static (IRecordValidator, ValidatorParameters) CreateDefault(this ValidatorBuilder validatorBuilder, IConfigurationRoot config)
+        /// <param name="validationRulesFile">The validation rules file.</param>
+        /// <returns>IRecordValidator.</returns>
+        public static (IRecordValidator, ValidatorParameters) CreateDefault(this ValidatorBuilder validatorBuilder, string validationRulesFile)
+        {
+            if (string.IsNullOrEmpty(validationRulesFile))
+            {
+                throw new ArgumentNullException(nameof(validationRulesFile), $"{nameof(validationRulesFile)} is null");
+            }
+
+            return CreateValidator(validatorBuilder, "default", validationRulesFile);
+        }
+
+        private static (IRecordValidator, ValidatorParameters) CreateValidator(ValidatorBuilder validatorBuilder, string name, string validationRulesFile)
         {
             if (validatorBuilder is null)
             {
                 throw new ArgumentNullException(nameof(validatorBuilder), $"{nameof(validatorBuilder)} is null");
             }
 
-            if (config is null)
-            {
-                throw new ArgumentNullException(nameof(config), $"{nameof(config)} is null");
-            }
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(validationRulesFile);
+            var config = builder.Build();
 
-            var validatorParameters = ReadParamsFromJson(config.GetSection("default"));
-            return (CreateValidator(validatorParameters, validatorBuilder), validatorParameters);
-        }
+            var validationRules = config.GetSection(name).Get<ValidatorParameters>();
 
-        private static IRecordValidator CreateValidator(ValidatorParameters validatorParameters, ValidatorBuilder validatorBuilder)
-        {
             IRecordValidator recordValidator = validatorBuilder
-                .ValidateFirstName(validatorParameters.FirstNameCriterions.Min, validatorParameters.FirstNameCriterions.Max)
-                .ValidateLastName(validatorParameters.LastNameCriterions.Min, validatorParameters.LastNameCriterions.Max)
+                .ValidateFirstName(validationRules.FirstName.Min, validationRules.FirstName.Max)
+                .ValidateLastName(validationRules.LastName.Min, validationRules.LastName.Max)
                 .ValidateGender()
-                .ValidateDateOfBirth(validatorParameters.DateOfBirthCriterions.From, validatorParameters.DateOfBirthCriterions.To)
-                .ValidateCreditSum(validatorParameters.CreditSumCriterions.Min, validatorParameters.CreditSumCriterions.Max)
-                .ValidateDuration(validatorParameters.DurationCriterions.From, validatorParameters.DurationCriterions.To)
+                .ValidateDateOfBirth(validationRules.DateOfBirth.From, validationRules.DateOfBirth.To)
+                .ValidateCreditSum(validationRules.CreditSum.Min, validationRules.CreditSum.Max)
+                .ValidateDuration(validationRules.Duration.From, validationRules.Duration.To)
                 .Create();
-            return recordValidator;
-        }
-
-        private static ValidatorParameters ReadParamsFromJson(IConfigurationSection config)
-        {
-            var firstNameCriterion = new FirstNameCriterions();
-            var lastNameCriterion = new LastNameCriterions();
-            var dateOfBirthCriterion = new DateOfBirthCriterions();
-            var durationCriterion = new DurationCriterions();
-            var creditSumCriterion = new CreditSumCriterions();
-
-            config.GetSection("firstName").Bind(firstNameCriterion);
-            config.GetSection("lastName").Bind(lastNameCriterion);
-            config.GetSection("dateOfBirth").Bind(dateOfBirthCriterion);
-            config.GetSection("creditSum").Bind(creditSumCriterion);
-            config.GetSection("duration").Bind(durationCriterion);
-
-            return new ValidatorParameters(firstNameCriterion, lastNameCriterion, dateOfBirthCriterion, creditSumCriterion, durationCriterion);
+            return (recordValidator, validationRules);
         }
     }
 }

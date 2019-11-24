@@ -2,14 +2,13 @@
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using FileCabinetApp.Validators.XsdValidator;
 
 namespace FileCabinetApp.Validators.XmlFileValidator
 {
     /// <summary>
     /// XsdValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.XsdValidator.IXsdValidator" />
+    /// <seealso cref="IXsdValidator" />
     public class XmlValidator : IXsdValidator
     {
         /// <summary>

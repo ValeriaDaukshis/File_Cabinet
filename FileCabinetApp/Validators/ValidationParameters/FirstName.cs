@@ -1,11 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace FileCabinetApp.Validators.ValidationParameters
+﻿namespace FileCabinetApp.Validators.ValidationParameters
 {
     /// <summary>
-    /// LastNameCriterions.
+    /// FirstNameCriterions.
     /// </summary>
-    public class LastNameCriterions
+    public class FirstName
     {
         /// <summary>
         /// Gets or sets the minimum.

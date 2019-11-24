@@ -19,12 +19,12 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Gets or sets the record.
+        /// Gets the record.
         /// </summary>
         /// <value>
         /// The record.
         /// </value>
         [XmlElement("record")]
-        public List<Record> Record { get; set; }
+        public List<Record> Record { get; }
     }
 }

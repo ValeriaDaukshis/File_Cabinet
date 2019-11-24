@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp.Validators.XsdValidator
+﻿namespace FileCabinetApp.Validators.XmlFileValidator
 {
     /// <summary>
     /// IXsdValidator.
