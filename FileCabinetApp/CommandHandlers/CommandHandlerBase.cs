@@ -24,11 +24,6 @@ namespace FileCabinetApp.CommandHandlers
         protected static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
 
         /// <summary>
-        /// DateTimeCulture.
-        /// </summary>
-        protected static readonly CultureInfo DateTimeCulture = new CultureInfo("en-US");
-
-        /// <summary>
         /// The fields case dictionary.
         /// </summary>
         protected static readonly Dictionary<string, string> FieldsCaseDictionary = new Dictionary<string, string>

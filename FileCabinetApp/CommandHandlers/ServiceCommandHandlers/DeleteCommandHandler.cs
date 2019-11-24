@@ -94,7 +94,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             value = value.ToLower(Culture);
             if (!FieldsCaseDictionary.ContainsKey(value))
             {
-                throw new ArgumentException($"No field with name {nameof(value)}", nameof(value));
+                throw new ArgumentException($"No field with name {nameof(value)}");
             }
 
             value = FieldsCaseDictionary[value];

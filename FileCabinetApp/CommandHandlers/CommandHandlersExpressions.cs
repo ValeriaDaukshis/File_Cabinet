@@ -129,7 +129,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (!this.fieldsCaseDictionary.ContainsKey(key))
                 {
-                    throw new ArgumentException($"No field with name {nameof(values)}", nameof(values));
+                    throw new ArgumentException($"No field with name {values.GetValue(counter)}");
                 }
 
                 updates.Add(this.fieldsCaseDictionary[key], values[++counter]);
@@ -158,7 +158,7 @@ namespace FileCabinetApp.CommandHandlers
 
                 if (!this.fieldsCaseDictionary.ContainsKey(key))
                 {
-                    throw new ArgumentException($"No field with name {printedFields.GetValue(i)}", printedFields.GetValue(i).ToString());
+                    throw new ArgumentException($"No field with name {printedFields.GetValue(i)}");
                 }
 
                 printedFields[i] = this.fieldsCaseDictionary[key];

@@ -54,17 +54,21 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             char[] separators = { '(', ')', ',', ' ' };
             string[] inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
-            string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
             try
             {
+                string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+
                 CompareFieldsAndInputArraysLength(fields, values);
                 this.CommandHandlersExpressions.ChangeFieldCase(fields);
                 CommandHandlersExpressions.DeleteQuotesFromInputValues(values);
-                this.PrintInputFields(fields, values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                this.PrintInputFields(fields, values, out string firstName, out string lastName, out char gender,
+                    out DateTime dateOfBirth, out decimal credit, out short duration);
 
                 var recordNumber =
-                    this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
+                    this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth,
+                        credit, duration));
                 Console.WriteLine($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
@@ -73,6 +77,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 Console.WriteLine("Record is not created ");
             }
             catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine("Record is not created ");
+            }
+            catch (IndexOutOfRangeException ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine("Record is not created ");

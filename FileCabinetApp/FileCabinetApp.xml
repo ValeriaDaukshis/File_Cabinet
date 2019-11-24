@@ -36,11 +36,6 @@
             culture info.
             </summary>
         </member>
-        <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateTimeCulture">
-            <summary>
-            DateTimeCulture.
-            </summary>
-        </member>
         <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.FieldsCaseDictionary">
             <summary>
             The fields case dictionary.
