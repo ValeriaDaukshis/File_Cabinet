@@ -43,12 +43,12 @@ namespace FileCabinetApp.Validators.CommonValidators
 
             if (string.IsNullOrEmpty(lastName))
             {
-                throw new ArgumentException(nameof(lastName), $"Id #{record.Id} : Last name is null ({nameof(lastName)})");
+                throw new ArgumentException(nameof(lastName), $"Id #{record.Id}: Last name is null ({nameof(lastName)})");
             }
 
             if (lastName.Length < this.minLength || lastName.Length > this.maxLength)
             {
-                throw new ArgumentException($"Id #{record.Id} : Last name length length is upper than {this.maxLength} or under than {this.minLength} symbols ({nameof(lastName)})");
+                throw new ArgumentException($"Id #{record.Id}: Last name length length is upper than {this.maxLength} or under than {this.minLength} symbols ({nameof(lastName)})");
             }
         }
     }

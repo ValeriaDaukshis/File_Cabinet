@@ -130,7 +130,7 @@ namespace FileCabinetApp.CommandHandlers.Extensions
 
                 if (!this.fieldsCaseDictionary.ContainsKey(key))
                 {
-                    throw new ArgumentException($"No field with name {values.GetValue(counter)}");
+                    throw new ArgumentException($"No field with parameter {values.GetValue(counter)}");
                 }
 
                 updates.Add(this.fieldsCaseDictionary[key], values[++counter]);
