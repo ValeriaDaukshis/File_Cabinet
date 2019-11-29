@@ -164,19 +164,6 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
             this.disposed = true;
         }
 
-//        private string CreateTextWithParameters(string method, FileCabinetRecord record)
-//        {
-//            StringBuilder builder = new StringBuilder();
-//            builder.Append(CreateText(method));
-//            builder.Append($" with firstName = '{record.FirstName}' ");
-//            builder.Append($"lastName = '{record.LastName}' ");
-//            builder.Append($"Gender = '{record.Gender}' ");
-//            builder.Append($"DateOfBirth = '{record.DateOfBirth:mm/dd/yyyy}' ");
-//            builder.Append($"CreditSum = '{record.CreditSum}' ");
-//            builder.Append($"Duration = '{record.Duration}' ");
-//            return builder.ToString();
-//        }
-
         private void Create()
         {
             this.writer = new StreamWriter(this.path);
@@ -184,7 +171,6 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
 
         private TResult MethodLogger<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
         {
-            //CreateTextWithParameters
             this.writer.WriteLine(CreateText(methodName));
             TResult result = method.Invoke(record);
             this.writer.WriteLine($"{methodName}() returned '{result}'");

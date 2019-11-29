@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators.XmlFileValidator;
 
@@ -13,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         private readonly string xsdValidatorFile;
-        private readonly IXsdValidator xsdValidator;
+        private readonly IXmlValidator xmlValidator;
         private readonly ModelWriters modelWriter;
         private FileCabinetServiceSnapshot snapshot;
 
@@ -21,14 +22,14 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The cabinet service.</param>
-        /// <param name="xsdValidator">The XSD validator.</param>
+        /// <param name="xmlValidator">The XSD validator.</param>
         /// <param name="xsdValidatorFile">The XSD validator file.</param>
         /// <param name="modelWriter">console writer.</param>
-        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile, ModelWriters modelWriter)
+        public ImportCommandHandler(IFileCabinetService cabinetService, IXmlValidator xmlValidator, string xsdValidatorFile, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.xsdValidatorFile = xsdValidatorFile;
-            this.xsdValidator = xsdValidator;
+            this.xmlValidator = xmlValidator;
             this.modelWriter = modelWriter;
         }
 
@@ -55,7 +56,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Import(string parameters)
         {
-            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "import"))
+            if (!CommandHandlersExtensions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "import"))
             {
                 return;
             }
@@ -74,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     else if (fileFormat == "xml")
                     {
                         this.snapshot = this.CabinetService.MakeSnapshot();
-                        this.xsdValidator.ValidateXml(this.xsdValidatorFile, path);
+                        this.xmlValidator.ValidateXml(this.xsdValidatorFile, path);
                         this.snapshot.LoadFromXml(stream, RecordValidator, this.modelWriter);
                         int count = this.CabinetService.Restore(this.snapshot);
                         this.modelWriter.LineWriter.Invoke($"{count} records were imported from {path}");

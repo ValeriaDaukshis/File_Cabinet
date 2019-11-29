@@ -8,12 +8,12 @@ namespace FileCabinetApp.Records
     /// FileCabinetRecords.
     /// </summary>
     [XmlRoot("records")]
-    public class FileCabinetRecords
+    public class RecordsModel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecords"/> class.
+        /// Initializes a new instance of the <see cref="RecordsModel"/> class.
         /// </summary>
-        public FileCabinetRecords()
+        public RecordsModel()
         {
             this.Record = new List<Record>();
         }

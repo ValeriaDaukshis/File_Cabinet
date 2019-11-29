@@ -81,7 +81,7 @@
             ICommandHandler.
             </value>
         </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.InputReader">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.InputValidator">
             <summary>
             Gets the input reader.
             </summary>
@@ -89,7 +89,7 @@
             The input reader.
             </value>
         </member>
-        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.CommandHandlersExpressions">
+        <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.CommandHandlersExtensions">
             <summary>
             Gets the command handlers expressions.
             </summary>
@@ -110,24 +110,24 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.CommandHandlersExpressions">
+        <member name="T:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions">
             <summary>
             CommandHandlersExpressions.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.#ctor(System.Collections.Generic.Dictionary{System.String,System.String})">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.CommandHandlersExpressions"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions"/> class.
             </summary>
             <param name="fieldsCaseDictionary">The fields case dictionary.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.DeleteQuotesFromInputValues(System.String[])">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.DeleteQuotesFromInputValues(System.String[])">
             <summary>
             Deletes the quotes from input values.
             </summary>
             <param name="values">The values.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.ImportExportParametersSpliter(System.String,System.String@,System.String@,System.String)">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.ImportExportParametersSpliter(System.String,System.String@,System.String@,System.String)">
             <summary>
             Imports the export parameters spliter.
             </summary>
@@ -137,7 +137,7 @@
             <param name="commandName">The command name.</param>
             <returns>true if params are valid.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.FindConditionSeparator(System.String[])">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.FindConditionSeparator(System.String[])">
             <summary>
             Finds the condition separator.
             </summary>
@@ -145,7 +145,7 @@
             <returns>separator.</returns>
             <exception cref="T:System.ArgumentException">conditionFields.</exception>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.CreateDictionaryOfFields(System.String[],System.String)">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.CreateDictionaryOfFields(System.String[],System.String)">
             <summary>
             Creates the dictionary of fields.
             </summary>
@@ -155,7 +155,7 @@
             <exception cref="T:System.ArgumentNullException">values.</exception>
             <exception cref="T:System.ArgumentException">No field with name {nameof(values)} - values.</exception>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlersExpressions.ChangeFieldCase(System.String[])">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.CommandHandlersExtensions.ChangeFieldCase(System.String[])">
             <summary>
             Changes the field case.
             </summary>
@@ -163,19 +163,19 @@
             <exception cref="T:System.ArgumentNullException">printedFields.</exception>
             <exception cref="T:System.ArgumentException">No field with name {nameof(printedFields)} - printedFields.</exception>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.ExpressionExtensions">
+        <member name="T:FileCabinetApp.CommandHandlers.Extensions.ExpressionExtensions">
             <summary>
             ExpressionExtensions.
             </summary>
-            <seealso cref="T:FileCabinetApp.CommandHandlers.IExpressionExtensions" />
+            <seealso cref="T:FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.ExpressionExtensions.#ctor(FileCabinetApp.Service.IFileCabinetService)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExpressionExtensions"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Extensions.ExpressionExtensions"/> class.
             </summary>
             <param name="fileCabinetService">The file cabinet service.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.ExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
             <summary>
             Finds the suitable records.
             </summary>
@@ -186,13 +186,37 @@
             <returns>records that suits the condition.</returns>
             <exception cref="T:System.ArgumentException">Incorrect condition separator {nameof(conditionSeparator)}. Use 'and' || 'or' - conditionSeparator.</exception>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.ExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
             <summary>
             Finds the suitable records.
             </summary>
             <param name="parameter">The parameter.</param>
             <param name="fieldName">Name of the field.</param>
             <param name="type">The type.</param>
+            <returns>records that suits the condition.</returns>
+        </member>
+        <member name="T:FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions">
+            <summary>
+            IExpressionExtensions.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="conditionSeparator">The condition separator.</param>
+            <param name="classType">Type of the class.</param>
+            <returns>records that suits the condition.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
+            <summary>
+            Finds the suitable records.
+            </summary>
+            <param name="parameter">The parameter.</param>
+            <param name="fieldName">Name of the field.</param>
+            <param name="classType">Type of the class.</param>
             <returns>records that suits the condition.</returns>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.FunctionalCommandHandlers.ExitCommandHandler">
@@ -289,49 +313,25 @@
             </summary>
             <param name="commandRequest">The command request.</param>
         </member>
-        <member name="T:FileCabinetApp.CommandHandlers.IExpressionExtensions">
-            <summary>
-            IExpressionExtensions.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.IExpressionExtensions.FindSuitableRecords(System.String[],System.String[],System.String,System.Type)">
-            <summary>
-            Finds the suitable records.
-            </summary>
-            <param name="parameter">The parameter.</param>
-            <param name="fieldName">Name of the field.</param>
-            <param name="conditionSeparator">The condition separator.</param>
-            <param name="classType">Type of the class.</param>
-            <returns>records that suits the condition.</returns>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.IExpressionExtensions.FindSuitableRecords(System.String,System.String,System.Type)">
-            <summary>
-            Finds the suitable records.
-            </summary>
-            <param name="parameter">The parameter.</param>
-            <param name="fieldName">Name of the field.</param>
-            <param name="classType">Type of the class.</param>
-            <returns>records that suits the condition.</returns>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.InputReader">
+        <member name="T:FileCabinetApp.CommandHandlers.InputValidator">
             <summary>
             InputReader.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InputReader.#ctor(FileCabinetApp.Converters.Converter)">
+        <member name="M:FileCabinetApp.CommandHandlers.InputValidator.#ctor(FileCabinetApp.Converters.Converter)">
             <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InputReader"/> class.
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InputValidator"/> class.
             </summary>
             <param name="converter">The converter.</param>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InputReader.PrintInputFields(FileCabinetApp.ModelWriters)">
+        <member name="M:FileCabinetApp.CommandHandlers.InputValidator.PrintInputFields(FileCabinetApp.ModelWriters)">
             <summary>
             PrintInputFields.
             </summary>
             <param name="modelWriter">Console Writer.</param>
             <returns>FileCabinetRecord.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InputReader.PrintInputFields(System.String[],System.String[])">
+        <member name="M:FileCabinetApp.CommandHandlers.InputValidator.PrintInputFields(System.String[],System.String[])">
             <summary>
             Prints the input fields.
             </summary>
@@ -339,7 +339,7 @@
             <param name="values">The values.</param>
             <returns>FileCabinetRecord.</returns>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.InputReader.CheckInputFields(System.String[],System.String[],FileCabinetApp.Records.FileCabinetRecord)">
+        <member name="M:FileCabinetApp.CommandHandlers.InputValidator.CheckInputFields(System.String[],System.String[],FileCabinetApp.Records.FileCabinetRecord)">
             <summary>
             Checks the input fields.
             </summary>
@@ -347,36 +347,6 @@
             <param name="values">The values.</param>
             <param name="record">The record.</param>
             <returns>FileCabinetRecord.</returns>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter">
-            <summary>
-            TablePrinter.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter.#ctor(System.Action{System.String})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter"/> class.
-            </summary>
-            <param name="consoleWriter">The console writer.</param>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.DefaultTablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
-            <summary>
-            Prints the specified records.
-            </summary>
-            <param name="record">The records.</param>
-            <param name="fields">The fields.</param>
-        </member>
-        <member name="T:FileCabinetApp.CommandHandlers.Printer.ITablePrinter">
-            <summary>
-            ITablePrinter.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.CommandHandlers.Printer.ITablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
-            <summary>
-            Prints the specified records.
-            </summary>
-            <param name="record">The records.</param>
-            <param name="fields">The fields.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase">
             <summary>
@@ -422,7 +392,7 @@
             DeleteCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.ModelWriters)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions,FileCabinetApp.ModelWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.DeleteCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -463,12 +433,12 @@
             </summary>
             <seealso cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XmlFileValidator.IXsdValidator,System.String,FileCabinetApp.ModelWriters)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.Validators.XmlFileValidator.IXmlValidator,System.String,FileCabinetApp.ModelWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.ImportCommandHandler"/> class.
             </summary>
             <param name="cabinetService">The cabinet service.</param>
-            <param name="xsdValidator">The XSD validator.</param>
+            <param name="xmlValidator">The XSD validator.</param>
             <param name="xsdValidatorFile">The XSD validator file.</param>
             <param name="modelWriter">console writer.</param>
         </member>
@@ -521,7 +491,7 @@
             SelectCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.CommandHandlers.Printer.ITablePrinter,FileCabinetApp.ModelWriters)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions,FileCabinetApp.Printer.ITablePrinter,FileCabinetApp.ModelWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.SelectCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -562,7 +532,7 @@
             UpdateCommandHandler.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.IExpressionExtensions,FileCabinetApp.ModelWriters)">
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Service.IFileCabinetService,FileCabinetApp.CommandHandlers.Extensions.IExpressionExtensions,FileCabinetApp.ModelWriters)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlers.UpdateCommandHandler"/> class.
             DeleteCommandHandler constructor.
@@ -717,11 +687,6 @@
             </summary>
             <param name="service">The service.</param>
             <param name="path">The path.</param>
-        </member>
-        <member name="M:FileCabinetApp.FileCabinetServiceWrappers.Logger.ServiceLogger.Create">
-            <summary>
-            Creates this instance.
-            </summary>
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceWrappers.Logger.ServiceLogger.CreateRecord(FileCabinetApp.Records.FileCabinetRecord)">
             <summary>
@@ -1126,6 +1091,36 @@
             The console reader.
             </value>
         </member>
+        <member name="T:FileCabinetApp.Printer.DefaultTablePrinter">
+            <summary>
+            TablePrinter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Printer.DefaultTablePrinter.#ctor(System.Action{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Printer.DefaultTablePrinter"/> class.
+            </summary>
+            <param name="consoleWriter">The console writer.</param>
+        </member>
+        <member name="M:FileCabinetApp.Printer.DefaultTablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
+            <summary>
+            Prints the specified records.
+            </summary>
+            <param name="record">The records.</param>
+            <param name="fields">The fields.</param>
+        </member>
+        <member name="T:FileCabinetApp.Printer.ITablePrinter">
+            <summary>
+            ITablePrinter.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Printer.ITablePrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Records.FileCabinetRecord},System.String[])">
+            <summary>
+            Prints the specified records.
+            </summary>
+            <param name="record">The records.</param>
+            <param name="fields">The fields.</param>
+        </member>
         <member name="T:FileCabinetApp.Program">
             <summary>
             Enter point.
@@ -1229,24 +1224,6 @@
             The duration.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Records.FileCabinetRecords">
-            <summary>
-            FileCabinetRecords.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Records.FileCabinetRecords.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Records.FileCabinetRecords"/> class.
-            </summary>
-        </member>
-        <member name="P:FileCabinetApp.Records.FileCabinetRecords.Record">
-            <summary>
-            Gets the record.
-            </summary>
-            <value>
-            The record.
-            </value>
-        </member>
         <member name="T:FileCabinetApp.Records.Name">
             <summary>
             Names.
@@ -1347,6 +1324,24 @@
             </summary>
             <value>
             The duration.
+            </value>
+        </member>
+        <member name="T:FileCabinetApp.Records.RecordsModel">
+            <summary>
+            FileCabinetRecords.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Records.RecordsModel.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Records.RecordsModel"/> class.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.Records.RecordsModel.Record">
+            <summary>
+            Gets the record.
+            </summary>
+            <value>
+            The record.
             </value>
         </member>
         <member name="T:FileCabinetApp.Service.FileCabinetFilesystemService">
@@ -1753,12 +1748,12 @@
             </summary>
             <param name="record">The record.</param>
         </member>
-        <member name="T:FileCabinetApp.Validators.ValidationParameters.CreditSum">
+        <member name="T:FileCabinetApp.Validators.ValidationModel.CreditSum">
             <summary>
             CreditSumCriterions.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSum.Min">
+        <member name="P:FileCabinetApp.Validators.ValidationModel.CreditSum.Min">
             <summary>
             Gets or sets the minimum.
             </summary>
@@ -1766,7 +1761,7 @@
             The minimum.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Validators.ValidationParameters.CreditSum.Max">
+        <member name="P:FileCabinetApp.Validators.ValidationModel.CreditSum.Max">
             <summary>
             Gets or sets the maximum.
             </summary>
@@ -1981,12 +1976,12 @@
             <param name="validationRulesFile">The validation rules file.</param>
             <returns>IRecordValidator.</returns>
         </member>
-        <member name="T:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator">
+        <member name="T:FileCabinetApp.Validators.XmlFileValidator.IXmlValidator">
             <summary>
             IXsdValidator.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator.ValidateXml(System.String,System.String)">
+        <member name="M:FileCabinetApp.Validators.XmlFileValidator.IXmlValidator.ValidateXml(System.String,System.String)">
             <summary>
             Validates the XML.
             </summary>
@@ -1997,7 +1992,7 @@
             <summary>
             XsdValidator.
             </summary>
-            <seealso cref="T:FileCabinetApp.Validators.XmlFileValidator.IXsdValidator" />
+            <seealso cref="T:FileCabinetApp.Validators.XmlFileValidator.IXmlValidator" />
         </member>
         <member name="M:FileCabinetApp.Validators.XmlFileValidator.XmlValidator.ValidateXml(System.String,System.String)">
             <summary>

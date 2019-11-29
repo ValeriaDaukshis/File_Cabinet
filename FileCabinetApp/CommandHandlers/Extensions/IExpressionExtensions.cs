@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FileCabinetApp.Records;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.Extensions
 {
     /// <summary>
     /// IExpressionExtensions.

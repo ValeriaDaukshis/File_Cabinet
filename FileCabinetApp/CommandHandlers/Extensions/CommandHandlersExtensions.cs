@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.Extensions
 {
     /// <summary>
     /// CommandHandlersExpressions.
     /// </summary>
-    public class CommandHandlersExpressions
+    public class CommandHandlersExtensions
     {
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private readonly Dictionary<string, string> fieldsCaseDictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CommandHandlersExpressions"/> class.
+        /// Initializes a new instance of the <see cref="CommandHandlersExtensions"/> class.
         /// </summary>
         /// <param name="fieldsCaseDictionary">The fields case dictionary.</param>
-        public CommandHandlersExpressions(Dictionary<string, string> fieldsCaseDictionary)
+        public CommandHandlersExtensions(Dictionary<string, string> fieldsCaseDictionary)
         {
             this.fieldsCaseDictionary = fieldsCaseDictionary;
         }

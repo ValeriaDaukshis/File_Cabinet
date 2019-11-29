@@ -8,8 +8,8 @@ namespace FileCabinetApp.Validators.XmlFileValidator
     /// <summary>
     /// XsdValidator.
     /// </summary>
-    /// <seealso cref="IXsdValidator" />
-    public class XmlValidator : IXsdValidator
+    /// <seealso cref="IXmlValidator" />
+    public class XmlValidator : IXmlValidator
     {
         /// <summary>
         /// Validates the XML.

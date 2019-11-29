@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using FileCabinetApp.Records;
 
-namespace FileCabinetApp.CommandHandlers.Printer
+namespace FileCabinetApp.Printer
 {
     /// <summary>
     /// TablePrinter.
@@ -77,9 +77,9 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
                 builder.Append(" ");
                 string stringValue = value.ToString();
-                if (value is DateTime)
+                if (value is DateTime time)
                 {
-                    stringValue = ((DateTime)value).ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
+                    stringValue = time.ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
                 }
 
                 int horizontalBorderLength = recordsLength[i].Length - stringValue.Length - 2;
@@ -190,7 +190,8 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 builder.Append(" ");
             }
 
-            builder.Append(values);
+            var value = Convert.ToString(values, CultureInfo.InvariantCulture);
+            builder.Append(value);
 
             return builder.ToString();
         }

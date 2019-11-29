@@ -8,7 +8,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// InputReader.
     /// </summary>
-    public class InputReader
+    public class InputValidator
     {
         private static readonly Func<string, Tuple<bool, string>> FirstNameValidator = input =>
         {
@@ -166,10 +166,10 @@ namespace FileCabinetApp.CommandHandlers
         private readonly Converter converter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InputReader"/> class.
+        /// Initializes a new instance of the <see cref="InputValidator"/> class.
         /// </summary>
         /// <param name="converter">The converter.</param>
-        public InputReader(Converter converter)
+        public InputValidator(Converter converter)
         {
             this.converter = converter;
         }

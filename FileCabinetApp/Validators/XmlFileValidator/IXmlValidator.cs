@@ -3,7 +3,7 @@
     /// <summary>
     /// IXsdValidator.
     /// </summary>
-    public interface IXsdValidator
+    public interface IXmlValidator
     {
         /// <summary>
         /// Validates the XML.

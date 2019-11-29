@@ -61,17 +61,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             return mostSimilarCommands;
         }
 
-        private static string PrintCommands(IEnumerable<string> commands, string command)
+        private static string PrintCommands(IEnumerable<string> printedCommands, string command)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"There is no '{command}' command.\n");
-            if (!commands.Any())
+            if (!printedCommands.Any())
             {
                 builder.Append("Use 'help' or 'syntax'.");
                 return builder.ToString();
             }
 
-            if (commands.Count() > 1)
+            if (printedCommands.Count() > 1)
             {
                 builder.Append($"The most similar commands are\n");
             }
@@ -80,7 +80,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
                 builder.Append($"The most similar command is\n");
             }
 
-            foreach (var value in commands)
+            foreach (var value in printedCommands)
             {
                 builder.Append($"\t {value}\n");
             }

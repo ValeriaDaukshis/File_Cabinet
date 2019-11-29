@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -65,10 +66,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
                 CompareFieldsAndInputArraysLength(fields, values);
-                this.CommandHandlersExpressions.ChangeFieldCase(fields);
-                CommandHandlersExpressions.DeleteQuotesFromInputValues(values);
+                this.CommandHandlersExtensions.ChangeFieldCase(fields);
+                CommandHandlersExtensions.DeleteQuotesFromInputValues(values);
 
-                var recordNumber = this.CabinetService.CreateRecord(this.InputReader.PrintInputFields(fields, values));
+                var recordNumber = this.CabinetService.CreateRecord(this.InputValidator.PrintInputFields(fields, values));
                 this.modelWriter.LineWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)

@@ -36,16 +36,16 @@ namespace FileCabinetApp.FileReaders
         /// <returns>list of records.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(FileCabinetRecords));
+            XmlSerializer formatter = new XmlSerializer(typeof(RecordsModel));
 
-            FileCabinetRecords records;
+            RecordsModel recordsModel;
             using (XmlReader xmlReader = XmlReader.Create(this.streamReader))
             {
-                records = (FileCabinetRecords)formatter.Deserialize(xmlReader);
+                recordsModel = (RecordsModel)formatter.Deserialize(xmlReader);
             }
 
             IList<FileCabinetRecord> list = new List<FileCabinetRecord>();
-            foreach (var node in records.Record)
+            foreach (var node in recordsModel.Record)
             {
                 try
                 {

@@ -1,4 +1,4 @@
-﻿namespace FileCabinetApp.Validators.ValidationParameters
+﻿namespace FileCabinetApp.Validators.ValidationModel
 {
     /// <summary>
     /// CreditSumCriterions.

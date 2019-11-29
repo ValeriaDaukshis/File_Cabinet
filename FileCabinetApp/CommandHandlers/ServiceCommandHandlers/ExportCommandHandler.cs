@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
@@ -47,7 +48,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Export(string parameters)
         {
-            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "export"))
+            if (!CommandHandlersExtensions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "export"))
             {
                 return;
             }

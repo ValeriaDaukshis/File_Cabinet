@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Converters;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
@@ -83,7 +84,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <value>
         /// The input reader.
         /// </value>
-        protected InputReader InputReader { get; } = new InputReader(Converter);
+        protected InputValidator InputValidator { get; } = new InputValidator(Converter);
 
         /// <summary>
         /// Gets the command handlers expressions.
@@ -91,7 +92,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <value>
         /// The command handlers expressions.
         /// </value>
-        protected CommandHandlersExpressions CommandHandlersExpressions { get; } = new CommandHandlersExpressions(FieldsCaseDictionary);
+        protected CommandHandlersExtensions CommandHandlersExtensions { get; } = new CommandHandlersExtensions(FieldsCaseDictionary);
 
         /// <summary>
         /// Sets the next.

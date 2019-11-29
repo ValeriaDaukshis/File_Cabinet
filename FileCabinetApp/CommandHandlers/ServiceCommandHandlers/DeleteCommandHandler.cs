@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FileCabinetApp.CommandHandlers.Printer;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
+using FileCabinetApp.Printer;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -103,7 +104,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             try
             {
                 CheckUpdateFieldsInput(printedFields);
-                this.CommandHandlersExpressions.ChangeFieldCase(printedFields);
+                this.CommandHandlersExtensions.ChangeFieldCase(printedFields);
                 if (inputs.Length == 1)
                 {
                     this.printer.Print(this.CabinetService.GetRecords(), printedFields);
@@ -120,8 +121,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 }
 
                 CheckConditionFieldsInput(conditionFields);
-                string conditionSeparator = CommandHandlersExpressions.FindConditionSeparator(conditionFields);
-                Dictionary<string, string> conditions = this.CommandHandlersExpressions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
                 var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -140,9 +141,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 CheckUpdateFieldsInput(updatedFields);
 
                 // finds separator (or/and)
-                string conditionSeparator = CommandHandlersExpressions.FindConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = this.CommandHandlersExpressions.CreateDictionaryOfFields(updatedFields, "set");
-                Dictionary<string, string> conditions = this.CommandHandlersExpressions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> updates = this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
 
@@ -151,7 +152,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 for (int i = 0; i < records.Length; i++)
                 {
-                    FileCabinetRecord record = this.InputReader.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
+                    FileCabinetRecord record = this.InputValidator.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
                     int id = records[i].Id;
                     if (updates.ContainsKey("Id"))
                     {

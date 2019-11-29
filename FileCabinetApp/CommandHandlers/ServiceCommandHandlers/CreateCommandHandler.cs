@@ -49,7 +49,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             try
             {
-                var recordNumber = this.CabinetService.CreateRecord(this.InputReader.PrintInputFields(this.modelWriters));
+                var recordNumber = this.CabinetService.CreateRecord(this.InputValidator.PrintInputFields(this.modelWriters));
                 this.modelWriters.LineWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)

@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
-using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
 using FileCabinetApp.FileCabinetServiceWrappers.Logger;
 using FileCabinetApp.FileCabinetServiceWrappers.Timer;
+using FileCabinetApp.Printer;
 using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
@@ -34,7 +35,7 @@ namespace FileCabinetApp
 
         private static IFileCabinetService fileCabinetService;
         private static IExpressionExtensions expressionExtensions;
-        private static IXsdValidator xsdValidator;
+        private static IXmlValidator xmlValidator;
         private static ITablePrinter tablePrinter;
         private static string xsdValidatorFile;
         private static bool isRunning = true;
@@ -118,7 +119,7 @@ namespace FileCabinetApp
 
             tablePrinter = new DefaultTablePrinter(modelWriters.LineWriter);
             expressionExtensions = new ExpressionExtensions(fileCabinetService);
-            xsdValidator = new XmlValidator();
+            xmlValidator = new XmlValidator();
 
             ICommandHandler commandHandler = CreateCommandHandlers();
             do
@@ -157,7 +158,7 @@ namespace FileCabinetApp
                 .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions, modelWriters))
                 .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter, modelWriters))
                 .SetNext(new StatCommandHandler(fileCabinetService, modelWriters))
-                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile, modelWriters))
+                .SetNext(new ImportCommandHandler(fileCabinetService, xmlValidator, xsdValidatorFile, modelWriters))
                 .SetNext(new ExportCommandHandler(fileCabinetService, modelWriters))
                 .SetNext(new PurgeCommandHandler(fileCabinetService, modelWriters))
                 .SetNext(new SyntaxCommandHandler(helpMessages, modelWriters))
