@@ -128,8 +128,9 @@ namespace FileCabinetGenerator
             lastName = Program.lastNameTemplate + i;
             gender = i % 5 == 0 ? 'F' : 'M';
             dateOfBirth = RandomBirthDay();
-            credit = new Random().Next(creditSumMinValue, creditSumMaxValue);
-            duration = (short)new Random().Next(durationMinValue, durationMaxValue);
+            Random random = new Random();
+            credit = (decimal)(random.Next(creditSumMinValue, creditSumMaxValue) + random.NextDouble());
+            duration = (short)random.Next(durationMinValue, durationMaxValue);
         }
         private static DateTime RandomBirthDay()
         {
