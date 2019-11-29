@@ -5,7 +5,7 @@ namespace FileCabinetApp.Records
     /// <summary>
     /// Names.
     /// </summary>
-    public class Names
+    public class Name
     {
         /// <summary>
         /// Gets or sets the first name.

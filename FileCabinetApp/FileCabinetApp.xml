@@ -1247,12 +1247,12 @@
             The record.
             </value>
         </member>
-        <member name="T:FileCabinetApp.Records.Names">
+        <member name="T:FileCabinetApp.Records.Name">
             <summary>
             Names.
             </summary>
         </member>
-        <member name="P:FileCabinetApp.Records.Names.FirstName">
+        <member name="P:FileCabinetApp.Records.Name.FirstName">
             <summary>
             Gets or sets the first name.
             </summary>
@@ -1260,7 +1260,7 @@
             The first name.
             </value>
         </member>
-        <member name="P:FileCabinetApp.Records.Names.LastName">
+        <member name="P:FileCabinetApp.Records.Name.LastName">
             <summary>
             Gets or sets the last name.
             </summary>

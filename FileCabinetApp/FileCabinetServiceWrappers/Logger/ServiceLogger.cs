@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
@@ -32,14 +31,6 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Creates this instance.
-        /// </summary>
-        public void Create()
-        {
-            this.writer = new StreamWriter(this.path);
-        }
-
-        /// <summary>
         /// Creates the record.
         /// </summary>
         /// <param name="record">record.</param>
@@ -53,7 +44,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            return this.MethodMeter(this.service.CreateRecord, record, "create");
+            return this.MethodLogger(this.service.CreateRecord, record, "create");
         }
 
         /// <summary>
@@ -67,7 +58,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            this.MethodMeter(this.service.EditRecord, record, "update");
+            this.MethodLogger(this.service.EditRecord, record, "update");
         }
 
         /// <summary>
@@ -78,7 +69,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         /// </returns>
         public (int, int) GetStat()
         {
-            return this.MethodMeter(this.service.GetStat, "Stat");
+            return this.MethodLogger(this.service.GetStat, "Stat");
         }
 
         /// <summary>
@@ -89,7 +80,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            return this.MethodMeter(this.service.GetRecords, "Select");
+            return this.MethodLogger(this.service.GetRecords, "Select");
         }
 
         /// <summary>
@@ -112,7 +103,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         /// </returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            return this.MethodMeter(this.service.Restore, snapshot, "restore");
+            return this.MethodLogger(this.service.Restore, snapshot, "restore");
         }
 
         /// <summary>
@@ -127,7 +118,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            return this.MethodMeter(this.service.RemoveRecord, record, "delete");
+            return this.MethodLogger(this.service.RemoveRecord, record, "delete");
         }
 
         /// <summary>
@@ -138,7 +129,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         /// </returns>
         public (int, int) PurgeDeletedRecords()
         {
-            return this.MethodMeter(this.service.PurgeDeletedRecords, "purge");
+            return this.MethodLogger(this.service.PurgeDeletedRecords, "purge");
         }
 
         /// <summary>
@@ -173,21 +164,27 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
             this.disposed = true;
         }
 
-        private string CreateTextWithParameters(string method, FileCabinetRecord record)
+//        private string CreateTextWithParameters(string method, FileCabinetRecord record)
+//        {
+//            StringBuilder builder = new StringBuilder();
+//            builder.Append(CreateText(method));
+//            builder.Append($" with firstName = '{record.FirstName}' ");
+//            builder.Append($"lastName = '{record.LastName}' ");
+//            builder.Append($"Gender = '{record.Gender}' ");
+//            builder.Append($"DateOfBirth = '{record.DateOfBirth:mm/dd/yyyy}' ");
+//            builder.Append($"CreditSum = '{record.CreditSum}' ");
+//            builder.Append($"Duration = '{record.Duration}' ");
+//            return builder.ToString();
+//        }
+
+        private void Create()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(CreateText(method));
-            builder.Append($" with firstName = '{record.FirstName}' ");
-            builder.Append($"lastName = '{record.LastName}' ");
-            builder.Append($"Gender = '{record.Gender}' ");
-            builder.Append($"DateOfBirth = '{record.DateOfBirth:mm/dd/yyyy}' ");
-            builder.Append($"CreditSum = '{record.CreditSum}' ");
-            builder.Append($"Duration = '{record.Duration}' ");
-            return builder.ToString();
+            this.writer = new StreamWriter(this.path);
         }
 
-        private TResult MethodMeter<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
+        private TResult MethodLogger<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
         {
+            //CreateTextWithParameters
             this.writer.WriteLine(CreateText(methodName));
             TResult result = method.Invoke(record);
             this.writer.WriteLine($"{methodName}() returned '{result}'");
@@ -195,14 +192,14 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
             return result;
         }
 
-        private void MethodMeter<TSource>(Action<TSource> method, TSource record, string methodName)
+        private void MethodLogger<TSource>(Action<TSource> method, TSource record, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
             method.Invoke(record);
             this.writer.Flush();
         }
 
-        private TResult MethodMeter<TResult>(Func<TResult> method, string methodName)
+        private TResult MethodLogger<TResult>(Func<TResult> method, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
             TResult result = method.Invoke();
@@ -211,7 +208,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
             return result;
         }
 
-        private (TResult, TResult) MethodMeter<TResult>(Func<(TResult, TResult)> method, string methodName)
+        private (TResult, TResult) MethodLogger<TResult>(Func<(TResult, TResult)> method, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
             (TResult result1, TResult result2) = method.Invoke();

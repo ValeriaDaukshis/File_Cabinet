@@ -19,7 +19,7 @@ namespace FileCabinetApp.Records
         /// <param name="duration">duration.</param>
         public Record(string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
         {
-            this.Name = new Names { FirstName = firstName, LastName = lastName };
+            this.Name = new Name { FirstName = firstName, LastName = lastName };
             this.DateOfBirth = dateOfBirth;
             this.Gender = gender;
             this.CreditSum = credit;
@@ -65,7 +65,7 @@ namespace FileCabinetApp.Records
         /// The name.
         /// </value>
         [XmlElement("name")]
-        public Names Name { get; set; }
+        public Name Name { get; set; }
 
         /// <summary>
         /// Gets or sets the gender.
