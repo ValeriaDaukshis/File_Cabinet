@@ -11,17 +11,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ConsoleWriters consoleWriters;
+        private readonly ModelWriters modelWriters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        /// <param name="consoleWriters">console writer.</param>
-        public CreateCommandHandler(IFileCabinetService cabinetService, ConsoleWriters consoleWriters)
+        /// <param name="modelWriters">console writer.</param>
+        public CreateCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriters)
             : base(cabinetService)
         {
-            this.consoleWriters = consoleWriters;
+            this.modelWriters = modelWriters;
         }
 
         /// <summary>
@@ -49,18 +49,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             try
             {
-                var recordNumber = this.CabinetService.CreateRecord(this.InputReader.PrintInputFields(this.consoleWriters));
-                this.consoleWriters.LineWriter.Invoke($"Record #{recordNumber} is created.");
+                var recordNumber = this.CabinetService.CreateRecord(this.InputReader.PrintInputFields(this.modelWriters));
+                this.modelWriters.LineWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
             {
-                this.consoleWriters.LineWriter.Invoke(ex.Message);
-                this.consoleWriters.LineWriter.Invoke("Record is not created ");
+                this.modelWriters.LineWriter.Invoke(ex.Message);
+                this.modelWriters.LineWriter.Invoke("Record is not created ");
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriters.LineWriter.Invoke(ex.Message);
-                this.consoleWriters.LineWriter.Invoke("Record is not created ");
+                this.modelWriters.LineWriter.Invoke(ex.Message);
+                this.modelWriters.LineWriter.Invoke("Record is not created ");
             }
         }
     }

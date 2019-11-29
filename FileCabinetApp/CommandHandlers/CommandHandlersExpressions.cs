@@ -48,14 +48,15 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="parameters">The parameters.</param>
         /// <param name="fileFormat">The file format.</param>
         /// <param name="path">The path.</param>
+        /// <param name="commandName">The command name.</param>
         /// <returns>true if params are valid.</returns>
-        public static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path)
+        public static bool ImportExportParametersSpliter(string parameters, out string fileFormat, out string path, string commandName)
         {
             fileFormat = string.Empty;
             path = string.Empty;
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("No parameters after command 'export'");
+                Console.WriteLine($"No parameters after command '{commandName}'");
                 return false;
             }
 
@@ -63,7 +64,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (inputParameters.Length < 2)
             {
-                Console.WriteLine("Not enough parameters after command 'find'");
+                Console.WriteLine($"Not enough parameters after command '{commandName}'");
                 return false;
             }
 

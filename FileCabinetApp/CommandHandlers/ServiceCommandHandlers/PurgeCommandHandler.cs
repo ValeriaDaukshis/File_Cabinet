@@ -9,17 +9,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public PurgeCommandHandler(IFileCabinetService cabinetService, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public PurgeCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriter)
             : base(cabinetService)
         {
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         private void Purge(string parameters)
         {
             (int countOfDeletedRecords, int countOfRecords) = this.CabinetService.PurgeDeletedRecords();
-            this.consoleWriter.LineWriter.Invoke($"Data file processing is completed: {countOfDeletedRecords} of {countOfRecords} records were purged");
+            this.modelWriter.LineWriter.Invoke($"Data file processing is completed: {countOfDeletedRecords} of {countOfRecords} records were purged");
         }
     }
 }

@@ -7,7 +7,8 @@ using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
 using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
-using FileCabinetApp.Logger;
+using FileCabinetApp.FileCabinetServiceWrappers.Logger;
+using FileCabinetApp.FileCabinetServiceWrappers.Timer;
 using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
@@ -29,7 +30,7 @@ namespace FileCabinetApp
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
         private static readonly Action<bool> Running = b => isRunning = b;
-        private static readonly ConsoleWriters ConsoleWriters = new ConsoleWriters();
+        private static ModelWriters modelWriters;
 
         private static IFileCabinetService fileCabinetService;
         private static IExpressionExtensions expressionExtensions;
@@ -69,6 +70,7 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             xsdValidatorFile = XsdValidatorFile;
+            InitModelWriters();
 
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
@@ -98,14 +100,14 @@ namespace FileCabinetApp
 
                     if (o.StopWatcher)
                     {
-                        fileCabinetService = new ServiceMeter(fileCabinetService, ConsoleWriters);
+                        fileCabinetService = new ServiceMeter(fileCabinetService, modelWriters);
                         Console.WriteLine("Used timer");
                     }
 
                     if (o.Logger)
                     {
                         string sourceFilePath = CreateValidPath("logger.log");
-                        fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath, ConsoleWriters);
+                        fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
                         Console.WriteLine("Used logger");
                     }
                 });
@@ -114,7 +116,7 @@ namespace FileCabinetApp
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
-            tablePrinter = new DefaultTablePrinter(ConsoleWriters.LineWriter);
+            tablePrinter = new DefaultTablePrinter(modelWriters.LineWriter);
             expressionExtensions = new ExpressionExtensions(fileCabinetService);
             xsdValidator = new XmlValidator();
 
@@ -147,22 +149,32 @@ namespace FileCabinetApp
         {
             var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 4 == 0).ToArray();
 
-            var helpCommand = new HelpCommandHandler(helpMessages, ConsoleWriters);
+            var helpCommand = new HelpCommandHandler(helpMessages, modelWriters);
 
-            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService, ConsoleWriters))
-                .SetNext(new InsertCommandHandler(fileCabinetService, ConsoleWriters))
-                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions, ConsoleWriters))
-                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions, ConsoleWriters))
-                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter, ConsoleWriters))
-                .SetNext(new StatCommandHandler(fileCabinetService, ConsoleWriters))
-                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile, ConsoleWriters))
-                .SetNext(new ExportCommandHandler(fileCabinetService, ConsoleWriters))
-                .SetNext(new PurgeCommandHandler(fileCabinetService, ConsoleWriters))
-                .SetNext(new SyntaxCommandHandler(helpMessages, ConsoleWriters))
-                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, Running, ConsoleWriters))
-                .SetNext(new MissedCommandHandler(commands, ConsoleWriters));
+            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new InsertCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions, modelWriters))
+                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions, modelWriters))
+                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter, modelWriters))
+                .SetNext(new StatCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new ImportCommandHandler(fileCabinetService, xsdValidator, xsdValidatorFile, modelWriters))
+                .SetNext(new ExportCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new PurgeCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new SyntaxCommandHandler(helpMessages, modelWriters))
+                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, Running, modelWriters))
+                .SetNext(new MissedCommandHandler(commands, modelWriters));
 
             return helpCommand;
+        }
+
+        private static void InitModelWriters()
+        {
+            modelWriters = new ModelWriters
+            {
+                Reader = Console.ReadLine,
+                Writer = Console.Write,
+                LineWriter = Console.WriteLine,
+            };
         }
 
         private static string CreateValidPath(string path) =>

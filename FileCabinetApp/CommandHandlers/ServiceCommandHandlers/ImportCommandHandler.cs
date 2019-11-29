@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     {
         private readonly string xsdValidatorFile;
         private readonly IXsdValidator xsdValidator;
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
@@ -23,13 +23,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="cabinetService">The cabinet service.</param>
         /// <param name="xsdValidator">The XSD validator.</param>
         /// <param name="xsdValidatorFile">The XSD validator file.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public ImportCommandHandler(IFileCabinetService cabinetService, IXsdValidator xsdValidator, string xsdValidatorFile, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.xsdValidatorFile = xsdValidatorFile;
             this.xsdValidator = xsdValidator;
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Import(string parameters)
         {
-            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "import"))
             {
                 return;
             }
@@ -67,43 +67,43 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     if (fileFormat == "csv")
                     {
                         this.snapshot = this.CabinetService.MakeSnapshot();
-                        this.snapshot.LoadFromCsv(stream, RecordValidator, Converter, this.consoleWriter);
+                        this.snapshot.LoadFromCsv(stream, RecordValidator, Converter, this.modelWriter);
                         int count = this.CabinetService.Restore(this.snapshot);
-                        this.consoleWriter.LineWriter.Invoke($"{count} records were imported from {path}");
+                        this.modelWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
                     {
                         this.snapshot = this.CabinetService.MakeSnapshot();
                         this.xsdValidator.ValidateXml(this.xsdValidatorFile, path);
-                        this.snapshot.LoadFromXml(stream, RecordValidator, this.consoleWriter);
+                        this.snapshot.LoadFromXml(stream, RecordValidator, this.modelWriter);
                         int count = this.CabinetService.Restore(this.snapshot);
-                        this.consoleWriter.LineWriter.Invoke($"{count} records were imported from {path}");
+                        this.modelWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else
                     {
-                        this.consoleWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
+                        this.modelWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
                     }
                 }
             }
             catch (IOException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
-                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (UnauthorizedAccessException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
-                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
-                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("File wasn't imported");
             }
             catch (XmlException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
-                this.consoleWriter.LineWriter.Invoke("File wasn't imported");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("File wasn't imported");
             }
         }
     }

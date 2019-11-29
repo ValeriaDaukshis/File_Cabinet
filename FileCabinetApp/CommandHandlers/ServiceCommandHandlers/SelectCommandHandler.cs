@@ -14,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
         private readonly ITablePrinter printer;
         private readonly IExpressionExtensions expressionExtensions;
 
@@ -25,13 +25,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="printer">The printer.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.printer = printer;
             this.expressionExtensions = expressionExtensions;
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -131,15 +131,15 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
             catch (FileRecordNotFoundException ex)
             {
-                this.consoleWriter.LineWriter.Invoke($"{ex.Value} was not found");
+                this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
             }
             catch (ArgumentNullException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

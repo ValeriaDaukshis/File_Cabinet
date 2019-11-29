@@ -177,27 +177,27 @@ namespace FileCabinetApp.CommandHandlers
         /// <summary>
         /// PrintInputFields.
         /// </summary>
-        /// <param name="consoleWriter">Console Writer.</param>
+        /// <param name="modelWriter">Console Writer.</param>
         /// <returns>FileCabinetRecord.</returns>
-        public FileCabinetRecord PrintInputFields(ConsoleWriters consoleWriter)
+        public FileCabinetRecord PrintInputFields(ModelWriters modelWriter)
         {
-            if (consoleWriter is null)
+            if (modelWriter is null)
             {
-                throw new ArgumentNullException(nameof(consoleWriter), $"{nameof(consoleWriter)} is null");
+                throw new ArgumentNullException(nameof(modelWriter), $"{nameof(modelWriter)} is null");
             }
 
-            consoleWriter.Writer.Invoke("First name: ");
-            string firstName = ReadInput(this.converter.StringConverter, FirstNameValidator, consoleWriter);
-            consoleWriter.Writer.Invoke("Last name: ");
-            string lastName = ReadInput(this.converter.StringConverter, LastNameValidator, consoleWriter);
-            consoleWriter.Writer.Invoke("Gender(M/F): ");
-            char gender = ReadInput(this.converter.CharConverter, GenderValidator, consoleWriter);
-            consoleWriter.Writer.Invoke("Date of birth(mm/dd/yyyy): ");
-            DateTime dateOfBirth = ReadInput(this.converter.DateTimeConverter, DateOfBirthValidator, consoleWriter);
-            consoleWriter.Writer.Invoke("Credit sum(bel rub): ");
-            decimal credit = ReadInput(this.converter.DecimalConverter, CreditSumValidator, consoleWriter);
-            consoleWriter.Writer.Invoke("Credit duration(month): ");
-            short duration = ReadInput(this.converter.ShortConverter, DurationValidator, consoleWriter);
+            modelWriter.Writer.Invoke("First name: ");
+            string firstName = ReadInput(this.converter.StringConverter, FirstNameValidator, modelWriter);
+            modelWriter.Writer.Invoke("Last name: ");
+            string lastName = ReadInput(this.converter.StringConverter, LastNameValidator, modelWriter);
+            modelWriter.Writer.Invoke("Gender(M/F): ");
+            char gender = ReadInput(this.converter.CharConverter, GenderValidator, modelWriter);
+            modelWriter.Writer.Invoke("Date of birth(mm/dd/yyyy): ");
+            DateTime dateOfBirth = ReadInput(this.converter.DateTimeConverter, DateOfBirthValidator, modelWriter);
+            modelWriter.Writer.Invoke("Credit sum(bel rub): ");
+            decimal credit = ReadInput(this.converter.DecimalConverter, CreditSumValidator, modelWriter);
+            modelWriter.Writer.Invoke("Credit duration(month): ");
+            short duration = ReadInput(this.converter.ShortConverter, DurationValidator, modelWriter);
             return new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration);
         }
 
@@ -309,18 +309,18 @@ namespace FileCabinetApp.CommandHandlers
             return value;
         }
 
-        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, ConsoleWriters consoleWriter)
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator, ModelWriters modelWriter)
         {
             do
             {
                 T value;
 
-                var input = consoleWriter.Reader.Invoke();
+                var input = modelWriter.Reader.Invoke();
                 var conversionResult = converter(input);
 
                 if (!conversionResult.Item1)
                 {
-                    consoleWriter.LineWriter.Invoke($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    modelWriter.LineWriter.Invoke($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
                     continue;
                 }
 
@@ -329,7 +329,7 @@ namespace FileCabinetApp.CommandHandlers
                 var validationResult = validator(value);
                 if (!validationResult.Item1)
                 {
-                    consoleWriter.LineWriter.Invoke($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    modelWriter.LineWriter.Invoke($"Validation failed: {validationResult.Item2}. Please, correct your input.");
                     continue;
                 }
 

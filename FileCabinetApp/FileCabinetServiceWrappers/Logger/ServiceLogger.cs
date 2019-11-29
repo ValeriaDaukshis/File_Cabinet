@@ -6,7 +6,7 @@ using System.Text;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.Logger
+namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
 {
     /// <summary>
     /// ServiceLogger.
@@ -15,7 +15,6 @@ namespace FileCabinetApp.Logger
     public sealed class ServiceLogger : IFileCabinetService, IDisposable
     {
         private readonly IFileCabinetService service;
-        private readonly ConsoleWriters consoleWriter;
         private readonly string path;
         private TextWriter writer;
         private bool disposed = false;
@@ -25,12 +24,10 @@ namespace FileCabinetApp.Logger
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="path">The path.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public ServiceLogger(IFileCabinetService service, string path, ConsoleWriters consoleWriter)
+        public ServiceLogger(IFileCabinetService service, string path)
         {
             this.service = service;
             this.path = path;
-            this.consoleWriter = consoleWriter;
             this.Create();
         }
 
@@ -56,11 +53,7 @@ namespace FileCabinetApp.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            this.writer.WriteLine(this.CreateTextWithParameters("create", record));
-            int id = this.service.CreateRecord(record);
-            this.writer.WriteLine($"create() returned '{id}'");
-            this.writer.Flush();
-            return id;
+            return this.MethodMeter(this.service.CreateRecord, record, "create");
         }
 
         /// <summary>
@@ -74,9 +67,7 @@ namespace FileCabinetApp.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            this.writer.WriteLine(this.CreateTextWithParameters("edit", record));
-            this.service.EditRecord(record);
-            this.writer.Flush();
+            this.MethodMeter(this.service.EditRecord, record, "update");
         }
 
         /// <summary>
@@ -87,11 +78,7 @@ namespace FileCabinetApp.Logger
         /// </returns>
         public (int, int) GetStat()
         {
-            this.writer.WriteLine($"{CreateText("Stat")}");
-            (int purgedRecords, int recordsCount) = this.service.GetStat();
-            this.writer.WriteLine($"Stat() returned '{purgedRecords}', '{recordsCount}'");
-            this.writer.Flush();
-            return (purgedRecords, recordsCount);
+            return this.MethodMeter(this.service.GetStat, "Stat");
         }
 
         /// <summary>
@@ -102,58 +89,7 @@ namespace FileCabinetApp.Logger
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            this.writer.WriteLine($"{CreateText("Get")}");
-            ReadOnlyCollection<FileCabinetRecord> collection = this.service.GetRecords();
-            this.writer.WriteLine($"Get() returned '{collection}'");
-            this.writer.Flush();
-            return collection;
-        }
-
-        /// <summary>
-        /// Finds the by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            this.writer.WriteLine($"{CreateText("FindByDateOfBirth")} with firstName = '{dateOfBirth}'");
-            IEnumerable<FileCabinetRecord> collection = this.service.FindByDateOfBirth(dateOfBirth);
-            this.writer.WriteLine($"FindByDateOfBirth() returned '{collection}'");
-            this.writer.Flush();
-            return collection;
-        }
-
-        /// <summary>
-        /// Finds the last name of the by.
-        /// </summary>
-        /// <param name="lastName">The last name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.writer.WriteLine($"{CreateText("FindByLastName")} with firstName = '{lastName}'");
-            IEnumerable<FileCabinetRecord> collection = this.service.FindByLastName(lastName);
-            this.writer.WriteLine($"FindByLastName() returned '{collection}'");
-            return collection;
-        }
-
-        /// <summary>
-        /// Finds the first name of the by.
-        /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <returns>
-        /// Array of records.
-        /// </returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.writer.WriteLine($"{CreateText("FindByFirstName")} with firstName = '{firstName}'");
-            IEnumerable<FileCabinetRecord> collection = this.service.FindByFirstName(firstName);
-            this.writer.WriteLine($"FindByFirstName() returned '{collection}'");
-            this.writer.Flush();
-            return collection;
+            return this.MethodMeter(this.service.GetRecords, "Select");
         }
 
         /// <summary>
@@ -176,11 +112,7 @@ namespace FileCabinetApp.Logger
         /// </returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            this.writer.WriteLine($"{CreateText("Restore")} with snapshot = '{snapshot}'");
-            int count = this.service.Restore(snapshot);
-            this.writer.WriteLine($"Restore() returned '{count}'");
-            this.writer.Flush();
-            return count;
+            return this.MethodMeter(this.service.Restore, snapshot, "restore");
         }
 
         /// <summary>
@@ -195,10 +127,7 @@ namespace FileCabinetApp.Logger
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            this.writer.WriteLine(this.CreateTextWithParameters("delete", record));
-            int id = this.service.RemoveRecord(record);
-            this.writer.Flush();
-            return id;
+            return this.MethodMeter(this.service.RemoveRecord, record, "delete");
         }
 
         /// <summary>
@@ -209,11 +138,7 @@ namespace FileCabinetApp.Logger
         /// </returns>
         public (int, int) PurgeDeletedRecords()
         {
-            this.writer.WriteLine(CreateText("purge"));
-            (int countOfDeletedRecords, int countOfRecords) = this.service.PurgeDeletedRecords();
-            this.writer.WriteLine($"create() returned '{countOfDeletedRecords}', '{countOfRecords}'");
-            this.writer.Flush();
-            return (countOfDeletedRecords, countOfRecords);
+            return this.MethodMeter(this.service.PurgeDeletedRecords, "purge");
         }
 
         /// <summary>
@@ -259,6 +184,40 @@ namespace FileCabinetApp.Logger
             builder.Append($"CreditSum = '{record.CreditSum}' ");
             builder.Append($"Duration = '{record.Duration}' ");
             return builder.ToString();
+        }
+
+        private TResult MethodMeter<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
+        {
+            this.writer.WriteLine(CreateText(methodName));
+            TResult result = method.Invoke(record);
+            this.writer.WriteLine($"{methodName}() returned '{result}'");
+            this.writer.Flush();
+            return result;
+        }
+
+        private void MethodMeter<TSource>(Action<TSource> method, TSource record, string methodName)
+        {
+            this.writer.WriteLine(CreateText(methodName));
+            method.Invoke(record);
+            this.writer.Flush();
+        }
+
+        private TResult MethodMeter<TResult>(Func<TResult> method, string methodName)
+        {
+            this.writer.WriteLine(CreateText(methodName));
+            TResult result = method.Invoke();
+            this.writer.WriteLine($"{methodName}() returned '{result}'");
+            this.writer.Flush();
+            return result;
+        }
+
+        private (TResult, TResult) MethodMeter<TResult>(Func<(TResult, TResult)> method, string methodName)
+        {
+            this.writer.WriteLine(CreateText(methodName));
+            (TResult result1, TResult result2) = method.Invoke();
+            this.writer.WriteLine($"{methodName}() returned '{result1}', '{result2}'");
+            this.writer.Flush();
+            return (result1, result2);
         }
     }
 }

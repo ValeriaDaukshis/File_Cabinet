@@ -3,7 +3,7 @@
   <record id="1">
     <name first="FirstName0" last="LastName0" />
     <gender>70</gender>
-    <dateOfBirth>11/25/1956</dateOfBirth>
+    <dateOfBirth>1956</dateOfBirth>
     <creditSum>28312</creditSum>
     <duration>151</duration>
   </record>
@@ -11,8 +11,8 @@
     <name first="FirstName1" last="LastName1" />
     <gender>77</gender>
     <dateOfBirth>04/22/1976</dateOfBirth>
-    <creditSum>35494</creditSum>
-    <duration>164</duration>
+    <creditSum>35495</creditSum>
+    <duration>164.5</duration>
   </record>
   <record id="3">
     <name first="FirstName2" last="LastName2" />

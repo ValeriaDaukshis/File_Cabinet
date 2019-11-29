@@ -10,18 +10,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public ExportCommandHandler(IFileCabinetService cabinetService, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public ExportCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriter)
             : base(cabinetService)
         {
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Export(string parameters)
         {
-            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            if (!CommandHandlersExpressions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "export"))
             {
                 return;
             }
@@ -68,20 +68,20 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     }
                     else
                     {
-                        this.consoleWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
+                        this.modelWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
                         return;
                     }
                 }
 
-                this.consoleWriter.LineWriter.Invoke($"File {path} was successfully exported");
+                this.modelWriter.LineWriter.Invoke($"File {path} was successfully exported");
             }
             catch (IOException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                this.consoleWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

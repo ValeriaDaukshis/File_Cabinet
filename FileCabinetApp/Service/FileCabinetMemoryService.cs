@@ -135,60 +135,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Finds the first name of the by.
-        /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.ContainsKey(firstName))
-            {
-                foreach (var element in this.firstNameDictionary[firstName])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-        }
-
-        /// <summary>
-        /// Finds the last name of the by.
-        /// </summary>
-        /// <param name="lastName">The last name.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.ContainsKey(lastName))
-            {
-                foreach (var element in this.lastNameDictionary[lastName])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-        }
-
-        /// <summary>
-        /// Finds the by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
-            {
-                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-        }
-
-        /// <summary>
         /// Gets the records.
         /// </summary>
         /// <returns>Array of records.</returns>

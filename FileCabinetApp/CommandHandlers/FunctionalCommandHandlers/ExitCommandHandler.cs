@@ -11,7 +11,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     public class ExitCommandHandler : CommandHandlerBase
     {
         private readonly Action<bool> isRunning;
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
         private readonly IDisposable dispose;
 
         /// <summary>
@@ -19,12 +19,12 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         /// </summary>
         /// <param name="isRunning">The is running.</param>
         /// <param name="dispose">Dispose.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public ExitCommandHandler(IDisposable dispose, Action<bool> isRunning, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public ExitCommandHandler(IDisposable dispose, Action<bool> isRunning, ModelWriters modelWriter)
         {
             this.dispose = dispose;
             this.isRunning = isRunning;
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private void Exit(string parameters)
         {
             this.dispose?.Dispose();
-            this.consoleWriter.LineWriter.Invoke("Exiting an application...");
+            this.modelWriter.LineWriter.Invoke("Exiting an application...");
             this.isRunning.Invoke(false);
         }
     }

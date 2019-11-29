@@ -9,17 +9,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public StatCommandHandler(IFileCabinetService cabinetService, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public StatCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriter)
             : base(cabinetService)
         {
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         private void Stat(string parameters)
         {
             (int purgedRecords, int recordsCount) = this.CabinetService.GetStat();
-            this.consoleWriter.LineWriter.Invoke($"{recordsCount} record(s), where {purgedRecords} are purged.");
+            this.modelWriter.LineWriter.Invoke($"{recordsCount} record(s), where {purgedRecords} are purged.");
         }
     }
 }

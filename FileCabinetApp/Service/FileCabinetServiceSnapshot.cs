@@ -81,10 +81,10 @@ namespace FileCabinetApp.Service
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
         /// <param name="converter">The converter.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public void LoadFromCsv(StreamReader reader, IRecordValidator validator, Converter converter, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public void LoadFromCsv(StreamReader reader, IRecordValidator validator, Converter converter, ModelWriters modelWriter)
         {
-            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator, converter, consoleWriter);
+            FileCabinetRecordCsvReader csvReader = new FileCabinetRecordCsvReader(reader, validator, converter, modelWriter);
             this.ReadRecords = csvReader.ReadAll();
         }
 
@@ -93,10 +93,10 @@ namespace FileCabinetApp.Service
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public void LoadFromXml(StreamReader reader, IRecordValidator validator, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public void LoadFromXml(StreamReader reader, IRecordValidator validator, ModelWriters modelWriter)
         {
-            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, validator, consoleWriter);
+            FileCabinetRecordXmlReader xmlReader = new FileCabinetRecordXmlReader(reader, validator, modelWriter);
             this.ReadRecords = xmlReader.ReadAll();
         }
     }

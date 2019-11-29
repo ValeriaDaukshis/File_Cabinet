@@ -5,30 +5,30 @@ namespace FileCabinetApp
     /// <summary>
     /// ConsoleWriters.
     /// </summary>
-    public class ConsoleWriters
+    public class ModelWriters
     {
         /// <summary>
-        /// Gets the console writer.
+        /// Gets or sets the console writer.
         /// </summary>
         /// <value>
         /// The console writer.
         /// </value>
-        public Action<string> LineWriter { get; } = Console.WriteLine;
+        public Action<string> LineWriter { get; set; }
 
         /// <summary>
-        /// Gets the writer.
+        /// Gets or sets the writer.
         /// </summary>
         /// <value>
         /// The writer.
         /// </value>
-        public Action<string> Writer { get; } = Console.Write;
+        public Action<string> Writer { get; set; }
 
         /// <summary>
-        /// Gets the console reader.
+        /// Gets or sets the console reader.
         /// </summary>
         /// <value>
         /// The console reader.
         /// </value>
-        public Func<string> Reader { get; } = Console.ReadLine;
+        public Func<string> Reader { get; set; }
     }
 }

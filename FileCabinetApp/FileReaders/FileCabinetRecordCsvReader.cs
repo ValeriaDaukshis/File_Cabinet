@@ -16,7 +16,7 @@ namespace FileCabinetApp.FileReaders
         private readonly StreamReader reader;
         private readonly IRecordValidator validator;
         private readonly Converter converter;
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
@@ -24,13 +24,13 @@ namespace FileCabinetApp.FileReaders
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
         /// <param name="converter">The converter.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public FileCabinetRecordCsvReader(StreamReader reader, IRecordValidator validator, Converter converter, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public FileCabinetRecordCsvReader(StreamReader reader, IRecordValidator validator, Converter converter, ModelWriters modelWriter)
         {
             this.reader = reader;
             this.validator = validator;
             this.converter = converter;
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace FileCabinetApp.FileReaders
                 }
                 catch (ArgumentNullException ex)
                 {
-                    this.consoleWriter.LineWriter.Invoke(ex.Message);
+                    this.modelWriter.LineWriter.Invoke(ex.Message);
                 }
                 catch (ArgumentException ex)
                 {
-                    this.consoleWriter.LineWriter.Invoke(ex.Message);
+                    this.modelWriter.LineWriter.Invoke(ex.Message);
                 }
             }
 

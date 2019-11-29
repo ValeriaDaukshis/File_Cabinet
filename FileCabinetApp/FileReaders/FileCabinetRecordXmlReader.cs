@@ -15,19 +15,19 @@ namespace FileCabinetApp.FileReaders
     {
         private readonly StreamReader streamReader;
         private readonly IRecordValidator validator;
-        private readonly ConsoleWriters consoleWriter;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
         /// </summary>
         /// <param name="streamReader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        /// <param name="consoleWriter">console writer.</param>
-        public FileCabinetRecordXmlReader(StreamReader streamReader, IRecordValidator validator, ConsoleWriters consoleWriter)
+        /// <param name="modelWriter">console writer.</param>
+        public FileCabinetRecordXmlReader(StreamReader streamReader, IRecordValidator validator, ModelWriters modelWriter)
         {
             this.streamReader = streamReader;
             this.validator = validator;
-            this.consoleWriter = consoleWriter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace FileCabinetApp.FileReaders
                 }
                 catch (ArgumentException ex)
                 {
-                    this.consoleWriter.LineWriter.Invoke(ex.Message);
+                    this.modelWriter.LineWriter.Invoke(ex.Message);
                 }
             }
 
