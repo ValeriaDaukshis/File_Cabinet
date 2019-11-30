@@ -17,7 +17,7 @@
                             <xsd:element name="creditSum" type="xsd:decimal"/>
                             <xsd:element name="duration" type="xsd:unsignedShort"/>
                         </xsd:sequence>
-                        <xsd:attribute name="id" type="xsd:unsignedByte" use="required" />
+                        <xsd:attribute name="id" type="xsd:integer" use="required" />
                     </xsd:complexType>
                 </xsd:element>
             </xsd:sequence>

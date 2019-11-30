@@ -59,7 +59,7 @@ namespace FileCabinetApp.FIleWriters
             builder.Append($"{record.LastName},");
             builder.Append($"{record.Gender},");
             builder.Append($"{record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture)},");
-            builder.Append($"{record.CreditSum},");
+            builder.Append($"{record.CreditSum.ToString(CultureInfo.InvariantCulture)},");
             builder.Append($"{record.Duration}");
             this.writer.WriteLine(builder.ToString());
         }

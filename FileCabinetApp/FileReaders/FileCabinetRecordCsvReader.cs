@@ -43,25 +43,28 @@ namespace FileCabinetApp.FileReaders
             string line;
             while ((line = this.reader.ReadLine()) != null)
             {
-                string[] row = line.Split(',');
-                if (row[0] == "id")
+                if (!string.IsNullOrWhiteSpace(line))
                 {
-                    continue;
-                }
+                    string[] row = line.Split(',');
+                    if (row[0] == "id")
+                    {
+                        continue;
+                    }
 
-                try
-                {
-                    FileCabinetRecord record = this.ValidateParameters(row);
-                    this.validator.ValidateParameters(record);
-                    records.Add(record);
-                }
-                catch (ArgumentNullException ex)
-                {
-                    this.modelWriter.LineWriter.Invoke(ex.Message);
-                }
-                catch (ArgumentException ex)
-                {
-                    this.modelWriter.LineWriter.Invoke(ex.Message);
+                    try
+                    {
+                        FileCabinetRecord record = this.ValidateParameters(row);
+                        this.validator.ValidateParameters(record);
+                        records.Add(record);
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        this.modelWriter.LineWriter.Invoke(ex.Message);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        this.modelWriter.LineWriter.Invoke(ex.Message);
+                    }
                 }
             }
 
