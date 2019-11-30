@@ -16,8 +16,8 @@ namespace FileCabinetGenerator
         private static readonly DateTime BirthDayMinValue = new DateTime(1950, 01, 01);
         private static readonly FileCabinetRecords FileCabinetRecords = new FileCabinetRecords();
         private static IFileCabinetSerializer serializer;
-        private static string outputFormat = "csv";
-        private static string outputFileName = "records.csv";
+        private static string outputFormat = "xml";
+        private static string outputFileName = "records.xml";
         private static int recordsAmount = 10;
         private static int startId = 1;
         private static string firstNameTemplate = "FirstName";

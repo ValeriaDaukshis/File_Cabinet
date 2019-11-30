@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
@@ -26,8 +25,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="modelWriter">console writer.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter)
-            : base(cabinetService)
+        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter) : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
             this.modelWriter = modelWriter;
@@ -143,14 +141,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 CheckUpdateFieldsInput(updatedFields);
 
                 // finds separator (or/and)
-                var conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
-                var updates = this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
-                var conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> updates =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 var recordsId = new List<int>();
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 for (var i = 0; i < records.Length; i++)
                 {
@@ -173,6 +174,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {

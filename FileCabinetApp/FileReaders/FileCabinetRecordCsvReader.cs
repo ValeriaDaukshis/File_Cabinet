@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
 using FileCabinetApp.Converters;
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
@@ -48,8 +47,8 @@ namespace FileCabinetApp.FileReaders
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    var row = line.Split(',');
-                    if (row[0] == "id")
+                    string[] row = line.Split(',');
+                    if (row[0] == "Id")
                     {
                         continue;
                     }

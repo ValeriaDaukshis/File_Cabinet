@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
@@ -30,8 +29,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="printer">The printer.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="modelWriter">console writer.</param>
-        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ModelWriters modelWriter)
-            : base(cabinetService)
+        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ModelWriters modelWriter) : base(cabinetService)
         {
             this.printer = printer;
             this.expressionExtensions = expressionExtensions;
@@ -81,7 +79,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             Cache.Add(new CachingKey(conditionFields), records);
         }
 
-        private static (bool, IEnumerable<FileCabinetRecord>) SearchDataInCache(string[] conditionFields)
+        private static(bool, IEnumerable<FileCabinetRecord>) SearchDataInCache(string[] conditionFields)
         {
             if (Cache.Contains(conditionFields))
             {
@@ -116,7 +114,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 var conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-                var (founded, record) = SearchDataInCache(conditionFields);
+                var(founded, record) = SearchDataInCache(conditionFields);
                 if (founded)
                 {
                     this.printer.Print(record, printedFields);
@@ -124,11 +122,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 }
 
                 CheckConditionFieldsInput(conditionFields);
-                var conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
-                var conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 this.printer.Print(records, printedFields);
                 PutDataInCache(conditionFields, records);
@@ -136,6 +136,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {
