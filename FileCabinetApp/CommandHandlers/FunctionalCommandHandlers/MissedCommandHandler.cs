@@ -8,7 +8,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     /// <summary>
     ///     MissedCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public class MissedCommandHandler : CommandHandlerBase
     {
         private static string[] commands;

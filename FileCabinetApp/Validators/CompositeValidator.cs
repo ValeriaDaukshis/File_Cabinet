@@ -8,7 +8,7 @@ namespace FileCabinetApp.Validators
     /// <summary>
     ///     CompositeValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class CompositeValidator : IRecordValidator
     {
         private readonly List<IRecordValidator> validators;

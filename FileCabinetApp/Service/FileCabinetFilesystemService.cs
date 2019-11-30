@@ -15,7 +15,7 @@ namespace FileCabinetApp.Service
     /// <summary>
     ///     FileCabinetFilesystemService.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
+    /// <seealso cref="IFileCabinetService" />
     public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
         private const long RecordSize = 278;

@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     /// <summary>
     ///     ExitCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public class ExitCommandHandler : CommandHandlerBase
     {
         private readonly IDisposable dispose;

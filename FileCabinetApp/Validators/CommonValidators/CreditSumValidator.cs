@@ -7,7 +7,7 @@ namespace FileCabinetApp.Validators.CommonValidators
     /// <summary>
     ///     CreditSumValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class CreditSumValidator : IRecordValidator
     {
         private readonly decimal maxCreditSum;

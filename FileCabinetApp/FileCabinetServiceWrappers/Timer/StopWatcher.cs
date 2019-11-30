@@ -5,7 +5,7 @@ namespace FileCabinetApp.Timer
     /// <summary>
     ///     StopWatcher.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Timer.IStopWatcher" />
+    /// <seealso cref="IStopWatcher" />
     public class StopWatcher : IStopWatcher
     {
         private readonly Stopwatch timer;

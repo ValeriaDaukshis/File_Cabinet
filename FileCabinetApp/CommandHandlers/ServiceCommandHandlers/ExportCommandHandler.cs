@@ -9,7 +9,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <summary>
     ///     ExportCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;

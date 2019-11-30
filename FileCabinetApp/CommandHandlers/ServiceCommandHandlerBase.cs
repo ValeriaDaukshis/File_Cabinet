@@ -5,7 +5,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     ///     ServiceCommandHandlerBase.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>

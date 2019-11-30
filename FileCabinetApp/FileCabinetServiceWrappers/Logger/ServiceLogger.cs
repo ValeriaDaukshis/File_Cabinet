@@ -11,7 +11,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
     /// <summary>
     ///     ServiceLogger.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
+    /// <seealso cref="IFileCabinetService" />
     public sealed class ServiceLogger : IFileCabinetService, IDisposable
     {
         private readonly string path;

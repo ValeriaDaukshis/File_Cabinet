@@ -7,7 +7,7 @@ namespace FileCabinetApp.Validators.CommonValidators
     /// <summary>
     ///     LastNameValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class LastNameValidator : IRecordValidator
     {
         private readonly int maxLength;

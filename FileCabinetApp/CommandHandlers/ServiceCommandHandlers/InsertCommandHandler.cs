@@ -8,7 +8,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <summary>
     ///     InsertCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;

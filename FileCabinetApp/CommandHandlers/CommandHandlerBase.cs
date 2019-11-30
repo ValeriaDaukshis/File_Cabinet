@@ -12,7 +12,7 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     ///     CommandHandlerBase.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ICommandHandler" />
+    /// <seealso cref="ICommandHandler" />
     public abstract class CommandHandlerBase : ICommandHandler
     {
         /// <summary>

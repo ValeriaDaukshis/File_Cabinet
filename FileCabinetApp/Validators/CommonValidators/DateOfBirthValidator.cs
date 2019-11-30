@@ -7,7 +7,7 @@ namespace FileCabinetApp.Validators.CommonValidators
     /// <summary>
     ///     DateOfBirthValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class DateOfBirthValidator : IRecordValidator
     {
         private readonly DateTime maxDateOfBirth;

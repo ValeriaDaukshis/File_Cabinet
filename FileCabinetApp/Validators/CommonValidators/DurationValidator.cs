@@ -7,7 +7,7 @@ namespace FileCabinetApp.Validators.CommonValidators
     /// <summary>
     ///     DurationValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class DurationValidator : IRecordValidator
     {
         private readonly short maxPeriod;

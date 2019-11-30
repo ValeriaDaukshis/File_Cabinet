@@ -11,7 +11,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <summary>
     ///     ImportCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;

@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <summary>
     ///     CreateCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriters;

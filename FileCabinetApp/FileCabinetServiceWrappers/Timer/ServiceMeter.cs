@@ -10,7 +10,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
     /// <summary>
     ///     ServiceMeter.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
+    /// <seealso cref="IFileCabinetService" />
     public sealed class ServiceMeter : IFileCabinetService
     {
         private readonly ModelWriters modelWriter;

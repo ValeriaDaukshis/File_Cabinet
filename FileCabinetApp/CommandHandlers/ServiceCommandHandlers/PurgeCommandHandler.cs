@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <summary>
     ///     PurgeCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;
