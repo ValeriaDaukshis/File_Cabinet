@@ -46,7 +46,7 @@ namespace FileCabinetApp.FileReaders
                 if (!string.IsNullOrWhiteSpace(line))
                 {
                     string[] row = line.Split(',');
-                    if (row[0] == "id")
+                    if (row[0] == "Id")
                     {
                         continue;
                     }

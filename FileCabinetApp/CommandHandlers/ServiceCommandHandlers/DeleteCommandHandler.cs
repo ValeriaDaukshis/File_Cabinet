@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Security;
 using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers.Extensions;
@@ -150,6 +151,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+                this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted ");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
                 this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentNullException ex)

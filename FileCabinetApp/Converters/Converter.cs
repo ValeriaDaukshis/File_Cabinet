@@ -32,7 +32,7 @@ namespace FileCabinetApp.Converters
         /// </value>
         public Func<string, Tuple<bool, string, char>> CharConverter { get; } = input =>
         {
-            var result = '\x0000';
+            var result = '\0';
             bool success = char.TryParse(input?.Trim().ToUpper(Culture), out result);
             return new Tuple<bool, string, char>(success, input, result);
         };

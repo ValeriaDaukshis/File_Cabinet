@@ -142,13 +142,16 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 // finds separator (or/and)
                 string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
-                Dictionary<string, string> conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                Dictionary<string, string> updates =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 for (int i = 0; i < records.Length; i++)
                 {
@@ -171,6 +174,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {

@@ -122,10 +122,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 CheckConditionFieldsInput(conditionFields);
                 string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
-                Dictionary<string, string> conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 this.printer.Print(records, printedFields);
                 PutDataInCache(conditionFields, records);
@@ -133,6 +135,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             catch (FileRecordNotFoundException ex)
             {
                 this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {
