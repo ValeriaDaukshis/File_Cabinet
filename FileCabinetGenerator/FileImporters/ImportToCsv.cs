@@ -2,8 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Text;
-using FileCabinetApp;
-using FileCabinetApp.Records;
+using FileCabinetRecords = FileCabinetGenerator.Records.FileCabinetRecords;
 
 namespace FileCabinetGenerator.FileImporters
 {
@@ -44,8 +43,8 @@ namespace FileCabinetGenerator.FileImporters
                 builder.Append($"{record.Record[i].Name.FirstName},");
                 builder.Append($"{record.Record[i].Name.LastName},");
                 builder.Append($"{record.Record[i].Gender},");
-                builder.Append($"{record.Record[i].DateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)},");
-                builder.Append($"{record.Record[i].CreditSum},");
+                builder.Append($"{record.Record[i].DateOfBirth},");
+                builder.Append($"{record.Record[i].CreditSum.ToString(CultureInfo.InvariantCulture)},");
                 builder.Append($"{record.Record[i].Duration}");
                 this.writer.WriteLine(builder.ToString());
             }

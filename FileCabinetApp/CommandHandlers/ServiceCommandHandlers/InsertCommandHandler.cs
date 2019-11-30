@@ -1,4 +1,5 @@
 ﻿using System;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -11,13 +12,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly ModelWriters modelWriter;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        public InsertCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="modelWriter">console writer.</param>
+        public InsertCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriter)
             : base(cabinetService)
         {
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -42,33 +47,45 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static void CompareFieldsAndInputArraysLength(string[] fields, string[] values)
+        {
+            if (fields.Length != values.Length)
+            {
+                throw new ArgumentException($"Length of values and fields not equal.");
+            }
+        }
+
         private void Create(string parameters)
         {
             char[] separators = { '(', ')', ',', ' ' };
             string[] inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
-            string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            ChangeFieldCase(fields);
-            string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            DeleteQuotesFromInputValues(values);
 
             try
             {
-                PrintInputFields(fields, values, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-                var recordNumber =
-                    this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
-                Console.WriteLine($"Record #{recordNumber} is created.");
+                CompareFieldsAndInputArraysLength(fields, values);
+                this.CommandHandlersExtensions.ChangeFieldCase(fields);
+                CommandHandlersExtensions.DeleteQuotesFromInputValues(values);
+
+                var recordNumber = this.CabinetService.CreateRecord(this.InputValidator.PrintInputFields(fields, values));
+                this.modelWriter.LineWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("Record is not created ");
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("Record is not created ");
+            }
+            catch (IndexOutOfRangeException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke("Record is not created ");
             }
         }
     }

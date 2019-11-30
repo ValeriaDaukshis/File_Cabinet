@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace FileCabinetApp.Records
+namespace FileCabinetGenerator.Records
 {
     /// <summary>
     /// Names.

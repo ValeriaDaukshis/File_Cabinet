@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using FileCabinetApp.Records;
 
-namespace FileCabinetApp.CommandHandlers.Printer
+namespace FileCabinetApp.Printer
 {
     /// <summary>
     /// TablePrinter.
@@ -15,6 +15,16 @@ namespace FileCabinetApp.CommandHandlers.Printer
         private static string angle = "+";
         private static string wall = "|";
         private static string border = "-";
+        private readonly Action<string> consoleWriter;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultTablePrinter"/> class.
+        /// </summary>
+        /// <param name="consoleWriter">The console writer.</param>
+        public DefaultTablePrinter(Action<string> consoleWriter)
+        {
+            this.consoleWriter = consoleWriter;
+        }
 
         /// <summary>
         /// Prints the specified records.
@@ -35,21 +45,21 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
             if (!record.Any())
             {
-                Console.WriteLine("No records found");
+                this.consoleWriter.Invoke("No records found");
                 return;
             }
 
             string horizontalBorder = CreateHorizontalBorder(record, fields);
-            Console.WriteLine(horizontalBorder);
-            Console.WriteLine(CreateHeader(fields, horizontalBorder));
-            Console.WriteLine(horizontalBorder);
+            this.consoleWriter.Invoke(horizontalBorder);
+            this.consoleWriter.Invoke(CreateHeader(fields, horizontalBorder));
+            this.consoleWriter.Invoke(horizontalBorder);
 
             foreach (var rec in record)
             {
-                Console.WriteLine(PrintRecord(rec, fields, horizontalBorder));
+                this.consoleWriter.Invoke(PrintRecord(rec, fields, horizontalBorder));
             }
 
-            Console.WriteLine(horizontalBorder);
+            this.consoleWriter.Invoke(horizontalBorder);
         }
 
         private static string PrintRecord(FileCabinetRecord record, string[] fields, string horizontalBorder)
@@ -67,9 +77,9 @@ namespace FileCabinetApp.CommandHandlers.Printer
 
                 builder.Append(" ");
                 string stringValue = value.ToString();
-                if (value is DateTime)
+                if (value is DateTime time)
                 {
-                    stringValue = ((DateTime)value).ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
+                    stringValue = time.ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
                 }
 
                 int horizontalBorderLength = recordsLength[i].Length - stringValue.Length - 2;
@@ -83,7 +93,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 }
                 else
                 {
-                    builder.Append(PrintDigitValues(stringValue, horizontalBorderLength));
+                    builder.Append(PrintDigitValues(value, horizontalBorderLength));
                 }
 
                 builder.Append(" ");
@@ -172,7 +182,7 @@ namespace FileCabinetApp.CommandHandlers.Printer
             return builder.ToString();
         }
 
-        private static string PrintDigitValues(string values, int horizontalBorderLength)
+        private static string PrintDigitValues(object values, int horizontalBorderLength)
         {
             StringBuilder builder = new StringBuilder();
             for (int j = 0; j < horizontalBorderLength; j++)
@@ -180,7 +190,8 @@ namespace FileCabinetApp.CommandHandlers.Printer
                 builder.Append(" ");
             }
 
-            builder.Append(values);
+            var value = Convert.ToString(values, CultureInfo.InvariantCulture);
+            builder.Append(value);
 
             return builder.ToString();
         }

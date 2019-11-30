@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using FileCabinetApp.Converters;
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
@@ -14,16 +15,22 @@ namespace FileCabinetApp.FileReaders
     {
         private readonly StreamReader reader;
         private readonly IRecordValidator validator;
+        private readonly Converter converter;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
         /// </summary>
         /// <param name="reader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        public FileCabinetRecordCsvReader(StreamReader reader, IRecordValidator validator)
+        /// <param name="converter">The converter.</param>
+        /// <param name="modelWriter">console writer.</param>
+        public FileCabinetRecordCsvReader(StreamReader reader, IRecordValidator validator, Converter converter, ModelWriters modelWriter)
         {
             this.reader = reader;
             this.validator = validator;
+            this.converter = converter;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -36,70 +43,60 @@ namespace FileCabinetApp.FileReaders
             string line;
             while ((line = this.reader.ReadLine()) != null)
             {
-                string[] row = line.Split(',');
-                if (row[0] == "id")
+                if (!string.IsNullOrWhiteSpace(line))
                 {
-                    continue;
-                }
+                    string[] row = line.Split(',');
+                    if (row[0] == "Id")
+                    {
+                        continue;
+                    }
 
-                try
-                {
-                    this.ReaderValidator(row, out int id, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
-                    records.Add(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
+                    try
+                    {
+                        FileCabinetRecord record = this.ValidateParameters(row);
+                        this.validator.ValidateParameters(record);
+                        records.Add(record);
+                    }
+                    catch (ArgumentNullException ex)
+                    {
+                        this.modelWriter.LineWriter.Invoke(ex.Message);
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        this.modelWriter.LineWriter.Invoke(ex.Message);
+                    }
                 }
             }
 
             return records;
         }
 
-        private void ReaderValidator(string[] row, out int id, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private static T ConvertValue<T>(Func<string, Tuple<bool, string, T>> converter, string input, int id)
         {
-            firstName = string.Empty;
-            lastName = string.Empty;
-            if (!int.TryParse(row[0], out id))
+            T value;
+
+            var conversionResult = converter(input);
+
+            if (!conversionResult.Item1)
             {
-                throw new ArgumentException("Id has not digit format");
+                throw new ArgumentException($"Id #{id}: conversation failed ({conversionResult.Item2})");
             }
 
-            if (string.IsNullOrEmpty(row[1]))
-            {
-                throw new ArgumentException("firstName is null or empty");
-            }
+            value = conversionResult.Item3;
+            return value;
+        }
 
-            firstName = row[1];
+        private FileCabinetRecord ValidateParameters(string[] row)
+        {
+            int id = ConvertValue<int>(this.converter.IntConverter, row[0], 0);
+            string firstName = ConvertValue<string>(this.converter.StringConverter, row[1], id);
+            string lastName = ConvertValue<string>(this.converter.StringConverter, row[2], id);
+            char gender = ConvertValue<char>(this.converter.CharConverter, row[3], id);
+            DateTime dateOfBirth = ConvertValue<DateTime>(this.converter.DateTimeConverter, row[4], id);
+            decimal credit = ConvertValue<decimal>(this.converter.DecimalConverter, row[5], id);
+            short duration = ConvertValue<short>(this.converter.ShortConverter, row[6], id);
 
-            if (string.IsNullOrEmpty(row[2]))
-            {
-                throw new ArgumentException("lastName is null or empty");
-            }
-
-            lastName = row[2];
-
-            if (!char.TryParse(row[3], out gender))
-            {
-                throw new ArgumentException("gender is not char");
-            }
-
-            if (!DateTime.TryParse(row[4], CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBirth))
-            {
-                throw new ArgumentException("Incorrect DateTime value");
-            }
-
-            if (!decimal.TryParse(row[5], out credit))
-            {
-                throw new ArgumentException("creditSum has no decimal format");
-            }
-
-            if (!short.TryParse(row[6], out duration))
-            {
-                throw new ArgumentException("duration has not short format");
-            }
-
-            this.validator.ValidateParameters(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
+            return new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
         }
     }
 }

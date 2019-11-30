@@ -1,9 +1,9 @@
-﻿namespace FileCabinetApp.Validators.ValidationParameters
+﻿namespace FileCabinetApp.Validators.ValidationModel
 {
     /// <summary>
-    /// FirstNameCriterions.
+    /// CreditSumCriterions.
     /// </summary>
-    public class FirstNameCriterions
+    public class CreditSum
     {
         /// <summary>
         /// Gets or sets the minimum.
@@ -11,7 +11,7 @@
         /// <value>
         /// The minimum.
         /// </value>
-        public int Min { get; set; }
+        public decimal Min { get;  set; }
 
         /// <summary>
         /// Gets or sets the maximum.
@@ -19,6 +19,6 @@
         /// <value>
         /// The maximum.
         /// </value>
-        public int Max { get; set; }
+        public decimal Max { get;  set; }
     }
 }

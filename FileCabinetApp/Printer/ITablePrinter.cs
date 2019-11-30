@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using FileCabinetApp.Records;
 
-namespace FileCabinetApp.CommandHandlers.Printer
+namespace FileCabinetApp.Printer
 {
     /// <summary>
     /// ITablePrinter.

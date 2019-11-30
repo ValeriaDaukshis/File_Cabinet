@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
@@ -14,6 +15,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
@@ -21,10 +23,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions)
+        /// <param name="modelWriter">console writer.</param>
+        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -88,12 +92,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (conditionFields.Length < 2)
             {
-                throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'. Use 'help' or 'syntax'", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'. Use 'help' or 'syntax'");
             }
 
             if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
             {
-                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)'. Use 'help' or 'syntax'", nameof(conditionFields));
+                throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)'. Use 'help' or 'syntax'");
             }
         }
 
@@ -101,12 +105,20 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (updatedFields.Length < 3)
             {
-                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after condition command 'update'. Use 'help' or 'syntax'", nameof(updatedFields));
+                throw new ArgumentException($"{nameof(updatedFields)} Not enough parameters after condition command 'update'. Use 'help' or 'syntax'");
             }
 
             if (updatedFields.Length > 2 && !updatedFields.Contains("set"))
             {
-                throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set'. Use 'help' or 'syntax.'", nameof(updatedFields));
+                throw new ArgumentException($"{nameof(updatedFields)} parameters after 'update' don't have separator 'set'. Use 'help' or 'syntax.'");
+            }
+        }
+
+        private static void CheckUpdateId(string oldId, string newId)
+        {
+            if (oldId != newId)
+            {
+                throw new ArgumentException("Can't update record id.");
             }
         }
 
@@ -114,7 +126,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write information");
+                this.modelWriter.LineWriter.Invoke("Write information");
                 return;
             }
 
@@ -129,36 +141,51 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 CheckUpdateFieldsInput(updatedFields);
 
                 // finds separator (or/and)
-                string conditionSeparator = FindConditionSeparator(conditionFields);
-                Dictionary<string, string> updates = CreateDictionaryOfFields(updatedFields, "set");
-                Dictionary<string, string> conditions = CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> updates =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(updatedFields, "set");
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 List<int> recordsId = new List<int>();
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 for (int i = 0; i < records.Length; i++)
                 {
-                    CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i], out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
+                    FileCabinetRecord record = this.InputValidator.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
                     int id = records[i].Id;
-                    this.CabinetService.EditRecord(new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration));
+                    if (updates.ContainsKey("Id"))
+                    {
+                        string newId = updates["Id"];
+                        CheckUpdateId(id.ToString(Culture), newId);
+                    }
+
+                    record.Id = id;
+
+                    this.CabinetService.EditRecord(record);
                     recordsId.Add(id);
                 }
 
-                Console.WriteLine(CreateOutputText(recordsId.ToArray()));
+                this.modelWriter.LineWriter.Invoke(CreateOutputText(recordsId.ToArray()));
             }
             catch (FileRecordNotFoundException ex)
             {
-                Console.WriteLine($"{ex.Value} was not found");
+                this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using FileCabinetApp.Records;
@@ -50,7 +51,7 @@ namespace FileCabinetApp.FIleWriters
             this.xmlWriter.WriteAttributeString("last",  $"{record.LastName}");
             this.xmlWriter.WriteEndElement();
             this.xmlWriter.WriteElementString("gender", $"{record.Gender}");
-            this.xmlWriter.WriteElementString("dateOfBirth", $"{record.DateOfBirth:yyyy-mm-dd}");
+            this.xmlWriter.WriteElementString("dateOfBirth", record.DateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
             this.xmlWriter.WriteElementString("creditSum", $"{record.CreditSum}");
             this.xmlWriter.WriteElementString("duration", $"{record.Duration}");
             this.xmlWriter.WriteEndElement();

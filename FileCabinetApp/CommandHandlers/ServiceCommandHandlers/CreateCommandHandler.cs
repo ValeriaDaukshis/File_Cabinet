@@ -11,13 +11,17 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class CreateCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly ModelWriters modelWriters;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        public CreateCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="modelWriters">console writer.</param>
+        public CreateCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriters)
             : base(cabinetService)
         {
+            this.modelWriters = modelWriters;
         }
 
         /// <summary>
@@ -43,22 +47,20 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Create(string parameters)
         {
-            PrintInputFields(out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration);
             try
             {
-                var recordNumber =
-                    this.CabinetService.CreateRecord(new FileCabinetRecord(firstName, lastName, gender, dateOfBirth, credit, duration));
-                Console.WriteLine($"Record #{recordNumber} is created.");
+                var recordNumber = this.CabinetService.CreateRecord(this.InputValidator.PrintInputFields(this.modelWriters));
+                this.modelWriters.LineWriter.Invoke($"Record #{recordNumber} is created.");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.modelWriters.LineWriter.Invoke(ex.Message);
+                this.modelWriters.LineWriter.Invoke("Record is not created ");
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine("Record is not created ");
+                this.modelWriters.LineWriter.Invoke(ex.Message);
+                this.modelWriters.LineWriter.Invoke("Record is not created ");
             }
         }
     }

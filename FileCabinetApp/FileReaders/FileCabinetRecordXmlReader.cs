@@ -15,16 +15,19 @@ namespace FileCabinetApp.FileReaders
     {
         private readonly StreamReader streamReader;
         private readonly IRecordValidator validator;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
         /// </summary>
         /// <param name="streamReader">The reader.</param>
         /// <param name="validator">The validator.</param>
-        public FileCabinetRecordXmlReader(StreamReader streamReader, IRecordValidator validator)
+        /// <param name="modelWriter">console writer.</param>
+        public FileCabinetRecordXmlReader(StreamReader streamReader, IRecordValidator validator, ModelWriters modelWriter)
         {
             this.streamReader = streamReader;
             this.validator = validator;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -33,16 +36,16 @@ namespace FileCabinetApp.FileReaders
         /// <returns>list of records.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(FileCabinetRecords));
+            XmlSerializer formatter = new XmlSerializer(typeof(RecordsModel));
 
-            FileCabinetRecords records;
+            RecordsModel recordsModel;
             using (XmlReader xmlReader = XmlReader.Create(this.streamReader))
             {
-                records = (FileCabinetRecords)formatter.Deserialize(xmlReader);
+                recordsModel = (RecordsModel)formatter.Deserialize(xmlReader);
             }
 
             IList<FileCabinetRecord> list = new List<FileCabinetRecord>();
-            foreach (var node in records.Record)
+            foreach (var node in recordsModel.Record)
             {
                 try
                 {
@@ -51,7 +54,7 @@ namespace FileCabinetApp.FileReaders
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    this.modelWriter.LineWriter.Invoke(ex.Message);
                 }
             }
 

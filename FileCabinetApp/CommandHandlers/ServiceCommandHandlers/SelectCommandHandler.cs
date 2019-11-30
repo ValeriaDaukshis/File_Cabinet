@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FileCabinetApp.CommandHandlers.Printer;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
+using FileCabinetApp.Printer;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
@@ -14,6 +15,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly ModelWriters modelWriter;
         private readonly ITablePrinter printer;
         private readonly IExpressionExtensions expressionExtensions;
 
@@ -24,11 +26,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="printer">The printer.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
-        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer)
+        /// <param name="modelWriter">console writer.</param>
+        public SelectCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ITablePrinter printer, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.printer = printer;
             this.expressionExtensions = expressionExtensions;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -89,7 +93,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write information");
+                this.printer.Print(this.CabinetService.GetRecords(), FieldsCaseDictionary.Values.ToArray());
                 return;
             }
 
@@ -100,7 +104,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             try
             {
                 CheckUpdateFieldsInput(printedFields);
-                ChangeFieldCase(printedFields);
+                this.CommandHandlersExtensions.ChangeFieldCase(printedFields);
                 if (inputs.Length == 1)
                 {
                     this.printer.Print(this.CabinetService.GetRecords(), printedFields);
@@ -117,26 +121,32 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 }
 
                 CheckConditionFieldsInput(conditionFields);
-                string conditionSeparator = FindConditionSeparator(conditionFields);
-                Dictionary<string, string> conditions = CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                Dictionary<string, string> conditions =
+                    this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
-                var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
+                var records = this.expressionExtensions.FindSuitableRecords(
+                    conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
                 this.printer.Print(records, printedFields);
                 PutDataInCache(conditionFields, records);
             }
             catch (FileRecordNotFoundException ex)
             {
-                Console.WriteLine($"{ex.Value} was not found");
+                this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

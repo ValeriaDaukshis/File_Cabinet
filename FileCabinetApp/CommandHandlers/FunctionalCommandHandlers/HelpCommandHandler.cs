@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
@@ -12,14 +13,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
         private static string[][] helpMessages;
+        private static ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HelpCommandHandler"/> class.
         /// </summary>
         /// <param name="help">The help.</param>
-        public HelpCommandHandler(string[][] help)
+        /// <param name="modelWriter">console writer.</param>
+        public HelpCommandHandler(string[][] help, ModelWriters modelWriter)
         {
             helpMessages = help;
+            HelpCommandHandler.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -50,24 +54,22 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
                 var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][ExplanationHelpIndex]);
+                    modelWriter.LineWriter.Invoke(helpMessages[index][ExplanationHelpIndex]);
                 }
                 else
                 {
-                    Console.WriteLine($"There is no explanation for '{parameters}' command.");
+                    modelWriter.LineWriter.Invoke($"There is no explanation for '{parameters}' command.");
                 }
             }
             else
             {
-                Console.WriteLine("Available commands:");
+                modelWriter.LineWriter.Invoke("Available commands:");
 
                 foreach (var helpMessage in helpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[DescriptionHelpIndex]);
+                    modelWriter.LineWriter.Invoke($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[DescriptionHelpIndex]}");
                 }
             }
-
-            Console.WriteLine();
         }
     }
 }

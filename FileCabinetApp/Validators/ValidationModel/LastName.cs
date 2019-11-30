@@ -1,9 +1,11 @@
-﻿namespace FileCabinetApp.Validators.ValidationParameters
+﻿using System.Text.Json.Serialization;
+
+namespace FileCabinetApp.Validators.ValidationParameters
 {
     /// <summary>
-    /// CreditSumCriterions.
+    /// LastNameCriterions.
     /// </summary>
-    public class CreditSumCriterions
+    public class LastName
     {
         /// <summary>
         /// Gets or sets the minimum.
@@ -11,7 +13,7 @@
         /// <value>
         /// The minimum.
         /// </value>
-        public decimal Min { get;  set; }
+        public int Min { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum.
@@ -19,6 +21,6 @@
         /// <value>
         /// The maximum.
         /// </value>
-        public decimal Max { get;  set; }
+        public int Max { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
@@ -10,13 +11,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
+        private readonly ModelWriters modelWriter;
+        private FileCabinetServiceSnapshot snapshot;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
-        public ExportCommandHandler(IFileCabinetService cabinetService)
+        /// <param name="modelWriter">console writer.</param>
+        public ExportCommandHandler(IFileCabinetService cabinetService, ModelWriters modelWriter)
             : base(cabinetService)
         {
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -42,7 +48,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Export(string parameters)
         {
-            if (!ImportExportParametersSpliter(parameters, out var fileFormat, out var path))
+            if (!CommandHandlersExtensions.ImportExportParametersSpliter(parameters, out var fileFormat, out var path, "export"))
             {
                 return;
             }
@@ -53,30 +59,30 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 {
                     if (fileFormat == "csv")
                     {
-                        Snapshot = this.CabinetService.MakeSnapshot();
-                        Snapshot.SaveToCsv(stream);
+                        this.snapshot = this.CabinetService.MakeSnapshot();
+                        this.snapshot.SaveToCsv(stream);
                     }
                     else if (fileFormat == "xml")
                     {
-                        Snapshot = this.CabinetService.MakeSnapshot();
-                        Snapshot.SaveToXml(stream);
+                        this.snapshot = this.CabinetService.MakeSnapshot();
+                        this.snapshot.SaveToXml(stream);
                     }
                     else
                     {
-                        Console.WriteLine($"{fileFormat} writer is not found");
+                        this.modelWriter.LineWriter.Invoke($"{fileFormat} writer is not found");
                         return;
                     }
                 }
 
-                Console.WriteLine($"File {path} was successfully exported");
+                this.modelWriter.LineWriter.Invoke($"File {path} was successfully exported");
             }
             catch (IOException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Console.WriteLine(ex.Message);
+                this.modelWriter.LineWriter.Invoke(ex.Message);
             }
         }
     }

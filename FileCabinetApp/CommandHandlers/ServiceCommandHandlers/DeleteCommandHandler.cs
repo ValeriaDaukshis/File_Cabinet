@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net.Security;
 using System.Reflection;
 using System.Text;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
@@ -18,6 +20,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
+        private readonly ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
@@ -25,10 +28,12 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
-        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions)
+        /// <param name="modelWriter">console writer.</param>
+        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter)
             : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
+            this.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -94,7 +99,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             value = value.ToLower(Culture);
             if (!FieldsCaseDictionary.ContainsKey(value))
             {
-                throw new ArgumentException($"No field with name {nameof(value)}", nameof(value));
+                throw new ArgumentException($"No field with name {nameof(value)}");
             }
 
             value = FieldsCaseDictionary[value];
@@ -105,7 +110,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (string.IsNullOrEmpty(parameters))
             {
-                Console.WriteLine("Write a record number");
+                this.modelWriter.LineWriter.Invoke("Write a record number");
                 return;
             }
 
@@ -113,13 +118,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             if (inputs.Length < 3)
             {
-                Console.WriteLine("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
+                this.modelWriter.LineWriter.Invoke("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
             if (inputs.Length > 3)
             {
-                Console.WriteLine("A lot of parameters after command 'delete'. Use 'help' or 'syntax'");
+                this.modelWriter.LineWriter.Invoke("A lot of parameters after command 'delete'. Use 'help' or 'syntax'");
                 return;
             }
 
@@ -141,22 +146,27 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                     recordsId.Add(this.CabinetService.RemoveRecord(records[i]));
                 }
 
-                Console.WriteLine(CreateOutputText(recordsId.ToArray()));
+                this.modelWriter.LineWriter.Invoke(CreateOutputText(recordsId.ToArray()));
             }
             catch (FileRecordNotFoundException ex)
             {
-                Console.WriteLine($"{ex.Value} was not found");
-                Console.WriteLine($"Record #{parameters} was not deleted ");
+                this.modelWriter.LineWriter.Invoke($"{ex.Value} was not found");
+                this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted ");
+            }
+            catch (FormatException ex)
+            {
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not deleted ");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted ");
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine($"Record #{parameters} was not deleted");
+                this.modelWriter.LineWriter.Invoke(ex.Message);
+                this.modelWriter.LineWriter.Invoke($"Record #{parameters} was not deleted");
             }
         }
     }

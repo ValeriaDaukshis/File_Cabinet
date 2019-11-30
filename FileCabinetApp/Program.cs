@@ -4,13 +4,16 @@ using System.IO;
 using System.Linq;
 using CommandLine;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.CommandHandlers.FunctionalCommandHandlers;
-using FileCabinetApp.CommandHandlers.Printer;
 using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
-using FileCabinetApp.Logger;
+using FileCabinetApp.FileCabinetServiceWrappers.Logger;
+using FileCabinetApp.FileCabinetServiceWrappers.Timer;
+using FileCabinetApp.Printer;
 using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
 using FileCabinetApp.Validators;
+using FileCabinetApp.Validators.XmlFileValidator;
 using Microsoft.Extensions.Configuration;
 
 namespace FileCabinetApp
@@ -24,13 +27,18 @@ namespace FileCabinetApp
         private const string HintMessage = "Enter your command, or enter 'help'/'syntax' to get help.";
         private const string ServiceStorageFile = "cabinet-records.db";
         private const string ValidationRulesFile = "validation-rules.json";
+        private const string XsdValidatorFile = "records.xsd";
 
         private static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
-        private static bool isRunning = true;
+        private static readonly Action<bool> Running = b => isRunning = b;
+        private static ModelWriters modelWriters;
+
         private static IFileCabinetService fileCabinetService;
         private static IExpressionExtensions expressionExtensions;
-
-        private static Action<bool> running = b => isRunning = b;
+        private static IXmlValidator xmlValidator;
+        private static ITablePrinter tablePrinter;
+        private static string xsdValidatorFile;
+        private static bool isRunning = true;
 
         private static string[][] helpMessages = new string[][]
         {
@@ -62,48 +70,56 @@ namespace FileCabinetApp
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(ValidationRulesFile, optional: true, reloadOnChange: true);
-            var config = builder.Build();
+            xsdValidatorFile = XsdValidatorFile;
+            InitModelWriters();
 
             Parser.Default.ParseArguments<CommandLineOptions>(args)
                 .WithParsed(o =>
                 {
                     if (o.ValidationRules != null && o.ValidationRules.ToLower(Culture) == "custom")
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(config);
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateCustom(ValidationRulesFile);
+                        Console.WriteLine("Custom validator");
                     }
                     else
                     {
-                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(config);
+                        (CommandHandlerBase.RecordValidator, ValidatorParams) = new ValidatorBuilder().CreateDefault(ValidationRulesFile);
+                        Console.WriteLine("Default validator");
                     }
 
                     if (o.Storage != null && o.Storage.ToLower(Culture) == "file")
                     {
                         CommandHandlerBase.ServiceStorageFileStream = new FileStream(ServiceStorageFile, FileMode.OpenOrCreate);
                         fileCabinetService = new FileCabinetFilesystemService(CommandHandlerBase.ServiceStorageFileStream, CommandHandlerBase.RecordValidator);
+                        Console.WriteLine("Used filesystem service");
                     }
                     else
                     {
                         fileCabinetService = new FileCabinetMemoryService(CommandHandlerBase.RecordValidator);
+                        Console.WriteLine("Used memory service");
                     }
 
-                    if (o.StopWatcher == true)
+                    if (o.StopWatcher)
                     {
-                        fileCabinetService = new ServiceMeter(fileCabinetService);
+                        fileCabinetService = new ServiceMeter(fileCabinetService, modelWriters);
+                        Console.WriteLine("Used timer");
                     }
 
-                    if (o.Logger == true)
+                    if (o.Logger)
                     {
                         string sourceFilePath = CreateValidPath("logger.log");
                         fileCabinetService = new ServiceLogger(fileCabinetService, sourceFilePath);
+                        Console.WriteLine("Used logger");
                     }
                 });
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
+
+            tablePrinter = new DefaultTablePrinter(modelWriters.LineWriter);
+            expressionExtensions = new ExpressionExtensions(fileCabinetService);
+            xmlValidator = new XmlValidator();
 
             ICommandHandler commandHandler = CreateCommandHandlers();
             do
@@ -132,38 +148,34 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 3 == 0).ToArray();
-            var tablePrinter = new DefaultTablePrinter();
-            expressionExtensions = new ExpressionExtensions(fileCabinetService);
+            var commands = helpMessages.SelectMany(x => x).Where((c, i) => i % 4 == 0).ToArray();
 
-            var helpCommand = new HelpCommandHandler(helpMessages);
-            var createCommand = new CreateCommandHandler(fileCabinetService);
-            var insertCommand = new InsertCommandHandler(fileCabinetService);
-            var updateCommand = new UpdateCommandHandler(fileCabinetService, expressionExtensions);
-            var deleteCommand = new DeleteCommandHandler(fileCabinetService, expressionExtensions);
-            var selectCommand = new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter);
-            var statCommand = new StatCommandHandler(fileCabinetService);
-            var importCommand = new ImportCommandHandler(fileCabinetService);
-            var exportCommand = new ExportCommandHandler(fileCabinetService);
-            var purgeCommand = new PurgeCommandHandler(fileCabinetService);
-            var exitCommand = new ExitCommandHandler(fileCabinetService as IDisposable, running);
-            var syntaxCommand = new SyntaxCommandHandler(helpMessages);
-            var missedCommand = new MissedCommandHandler(commands);
+            var helpCommand = new HelpCommandHandler(helpMessages, modelWriters);
 
-            helpCommand.SetNext(createCommand);
-            createCommand.SetNext(insertCommand);
-            insertCommand.SetNext(updateCommand);
-            updateCommand.SetNext(deleteCommand);
-            deleteCommand.SetNext(selectCommand);
-            selectCommand.SetNext(statCommand);
-            statCommand.SetNext(importCommand);
-            importCommand.SetNext(exportCommand);
-            exportCommand.SetNext(purgeCommand);
-            purgeCommand.SetNext(syntaxCommand);
-            syntaxCommand.SetNext(exitCommand);
-            exitCommand.SetNext(missedCommand);
+            helpCommand.SetNext(new CreateCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new InsertCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new UpdateCommandHandler(fileCabinetService, expressionExtensions, modelWriters))
+                .SetNext(new DeleteCommandHandler(fileCabinetService, expressionExtensions, modelWriters))
+                .SetNext(new SelectCommandHandler(fileCabinetService, expressionExtensions, tablePrinter, modelWriters))
+                .SetNext(new StatCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new ImportCommandHandler(fileCabinetService, xmlValidator, xsdValidatorFile, modelWriters))
+                .SetNext(new ExportCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new PurgeCommandHandler(fileCabinetService, modelWriters))
+                .SetNext(new SyntaxCommandHandler(helpMessages, modelWriters))
+                .SetNext(new ExitCommandHandler(fileCabinetService as IDisposable, Running, modelWriters))
+                .SetNext(new MissedCommandHandler(commands, modelWriters));
 
             return helpCommand;
+        }
+
+        private static void InitModelWriters()
+        {
+            modelWriters = new ModelWriters
+            {
+                Reader = Console.ReadLine,
+                Writer = Console.Write,
+                LineWriter = Console.WriteLine,
+            };
         }
 
         private static string CreateValidPath(string path) =>

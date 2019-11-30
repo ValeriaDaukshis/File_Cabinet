@@ -7,12 +7,12 @@ using System.Reflection;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
-namespace FileCabinetApp.CommandHandlers
+namespace FileCabinetApp.CommandHandlers.Extensions
 {
     /// <summary>
     /// ExpressionExtensions.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.IExpressionExtensions" />
+    /// <seealso cref="IExpressionExtensions" />
     public class ExpressionExtensions : IExpressionExtensions
     {
         private readonly IFileCabinetService fileCabinetService;

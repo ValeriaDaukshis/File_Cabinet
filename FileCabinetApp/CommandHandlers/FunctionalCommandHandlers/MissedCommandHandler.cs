@@ -12,14 +12,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
     public class MissedCommandHandler : CommandHandlerBase
     {
         private static string[] commands;
+        private static ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MissedCommandHandler"/> class.
         /// </summary>
         /// <param name="commands">The commands.</param>
-        public MissedCommandHandler(string[] commands)
+        /// <param name="modelWriter">console writer.</param>
+        public MissedCommandHandler(string[] commands, ModelWriters modelWriter)
         {
             MissedCommandHandler.commands = commands;
+            MissedCommandHandler.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private static void PrintMissedCommandInfo(string command)
         {
             var mostSimilarCommands = FindCommands(command);
-            Console.WriteLine(PrintCommands(mostSimilarCommands, command));
+            modelWriter.LineWriter.Invoke(PrintCommands(mostSimilarCommands, command));
         }
 
         private static IEnumerable<string> FindCommands(string command)
@@ -58,17 +61,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             return mostSimilarCommands;
         }
 
-        private static string PrintCommands(IEnumerable<string> commands, string command)
+        private static string PrintCommands(IEnumerable<string> printedCommands, string command)
         {
             StringBuilder builder = new StringBuilder();
             builder.Append($"There is no '{command}' command.\n");
-            if (!commands.Any())
+            if (!printedCommands.Any())
             {
                 builder.Append("Use 'help' or 'syntax'.");
                 return builder.ToString();
             }
 
-            if (commands.Count() > 1)
+            if (printedCommands.Count() > 1)
             {
                 builder.Append($"The most similar commands are\n");
             }
@@ -77,7 +80,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
                 builder.Append($"The most similar command is\n");
             }
 
-            foreach (var value in commands)
+            foreach (var value in printedCommands)
             {
                 builder.Append($"\t {value}\n");
             }

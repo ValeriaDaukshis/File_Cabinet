@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
-using FileCabinetApp;
-using FileCabinetApp.Records;
+using FileCabinetGenerator.Records;
 
 namespace FileCabinetGenerator.FileImporters
 {
@@ -28,10 +27,12 @@ namespace FileCabinetGenerator.FileImporters
         public void Serialize(FileCabinetRecords records)
         {
             XmlSerializer formatter = new XmlSerializer(typeof(FileCabinetRecords));
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+            namespaces.Add(string.Empty, string.Empty);
 
             using (writer)
             {
-                formatter.Serialize(writer, records);
+                formatter.Serialize(writer, records, namespaces);
             }
         }
     }

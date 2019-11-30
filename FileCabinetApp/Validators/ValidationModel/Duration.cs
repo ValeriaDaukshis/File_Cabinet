@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace FileCabinetApp.Validators.ValidationParameters
+﻿namespace FileCabinetApp.Validators.ValidationParameters
 {
     /// <summary>
-    /// DateOfBirthCriterions.
+    /// DurationCriterions.
     /// </summary>
-    public class DateOfBirthCriterions
+    public class Duration
     {
         /// <summary>
         /// Gets or sets from.
@@ -13,7 +11,7 @@ namespace FileCabinetApp.Validators.ValidationParameters
         /// <value>
         /// From.
         /// </value>
-        public DateTime From { get; set; }
+        public short From { get;  set; }
 
         /// <summary>
         /// Gets or sets to.
@@ -21,6 +19,6 @@ namespace FileCabinetApp.Validators.ValidationParameters
         /// <value>
         /// To.
         /// </value>
-        public DateTime To { get; set; }
+        public short To { get;  set; }
     }
 }

@@ -38,7 +38,7 @@ namespace FileCabinetApp.Validators.CommonValidators
             short duration = record.Duration;
             if (duration > this.maxPeriod || duration < this.minPeriod)
             {
-                throw new ArgumentException(nameof(duration), $"{nameof(duration)}: Credit duration is upper than {this.maxPeriod} or under than {this.minPeriod} weeks");
+                throw new ArgumentException($"Id #{record.Id}: Credit duration is upper than {this.maxPeriod} or under than {this.minPeriod} weeks ({nameof(duration)})");
             }
         }
     }

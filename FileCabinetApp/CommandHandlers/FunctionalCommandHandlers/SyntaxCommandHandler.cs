@@ -10,14 +10,17 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         private const int CommandHelpIndex = 0;
         private const int SyntaxHelpIndex = 3;
         private static string[][] helpMessages;
+        private static ModelWriters modelWriter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SyntaxCommandHandler"/> class.
         /// </summary>
         /// <param name="help">The help.</param>
-        public SyntaxCommandHandler(string[][] help)
+        /// <param name="modelWriter">console writer.</param>
+        public SyntaxCommandHandler(string[][] help, ModelWriters modelWriter)
         {
             helpMessages = help;
+            SyntaxCommandHandler.modelWriter = modelWriter;
         }
 
         /// <summary>
@@ -48,24 +51,22 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
                 var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
                 if (index >= 0)
                 {
-                    Console.WriteLine(helpMessages[index][SyntaxHelpIndex]);
+                    modelWriter.LineWriter.Invoke(helpMessages[index][SyntaxHelpIndex]);
                 }
                 else
                 {
-                    Console.WriteLine($"There is no explanation for '{parameters}' command.");
+                    modelWriter.LineWriter.Invoke($"There is no explanation for '{parameters}' command.");
                 }
             }
             else
             {
-                Console.WriteLine("Available commands:");
+                modelWriter.LineWriter.Invoke("Available commands:");
 
                 foreach (var helpMessage in helpMessages)
                 {
-                    Console.WriteLine("\t{0}\t- {1}", helpMessage[CommandHelpIndex], helpMessage[SyntaxHelpIndex]);
+                    modelWriter.LineWriter.Invoke($"\t{helpMessage[CommandHelpIndex]}\t- {helpMessage[SyntaxHelpIndex]}");
                 }
             }
-
-            Console.WriteLine();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace FileCabinetApp.Service
     public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
         private const int SizeOfStringRecord = 120;
-        private const long RecordSize = 278 + 1;
+        private const long RecordSize = 278;
         private readonly FileStream fileStream;
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
@@ -89,10 +89,9 @@ namespace FileCabinetApp.Service
 
             int id = record.Id;
 
-            long position = this.recordIndexPosition[record.Id] + 2;
+            long position = this.recordIndexPosition[record.Id];
             this.writer.BaseStream.Position = position;
-            byte isDeleted = 1;
-            this.writer.Write(isDeleted);
+            this.writer.Write((short)1);
             this.writer.Flush();
 
             this.recordIndexPosition.Remove(record.Id);
@@ -173,6 +172,11 @@ namespace FileCabinetApp.Service
 
             long position = this.recordIndexPosition[fileCabinetRecord.Id];
             FileCabinetRecord oldRecord = this.FileReader(position);
+
+            if (oldRecord.Id != fileCabinetRecord.Id)
+            {
+                throw new ArgumentException($"{nameof(fileCabinetRecord)} can't update record id.", nameof(fileCabinetRecord));
+            }
 
             this.writer.BaseStream.Position = position + sizeof(short) + sizeof(int);
             if (fileCabinetRecord.FirstName != oldRecord.FirstName)
@@ -277,75 +281,6 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Finds the first name of the by.
-        /// </summary>
-        /// <param name="firstName">The first name.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.ContainsKey(firstName))
-            {
-                foreach (var element in this.firstNameDictionary[firstName])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
-            }
-        }
-
-        /// <summary>
-        /// Finds the last name of the by.
-        /// </summary>
-        /// <param name="lastName">The last name.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.ContainsKey(lastName))
-            {
-                foreach (var element in this.lastNameDictionary[lastName])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
-            }
-        }
-
-        /// <summary>
-        /// Finds the by date of birth.
-        /// </summary>
-        /// <param name="dateOfBirth">The date of birth.</param>
-        /// <returns>Array of records.</returns>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(DateTime dateOfBirth)
-        {
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
-            {
-                foreach (var element in this.dateOfBirthDictionary[dateOfBirth])
-                {
-                    yield return element;
-                }
-
-                yield break;
-            }
-
-            foreach (var fileCabinetRecord in Array.Empty<FileCabinetRecord>())
-            {
-                yield return fileCabinetRecord;
-            }
-        }
-
-        /// <summary>
         /// Makes the snapshot.
         /// </summary>
         /// <returns>
@@ -428,8 +363,7 @@ namespace FileCabinetApp.Service
         {
             this.reader.BaseStream.Position = pointer;
             short reserved = this.reader.ReadInt16();
-            byte isDeleted = this.reader.ReadByte();
-            if (isDeleted == 1)
+            if (reserved == 1)
             {
                 return null;
             }
@@ -457,7 +391,6 @@ namespace FileCabinetApp.Service
         {
             this.writer.BaseStream.Position = position;
             this.writer.Write((short)0);
-            this.writer.Write((byte)0);
             this.writer.Write(fileCabinetRecord.Id);
 
             var buffer = Encoding.Unicode.GetBytes(CreateEmptyString(fileCabinetRecord.FirstName, 60));
