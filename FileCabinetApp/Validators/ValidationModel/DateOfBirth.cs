@@ -3,23 +3,23 @@
 namespace FileCabinetApp.Validators.ValidationParameters
 {
     /// <summary>
-    /// DateOfBirthCriterions.
+    ///     DateOfBirthCriterions.
     /// </summary>
     public class DateOfBirth
     {
         /// <summary>
-        /// Gets or sets from.
+        ///     Gets or sets from.
         /// </summary>
         /// <value>
-        /// From.
+        ///     From.
         /// </value>
         public DateTime From { get; set; }
 
         /// <summary>
-        /// Gets or sets to.
+        ///     Gets or sets to.
         /// </summary>
         /// <value>
-        /// To.
+        ///     To.
         /// </value>
         public DateTime To { get; set; }
     }

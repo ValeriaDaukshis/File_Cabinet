@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace FileCabinetApp.Records
 {
     /// <summary>
-    /// FileCabinetRecords.
+    ///     FileCabinetRecords.
     /// </summary>
     [XmlRoot("records")]
     public class RecordsModel
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RecordsModel"/> class.
+        ///     Initializes a new instance of the <see cref="RecordsModel" /> class.
         /// </summary>
         public RecordsModel()
         {
@@ -19,10 +18,10 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Gets the record.
+        ///     Gets the record.
         /// </summary>
         /// <value>
-        /// The record.
+        ///     The record.
         /// </value>
         [XmlElement("record")]
         public List<Record> Record { get; }

@@ -1,19 +1,21 @@
 ﻿using System;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators.CommonValidators
 {
     /// <summary>
-    /// DurationValidator.
+    ///     DurationValidator.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
     public class DurationValidator : IRecordValidator
     {
-        private readonly short minPeriod;
         private readonly short maxPeriod;
 
+        private readonly short minPeriod;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DurationValidator"/> class.
+        ///     Initializes a new instance of the <see cref="DurationValidator" /> class.
         /// </summary>
         /// <param name="minPeriod">The minimum period.</param>
         /// <param name="maxPeriod">The maximum period.</param>
@@ -24,7 +26,7 @@ namespace FileCabinetApp.Validators.CommonValidators
         }
 
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         /// <exception cref="ArgumentException">duration.</exception>
@@ -35,7 +37,7 @@ namespace FileCabinetApp.Validators.CommonValidators
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            short duration = record.Duration;
+            var duration = record.Duration;
             if (duration > this.maxPeriod || duration < this.minPeriod)
             {
                 throw new ArgumentException($"Id #{record.Id}: Credit duration is upper than {this.maxPeriod} or under than {this.minPeriod} weeks ({nameof(duration)})");

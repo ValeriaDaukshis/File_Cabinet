@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
     /// <summary>
-    /// HelpCommandHandler.
+    ///     HelpCommandHandler.
     /// </summary>
     /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
     public class HelpCommandHandler : CommandHandlerBase
     {
         private const int CommandHelpIndex = 0;
+
         private const int DescriptionHelpIndex = 1;
+
         private const int ExplanationHelpIndex = 2;
+
         private static string[][] helpMessages;
+
         private static ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HelpCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="HelpCommandHandler" /> class.
         /// </summary>
         /// <param name="help">The help.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -27,7 +30,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)

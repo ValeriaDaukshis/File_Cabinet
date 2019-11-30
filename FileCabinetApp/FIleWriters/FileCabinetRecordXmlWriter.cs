@@ -2,20 +2,22 @@
 using System.Globalization;
 using System.IO;
 using System.Xml;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.FIleWriters
 {
     /// <summary>
-    /// FileCabinetRecordXmlWriter.
+    ///     FileCabinetRecordXmlWriter.
     /// </summary>
     public class FileCabinetRecordXmlWriter
     {
         private readonly StreamWriter writer;
+
         private XmlWriter xmlWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetRecordXmlWriter" /> class.
         /// </summary>
         /// <param name="writer">The writer.</param>
         public FileCabinetRecordXmlWriter(StreamWriter writer)
@@ -24,17 +26,7 @@ namespace FileCabinetApp.FIleWriters
         }
 
         /// <summary>
-        /// Writes the header.
-        /// </summary>
-        public void WriteHeader()
-        {
-            XmlWriterSettings settings = new XmlWriterSettings() { Indent = true };
-            this.xmlWriter = XmlWriter.Create(this.writer, settings);
-            this.xmlWriter.WriteStartElement("records");
-        }
-
-        /// <summary>
-        /// Writes the specified record.
+        ///     Writes the specified record.
         /// </summary>
         /// <param name="record">The record.</param>
         public void Write(FileCabinetRecord record)
@@ -45,10 +37,10 @@ namespace FileCabinetApp.FIleWriters
             }
 
             this.xmlWriter.WriteStartElement("record");
-            this.xmlWriter.WriteAttributeString("id",  $"{record.Id}");
+            this.xmlWriter.WriteAttributeString("id", $"{record.Id}");
             this.xmlWriter.WriteStartElement("name");
-            this.xmlWriter.WriteAttributeString("first",  $"{record.FirstName}");
-            this.xmlWriter.WriteAttributeString("last",  $"{record.LastName}");
+            this.xmlWriter.WriteAttributeString("first", $"{record.FirstName}");
+            this.xmlWriter.WriteAttributeString("last", $"{record.LastName}");
             this.xmlWriter.WriteEndElement();
             this.xmlWriter.WriteElementString("gender", $"{record.Gender}");
             this.xmlWriter.WriteElementString("dateOfBirth", record.DateOfBirth.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture));
@@ -58,13 +50,23 @@ namespace FileCabinetApp.FIleWriters
         }
 
         /// <summary>
-        /// Writes the footer.
+        ///     Writes the footer.
         /// </summary>
         public void WriteFooter()
         {
             this.xmlWriter.WriteEndElement();
             this.xmlWriter.Dispose();
             this.xmlWriter.Close();
+        }
+
+        /// <summary>
+        ///     Writes the header.
+        /// </summary>
+        public void WriteHeader()
+        {
+            var settings = new XmlWriterSettings { Indent = true };
+            this.xmlWriter = XmlWriter.Create(this.writer, settings);
+            this.xmlWriter.WriteStartElement("records");
         }
     }
 }

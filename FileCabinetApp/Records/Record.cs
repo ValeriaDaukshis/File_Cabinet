@@ -4,12 +4,12 @@ using System.Xml.Serialization;
 namespace FileCabinetApp.Records
 {
     /// <summary>
-    /// Record.
+    ///     Record.
     /// </summary>
     public class Record
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Record"/> class.
+        ///     Initializes a new instance of the <see cref="Record" /> class.
         /// </summary>
         /// <param name="firstName">first name.</param>
         /// <param name="lastName">last name.</param>
@@ -27,7 +27,7 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Record"/> class.
+        ///     Initializes a new instance of the <see cref="Record" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="firstName">The first name.</param>
@@ -43,64 +43,64 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Record"/> class.
+        ///     Initializes a new instance of the <see cref="Record" /> class.
         /// </summary>
         public Record()
         {
         }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the name.
         /// </summary>
         /// <value>
-        /// The identifier.
-        /// </value>
-        [XmlAttribute("id")]
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name.
-        /// </summary>
-        /// <value>
-        /// The name.
+        ///     The name.
         /// </value>
         [XmlElement("name")]
         public Name Name { get; set; }
 
         /// <summary>
-        /// Gets or sets the gender.
+        ///     Gets or sets the gender.
         /// </summary>
         /// <value>
-        /// The gender.
+        ///     The gender.
         /// </value>
         [XmlElement(typeof(char), ElementName = "gender")]
         public char Gender { get; set; }
 
         /// <summary>
-        /// Gets or sets the date of birth.
+        ///     Gets or sets the date of birth.
         /// </summary>
         /// <value>
-        /// The date of birth.
+        ///     The date of birth.
         /// </value>
         [XmlElement(typeof(DateTime), ElementName = "dateOfBirth")]
         public DateTime DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets credit sum.
+        ///     Gets or sets credit sum.
         /// </summary>
         /// <value>
-        /// Credit sum.
+        ///     Credit sum.
         /// </value>
         [XmlElement("creditSum")]
         public decimal CreditSum { get; set; }
 
         /// <summary>
-        /// Gets or sets duration.
+        ///     Gets or sets duration.
         /// </summary>
         /// <value>
-        /// The duration.
+        ///     The duration.
         /// </value>
         [XmlElement("duration")]
         public short Duration { get; set; }
+
+        /// <summary>
+        ///     Gets or sets the identifier.
+        /// </summary>
+        /// <value>
+        ///     The identifier.
+        /// </value>
+        [XmlAttribute("id")]
+        public int Id { get; set; }
     }
 }

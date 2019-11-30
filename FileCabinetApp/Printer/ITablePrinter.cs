@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Printer
 {
     /// <summary>
-    /// ITablePrinter.
+    ///     ITablePrinter.
     /// </summary>
     public interface ITablePrinter
     {
         /// <summary>
-        /// Prints the specified records.
+        ///     Prints the specified records.
         /// </summary>
         /// <param name="record">The records.</param>
         /// <param name="fields">The fields.</param>

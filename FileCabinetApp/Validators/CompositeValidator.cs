@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators
 {
     /// <summary>
-    /// CompositeValidator.
+    ///     CompositeValidator.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
     public class CompositeValidator : IRecordValidator
@@ -13,7 +14,7 @@ namespace FileCabinetApp.Validators
         private readonly List<IRecordValidator> validators;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CompositeValidator"/> class.
+        ///     Initializes a new instance of the <see cref="CompositeValidator" /> class.
         /// </summary>
         /// <param name="recordValidators">The record validators.</param>
         public CompositeValidator(IEnumerable<IRecordValidator> recordValidators)
@@ -22,7 +23,7 @@ namespace FileCabinetApp.Validators
         }
 
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         public void ValidateParameters(FileCabinetRecord record)

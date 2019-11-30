@@ -1,21 +1,23 @@
 ﻿using System;
 using System.IO;
+
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// ExportCommandHandler.
+    ///     ExportCommandHandler.
     /// </summary>
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ExportCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;
+
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExportCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="ExportCommandHandler" /> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -26,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
@@ -55,7 +57,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                using (StreamWriter stream = new StreamWriter(path))
+                using (var stream = new StreamWriter(path))
                 {
                     if (fileFormat == "csv")
                     {

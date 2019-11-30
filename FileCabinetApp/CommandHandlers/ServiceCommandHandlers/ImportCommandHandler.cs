@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators.XmlFileValidator;
@@ -8,18 +9,21 @@ using FileCabinetApp.Validators.XmlFileValidator;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// ImportCommandHandler.
+    ///     ImportCommandHandler.
     /// </summary>
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class ImportCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly string xsdValidatorFile;
-        private readonly IXmlValidator xmlValidator;
         private readonly ModelWriters modelWriter;
+
+        private readonly IXmlValidator xmlValidator;
+
+        private readonly string xsdValidatorFile;
+
         private FileCabinetServiceSnapshot snapshot;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="ImportCommandHandler" /> class.
         /// </summary>
         /// <param name="cabinetService">The cabinet service.</param>
         /// <param name="xmlValidator">The XSD validator.</param>
@@ -34,7 +38,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
@@ -63,13 +67,13 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                using (StreamReader stream = new StreamReader(path))
+                using (var stream = new StreamReader(path))
                 {
                     if (fileFormat == "csv")
                     {
                         this.snapshot = this.CabinetService.MakeSnapshot();
                         this.snapshot.LoadFromCsv(stream, RecordValidator, Converter, this.modelWriter);
-                        int count = this.CabinetService.Restore(this.snapshot);
+                        var count = this.CabinetService.Restore(this.snapshot);
                         this.modelWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else if (fileFormat == "xml")
@@ -77,7 +81,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                         this.snapshot = this.CabinetService.MakeSnapshot();
                         this.xmlValidator.ValidateXml(this.xsdValidatorFile, path);
                         this.snapshot.LoadFromXml(stream, RecordValidator, this.modelWriter);
-                        int count = this.CabinetService.Restore(this.snapshot);
+                        var count = this.CabinetService.Restore(this.snapshot);
                         this.modelWriter.LineWriter.Invoke($"{count} records were imported from {path}");
                     }
                     else

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
@@ -12,27 +13,39 @@ using FileCabinetApp.Validators;
 namespace FileCabinetApp.Service
 {
     /// <summary>
-    /// FileCabinetFilesystemService.
+    ///     FileCabinetFilesystemService.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
     public sealed class FileCabinetFilesystemService : IFileCabinetService, IDisposable
     {
-        private const int SizeOfStringRecord = 120;
         private const long RecordSize = 278;
-        private readonly FileStream fileStream;
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-        private readonly Dictionary<int, long> recordIndexPosition = new Dictionary<int, long>();
-        private readonly IRecordValidator validator;
+
+        private const int SizeOfStringRecord = 120;
+
         private readonly CultureInfo culture = CultureInfo.InvariantCulture;
+
+        private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
+        private readonly FileStream fileStream;
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
         private readonly BinaryReader reader;
+
+        private readonly Dictionary<int, long> recordIndexPosition = new Dictionary<int, long>();
+
+        private readonly IRecordValidator validator;
+
         private readonly BinaryWriter writer;
+
         private int countOfRecords;
-        private bool disposed = false;
+
+        private bool disposed;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetFilesystemService" /> class.
         /// </summary>
         /// <param name="fileStream">The file stream.</param>
         /// <param name="validator">The validator.</param>
@@ -46,11 +59,11 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Creates the record.
+        ///     Creates the record.
         /// </summary>
         /// <param name="record">The file cabinet record.</param>
         /// <returns>
-        /// Id of created record.
+        ///     Id of created record.
         /// </returns>
         public int CreateRecord(FileCabinetRecord record)
         {
@@ -63,7 +76,7 @@ namespace FileCabinetApp.Service
             record.Id = this.GenerateId(record);
             this.countOfRecords++;
 
-            long position = RecordSize * (this.countOfRecords - 1);
+            var position = RecordSize * (this.countOfRecords - 1);
             this.FileWriter(record, position);
             this.writer.Flush();
 
@@ -76,86 +89,16 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Removes the record.
+        ///     Dispose.
         /// </summary>
-        /// <param name="record">The record.</param>
-        /// <returns>record id.</returns>
-        public int RemoveRecord(FileCabinetRecord record)
+        public void Dispose()
         {
-            if (record is null)
-            {
-                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
-            }
-
-            int id = record.Id;
-
-            long position = this.recordIndexPosition[record.Id];
-            this.writer.BaseStream.Position = position;
-            this.writer.Write((short)1);
-            this.writer.Flush();
-
-            this.recordIndexPosition.Remove(record.Id);
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
-            }
-
-            return id;
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
-        /// Purges the deleted records.
-        /// </summary>
-        /// <returns>count of deleted records and count of all records.</returns>
-        public (int, int) PurgeDeletedRecords()
-        {
-            Queue<long> rewriteRecord = new Queue<long>();
-
-            this.recordIndexPosition.Clear();
-            this.writer.BaseStream.Position = 0;
-            this.reader.BaseStream.Position = 0;
-
-            long readerPosition = 0;
-            long sizeOfFile = 0;
-            int countOfDeletedRecords = 0;
-
-            while (readerPosition < this.countOfRecords * RecordSize)
-            {
-                rewriteRecord.Enqueue(readerPosition);
-                FileCabinetRecord record = this.FileReader(readerPosition);
-                if (record != null)
-                {
-                    long recordPosition = rewriteRecord.Dequeue();
-                    this.FileWriter(record, recordPosition);
-                    this.recordIndexPosition.Add(record.Id, recordPosition);
-                    sizeOfFile += RecordSize;
-                }
-                else
-                {
-                    countOfDeletedRecords++;
-                }
-
-                readerPosition += RecordSize;
-            }
-
-            this.fileStream.SetLength(sizeOfFile);
-            int countOfAllRecords = this.countOfRecords;
-            this.countOfRecords -= countOfDeletedRecords;
-            return (countOfDeletedRecords, countOfAllRecords);
-        }
-
-        /// <summary>
-        /// Edits the record.
+        ///     Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
@@ -170,8 +113,8 @@ namespace FileCabinetApp.Service
                 throw new FileRecordNotFoundException(fileCabinetRecord.Id);
             }
 
-            long position = this.recordIndexPosition[fileCabinetRecord.Id];
-            FileCabinetRecord oldRecord = this.FileReader(position);
+            var position = this.recordIndexPosition[fileCabinetRecord.Id];
+            var oldRecord = this.FileReader(position);
 
             if (oldRecord.Id != fileCabinetRecord.Id)
             {
@@ -245,30 +188,20 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// GetStat.
-        /// </summary>
-        /// <returns>reserved records, count of records.</returns>
-        public (int, int) GetStat()
-        {
-            int reservedRecords = this.countOfRecords - this.recordIndexPosition.Count;
-            return (reservedRecords, this.countOfRecords);
-        }
-
-        /// <summary>
-        /// Gets the records.
+        ///     Gets the records.
         /// </summary>
         /// <returns>
-        /// All records.
+        ///     All records.
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+            var list = new List<FileCabinetRecord>();
 
             this.reader.BaseStream.Position = 0;
-            long position = this.reader.BaseStream.Position;
-            for (int i = 0; i < this.countOfRecords; i++)
+            var position = this.reader.BaseStream.Position;
+            for (var i = 0; i < this.countOfRecords; i++)
             {
-                FileCabinetRecord record = this.FileReader(position);
+                var record = this.FileReader(position);
                 if (record != null)
                 {
                     list.Add(record);
@@ -281,10 +214,20 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Makes the snapshot.
+        ///     GetStat.
+        /// </summary>
+        /// <returns>reserved records, count of records.</returns>
+        public (int, int) GetStat()
+        {
+            var reservedRecords = this.countOfRecords - this.recordIndexPosition.Count;
+            return (reservedRecords, this.countOfRecords);
+        }
+
+        /// <summary>
+        ///     Makes the snapshot.
         /// </summary>
         /// <returns>
-        /// FileCabinetServiceSnapshot.
+        ///     FileCabinetServiceSnapshot.
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
@@ -292,11 +235,90 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Restores the specified snapshot.
+        ///     Purges the deleted records.
+        /// </summary>
+        /// <returns>count of deleted records and count of all records.</returns>
+        public (int, int) PurgeDeletedRecords()
+        {
+            var rewriteRecord = new Queue<long>();
+
+            this.recordIndexPosition.Clear();
+            this.writer.BaseStream.Position = 0;
+            this.reader.BaseStream.Position = 0;
+
+            long readerPosition = 0;
+            long sizeOfFile = 0;
+            var countOfDeletedRecords = 0;
+
+            while (readerPosition < this.countOfRecords * RecordSize)
+            {
+                rewriteRecord.Enqueue(readerPosition);
+                var record = this.FileReader(readerPosition);
+                if (record != null)
+                {
+                    var recordPosition = rewriteRecord.Dequeue();
+                    this.FileWriter(record, recordPosition);
+                    this.recordIndexPosition.Add(record.Id, recordPosition);
+                    sizeOfFile += RecordSize;
+                }
+                else
+                {
+                    countOfDeletedRecords++;
+                }
+
+                readerPosition += RecordSize;
+            }
+
+            this.fileStream.SetLength(sizeOfFile);
+            var countOfAllRecords = this.countOfRecords;
+            this.countOfRecords -= countOfDeletedRecords;
+            return (countOfDeletedRecords, countOfAllRecords);
+        }
+
+        /// <summary>
+        ///     Removes the record.
+        /// </summary>
+        /// <param name="record">The record.</param>
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord record)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
+
+            var id = record.Id;
+
+            var position = this.recordIndexPosition[record.Id];
+            this.writer.BaseStream.Position = position;
+            this.writer.Write((short)1);
+            this.writer.Flush();
+
+            this.recordIndexPosition.Remove(record.Id);
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
+            }
+
+            return id;
+        }
+
+        /// <summary>
+        ///     Restores the specified snapshot.
         /// </summary>
         /// <param name="snapshot">The snapshot.</param>
         /// <returns>
-        /// count of restored records.
+        ///     count of restored records.
         /// </returns>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
@@ -305,7 +327,7 @@ namespace FileCabinetApp.Service
                 throw new ArgumentNullException(nameof(snapshot), $"{nameof(snapshot)} is null");
             }
 
-            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+            var readRecords = snapshot.ReadRecords;
 
             foreach (var record in readRecords)
             {
@@ -322,25 +344,29 @@ namespace FileCabinetApp.Service
             return readRecords.Count;
         }
 
-        /// <summary>
-        /// Dispose.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         private static string CreateEmptyString(string s, int capacity)
         {
-            StringBuilder builder = new StringBuilder(capacity);
+            var builder = new StringBuilder(capacity);
             builder.Append(s);
-            for (int i = s.Length; i < builder.Capacity; i++)
+            for (var i = s.Length; i < builder.Capacity; i++)
             {
                 builder.Append('\x0000');
             }
 
             return builder.ToString();
+        }
+
+        private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Add(record);
+            }
+            else
+            {
+                dictionary.Add(value, new List<FileCabinetRecord>());
+                dictionary[value].Add(record);
+            }
         }
 
         private void Dispose(bool disposing)
@@ -362,26 +388,26 @@ namespace FileCabinetApp.Service
         private FileCabinetRecord FileReader(long pointer)
         {
             this.reader.BaseStream.Position = pointer;
-            short reserved = this.reader.ReadInt16();
+            var reserved = this.reader.ReadInt16();
             if (reserved == 1)
             {
                 return null;
             }
 
-            int id = this.reader.ReadInt32();
-            string firstName = Encoding.Unicode.GetString(this.reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            var id = this.reader.ReadInt32();
+            var firstName = Encoding.Unicode.GetString(this.reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
             firstName = firstName.Replace("\0", string.Empty, StringComparison.InvariantCulture);
 
-            string lastName = Encoding.Unicode.GetString(this.reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
+            var lastName = Encoding.Unicode.GetString(this.reader.ReadBytes(SizeOfStringRecord), 0, SizeOfStringRecord);
             lastName = lastName.Replace("\0", string.Empty, StringComparison.InvariantCulture);
 
-            char gender = BitConverter.ToChar(this.reader.ReadBytes(2), 0);
-            int year = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
-            int month = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
-            int day = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
-            DateTime dateOfBirth = new DateTime(year, month, day);
-            decimal credit = this.reader.ReadDecimal();
-            short duration = this.reader.ReadInt16();
+            var gender = BitConverter.ToChar(this.reader.ReadBytes(2), 0);
+            var year = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
+            var month = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
+            var day = BitConverter.ToInt32(this.reader.ReadBytes(4), 0);
+            var dateOfBirth = new DateTime(year, month, day);
+            var credit = this.reader.ReadDecimal();
+            var duration = this.reader.ReadInt16();
             var fileCabinetRecord = new FileCabinetRecord(id, firstName, lastName, gender, dateOfBirth, credit, duration);
 
             return fileCabinetRecord;
@@ -409,27 +435,6 @@ namespace FileCabinetApp.Service
             this.writer.Write(fileCabinetRecord.Duration);
         }
 
-        private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
-        {
-            if (dictionary.ContainsKey(value))
-            {
-                dictionary[value].Add(record);
-            }
-            else
-            {
-                dictionary.Add(value, new List<FileCabinetRecord>());
-                dictionary[value].Add(record);
-            }
-        }
-
-        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
-        {
-            if (dictionary.ContainsKey(value))
-            {
-                dictionary[value].Remove(record);
-            }
-        }
-
         private int GenerateId(FileCabinetRecord fileCabinetRecord)
         {
             if (fileCabinetRecord.Id != 0)
@@ -445,6 +450,14 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
+        }
+
+        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Remove(record);
+            }
         }
     }
 }

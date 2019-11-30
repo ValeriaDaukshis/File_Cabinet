@@ -14,7 +14,7 @@ namespace FileCabinetGenerator.Records
         /// </summary>
         public FileCabinetRecords()
         {
-            this.Record = new List<FileCabinetGenerator.Records.Record>();
+            this.Record = new List<Record>();
         }
 
         /// <summary>
@@ -24,6 +24,6 @@ namespace FileCabinetGenerator.Records
         /// The record.
         /// </value>
         [XmlElement("record")]
-        public List<FileCabinetGenerator.Records.Record> Record { get; set; }
+        public List<Record> Record { get; set; }
     }
 }

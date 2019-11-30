@@ -1,13 +1,12 @@
 ﻿using System;
+
 using FileCabinetApp.CommandHandlers.Extensions;
-using FileCabinetApp.Memoization;
-using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// InsertCommandHandler.
+    ///     InsertCommandHandler.
     /// </summary>
     /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
     public class InsertCommandHandler : ServiceCommandHandlerBase
@@ -15,7 +14,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         private readonly ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InsertCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="InsertCommandHandler" /> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -26,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
@@ -51,19 +50,19 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         {
             if (fields.Length != values.Length)
             {
-                throw new ArgumentException($"Length of values and fields not equal.");
+                throw new ArgumentException("Length of values and fields not equal.");
             }
         }
 
         private void Create(string parameters)
         {
             char[] separators = { '(', ')', ',', ' ' };
-            string[] inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
+            var inputs = parameters.Split("values", StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
-                string[] fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-                string[] values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                var fields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                var values = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
                 CompareFieldsAndInputArraysLength(fields, values);
                 this.CommandHandlersExtensions.ChangeFieldCase(fields);

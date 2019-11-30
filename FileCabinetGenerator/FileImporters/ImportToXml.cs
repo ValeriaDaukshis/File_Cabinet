@@ -30,9 +30,9 @@ namespace FileCabinetGenerator.FileImporters
             XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
 
-            using (writer)
+            using (this.writer)
             {
-                formatter.Serialize(writer, records, namespaces);
+                formatter.Serialize(this.writer, records, namespaces);
             }
         }
     }

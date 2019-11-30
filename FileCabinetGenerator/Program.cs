@@ -69,6 +69,7 @@ namespace FileCabinetGenerator
                         inputs = false;
                         return;
                     }
+
                     outputFormat = o.OutputFormat;
                     outputFileName = o.OutputFileName;
                     recordsAmount = o.RecordsAmount;
@@ -97,6 +98,7 @@ namespace FileCabinetGenerator
                     {
                         serializer = new ImportToXml(fs);
                     }
+
                     serializer.Serialize(FileCabinetRecords);
                 }
             }
@@ -122,16 +124,17 @@ namespace FileCabinetGenerator
             }
         }
         
-        private static void GenerateFields(int i,out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
+        private static void GenerateFields(int i, out string firstName, out string lastName, out char gender, out DateTime dateOfBirth, out decimal credit, out short duration)
         {
-            firstName = Program.firstNameTemplate + i;
-            lastName = Program.lastNameTemplate + i;
+            firstName = firstNameTemplate + i;
+            lastName = lastNameTemplate + i;
             gender = i % 5 == 0 ? 'F' : 'M';
             dateOfBirth = RandomBirthDay();
             Random random = new Random();
             credit = (decimal)(random.Next(creditSumMinValue, creditSumMaxValue) + random.NextDouble());
             duration = (short)random.Next(durationMinValue, durationMaxValue);
         }
+
         private static DateTime RandomBirthDay()
         {
             DateTime start = BirthDayMinValue;

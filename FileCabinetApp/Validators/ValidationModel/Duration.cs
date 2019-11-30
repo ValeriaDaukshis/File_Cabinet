@@ -1,24 +1,24 @@
 ﻿namespace FileCabinetApp.Validators.ValidationParameters
 {
     /// <summary>
-    /// DurationCriterions.
+    ///     DurationCriterions.
     /// </summary>
     public class Duration
     {
         /// <summary>
-        /// Gets or sets from.
+        ///     Gets or sets from.
         /// </summary>
         /// <value>
-        /// From.
+        ///     From.
         /// </value>
-        public short From { get;  set; }
+        public short From { get; set; }
 
         /// <summary>
-        /// Gets or sets to.
+        ///     Gets or sets to.
         /// </summary>
         /// <value>
-        /// To.
+        ///     To.
         /// </value>
-        public short To { get;  set; }
+        public short To { get; set; }
     }
 }

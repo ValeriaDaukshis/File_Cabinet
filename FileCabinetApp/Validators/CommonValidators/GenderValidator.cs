@@ -1,16 +1,17 @@
 ﻿using System;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators.CommonValidators
 {
     /// <summary>
-    /// GenderValidator.
+    ///     GenderValidator.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
     public class GenderValidator : IRecordValidator
     {
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         /// <exception cref="ArgumentException">gender.</exception>
@@ -21,7 +22,7 @@ namespace FileCabinetApp.Validators.CommonValidators
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            char gender = record.Gender;
+            var gender = record.Gender;
             if (gender != 'M' && gender != 'F')
             {
                 throw new ArgumentException($"Id #{record.Id}: indefinite gender ({nameof(gender)}) ");

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 using FileCabinetApp.Timer;
@@ -8,17 +8,19 @@ using FileCabinetApp.Timer;
 namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
 {
     /// <summary>
-    /// ServiceMeter.
+    ///     ServiceMeter.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
     public sealed class ServiceMeter : IFileCabinetService
     {
-        private readonly IFileCabinetService service;
         private readonly ModelWriters modelWriter;
+
+        private readonly IFileCabinetService service;
+
         private IStopWatcher stopwatch;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceMeter"/> class.
+        ///     Initializes a new instance of the <see cref="ServiceMeter" /> class.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -30,19 +32,19 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Gets or sets the time in milliseconds.
+        ///     Gets or sets the time in milliseconds.
         /// </summary>
         /// <value>
-        /// The time in milliseconds.
+        ///     The time in milliseconds.
         /// </value>
         private long TimeInMilliseconds { get; set; }
 
         /// <summary>
-        /// Creates the record.
+        ///     Creates the record.
         /// </summary>
         /// <param name="record">record.</param>
         /// <returns>
-        /// Id of created record.
+        ///     Id of created record.
         /// </returns>
         public int CreateRecord(FileCabinetRecord record)
         {
@@ -50,7 +52,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Edits the record.
+        ///     Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
@@ -59,21 +61,10 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Gets the stat.
+        ///     Gets the records.
         /// </summary>
         /// <returns>
-        /// number of records.
-        /// </returns>
-        public (int, int) GetStat()
-        {
-            return this.MethodMeter(this.service.GetStat, "stat");
-        }
-
-        /// <summary>
-        /// Gets the records.
-        /// </summary>
-        /// <returns>
-        /// All records.
+        ///     All records.
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
@@ -81,10 +72,21 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Makes the snapshot.
+        ///     Gets the stat.
         /// </summary>
         /// <returns>
-        /// FileCabinetServiceSnapshot.
+        ///     number of records.
+        /// </returns>
+        public (int, int) GetStat()
+        {
+            return this.MethodMeter(this.service.GetStat, "stat");
+        }
+
+        /// <summary>
+        ///     Makes the snapshot.
+        /// </summary>
+        /// <returns>
+        ///     FileCabinetServiceSnapshot.
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
@@ -92,19 +94,18 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Restores the specified snapshot.
+        ///     Purges the deleted records.
         /// </summary>
-        /// <param name="snapshot">The snapshot.</param>
         /// <returns>
-        /// count of restored records.
+        ///     count of deleted records and count of all records.
         /// </returns>
-        public int Restore(FileCabinetServiceSnapshot snapshot)
+        public (int, int) PurgeDeletedRecords()
         {
-            return this.MethodMeter(this.service.Restore, snapshot, "restore");
+            return this.MethodMeter(this.service.PurgeDeletedRecords, "purge");
         }
 
         /// <summary>
-        /// Removes the record.
+        ///     Removes the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         /// <returns>record id.</returns>
@@ -114,14 +115,15 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         }
 
         /// <summary>
-        /// Purges the deleted records.
+        ///     Restores the specified snapshot.
         /// </summary>
+        /// <param name="snapshot">The snapshot.</param>
         /// <returns>
-        /// count of deleted records and count of all records.
+        ///     count of restored records.
         /// </returns>
-        public (int, int) PurgeDeletedRecords()
+        public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            return this.MethodMeter(this.service.PurgeDeletedRecords, "purge");
+            return this.MethodMeter(this.service.Restore, snapshot, "restore");
         }
 
         private void Create()
@@ -132,7 +134,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         private TResult MethodMeter<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
         {
             this.stopwatch.StartTimer();
-            TResult result = method.Invoke(record);
+            var result = method.Invoke(record);
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             this.modelWriter.LineWriter.Invoke($"{methodName} method execution duration is {this.TimeInMilliseconds} ticks.");
@@ -151,7 +153,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Timer
         private TResult MethodMeter<TResult>(Func<TResult> method, string methodName)
         {
             this.stopwatch.StartTimer();
-            TResult result = method.Invoke();
+            var result = method.Invoke();
             this.stopwatch.StopTimer();
             this.TimeInMilliseconds = this.stopwatch.EllapsedMilliseconds;
             this.modelWriter.LineWriter.Invoke($"{methodName} method execution duration is {this.TimeInMilliseconds} ticks.");

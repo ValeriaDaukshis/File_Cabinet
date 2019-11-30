@@ -3,22 +3,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.FileReaders
 {
     /// <summary>
-    /// FileCabinetRecordXmlReader.
+    ///     FileCabinetRecordXmlReader.
     /// </summary>
     public class FileCabinetRecordXmlReader
     {
-        private readonly StreamReader streamReader;
-        private readonly IRecordValidator validator;
         private readonly ModelWriters modelWriter;
 
+        private readonly StreamReader streamReader;
+
+        private readonly IRecordValidator validator;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecordXmlReader"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetRecordXmlReader" /> class.
         /// </summary>
         /// <param name="streamReader">The reader.</param>
         /// <param name="validator">The validator.</param>
@@ -31,15 +34,15 @@ namespace FileCabinetApp.FileReaders
         }
 
         /// <summary>
-        /// Reads all.
+        ///     Reads all.
         /// </summary>
         /// <returns>list of records.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            XmlSerializer formatter = new XmlSerializer(typeof(RecordsModel));
+            var formatter = new XmlSerializer(typeof(RecordsModel));
 
             RecordsModel recordsModel;
-            using (XmlReader xmlReader = XmlReader.Create(this.streamReader))
+            using (var xmlReader = XmlReader.Create(this.streamReader))
             {
                 recordsModel = (RecordsModel)formatter.Deserialize(xmlReader);
             }

@@ -3,7 +3,7 @@
 namespace FileCabinetApp.Timer
 {
     /// <summary>
-    /// StopWatcher.
+    ///     StopWatcher.
     /// </summary>
     /// <seealso cref="FileCabinetApp.Timer.IStopWatcher" />
     public class StopWatcher : IStopWatcher
@@ -11,7 +11,7 @@ namespace FileCabinetApp.Timer
         private readonly Stopwatch timer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StopWatcher"/> class.
+        ///     Initializes a new instance of the <see cref="StopWatcher" /> class.
         /// </summary>
         public StopWatcher()
         {
@@ -19,15 +19,15 @@ namespace FileCabinetApp.Timer
         }
 
         /// <summary>
-        /// Gets the ellapsed milliseconds.
+        ///     Gets the ellapsed milliseconds.
         /// </summary>
         /// <value>
-        /// The ellapsed milliseconds.
+        ///     The ellapsed milliseconds.
         /// </value>
         public long EllapsedMilliseconds => this.timer.ElapsedTicks;
 
         /// <summary>
-        /// Starts this instance.
+        ///     Starts this instance.
         /// </summary>
         public void StartTimer()
         {
@@ -35,7 +35,7 @@ namespace FileCabinetApp.Timer
         }
 
         /// <summary>
-        /// Stops this instance.
+        ///     Stops this instance.
         /// </summary>
         public void StopTimer()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
 using FileCabinetApp.Memoization;
@@ -11,17 +12,19 @@ using FileCabinetApp.Service;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// SelectCommandHandler.
+    ///     SelectCommandHandler.
     /// </summary>
     public class SelectCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly ModelWriters modelWriter;
-        private readonly ITablePrinter printer;
         private readonly IExpressionExtensions expressionExtensions;
 
+        private readonly ModelWriters modelWriter;
+
+        private readonly ITablePrinter printer;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectCommandHandler"/> class.
-        /// DeleteCommandHandler constructor.
+        ///     Initializes a new instance of the <see cref="SelectCommandHandler" /> class.
+        ///     DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="printer">The printer.</param>
@@ -36,7 +39,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         /// <exception cref="ArgumentNullException">commandRequest.</exception>
@@ -59,7 +62,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private static void CheckConditionFieldsInput(string[] conditionFields)
         {
-            if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
+            if (conditionFields.Length > 2 && !conditionFields.Contains("and") && !conditionFields.Contains("or"))
             {
                 throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)'. Use 'help' or 'syntax'", nameof(conditionFields));
             }
@@ -73,6 +76,11 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static void PutDataInCache(string[] conditionFields, IEnumerable<FileCabinetRecord> records)
+        {
+            Cache.Add(new CachingKey(conditionFields), records);
+        }
+
         private static (bool, IEnumerable<FileCabinetRecord>) SearchDataInCache(string[] conditionFields)
         {
             if (Cache.Contains(conditionFields))
@@ -81,11 +89,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
 
             return (false, null);
-        }
-
-        private static void PutDataInCache(string[] conditionFields, IEnumerable<FileCabinetRecord> records)
-        {
-            Cache.Add(new CachingKey(conditionFields), records);
         }
 
         // select id, firstname, lastname where firstname = 'John' and lastname = 'Doe'
@@ -98,8 +101,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
 
             char[] separators = { '=', ',', ' ' };
-            string[] inputs = parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
-            string[] printedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var inputs = parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
+            var printedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
@@ -113,7 +116,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
                 var conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
-                (bool founded, IEnumerable<FileCabinetRecord> record) = SearchDataInCache(conditionFields);
+                var (founded, record) = SearchDataInCache(conditionFields);
                 if (founded)
                 {
                     this.printer.Print(record, printedFields);
@@ -121,8 +124,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 }
 
                 CheckConditionFieldsInput(conditionFields);
-                string conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
-                Dictionary<string, string> conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
+                var conditionSeparator = CommandHandlersExtensions.FindConditionSeparator(conditionFields);
+                var conditions = this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
                 // finds records that satisfy the condition
                 var records = this.expressionExtensions.FindSuitableRecords(conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();

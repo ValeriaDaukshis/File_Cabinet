@@ -1,46 +1,46 @@
 {
-	"custom": {
-		"firstName": {
-			"Min": 2,
-			"Max": 60
-		},
-		"lastName": {
-			"Min": 2,
-			"Max": 60
-		},
-		"dateOfBirth": {
-			"From": "1/1/1950",
-			"To": "10/8/2019"
-		},
-		"creditSum": {
-			"Min": 123,
-			"Max": 10000
-		},
-		"duration": {
-			"From": 12,
-			"To": 125
-		}
-	},
-	"default": {
-		"firstName": {
-			"Min": 4,
-			"Max": 60
-		},
-		"lastName": {
-			"Min": 4,
-			"Max": 60
-		},
-		"dateOfBirth": {
-			"From": "1/1/1930",
-			"To": "10/8/2019"
-		},
-		"creditSum": {
-			"Min": 120,
-			"Max": 50000
-		},
-		"duration": {
-			"From": 15,
-			"To": 300
-		}
-	}
+  "custom": {
+    "firstName": {
+      "Min": 2,
+      "Max": 60
+    },
+    "lastName": {
+      "Min": 2,
+      "Max": 60
+    },
+    "dateOfBirth": {
+      "From": "1/1/1950",
+      "To": "10/8/2019"
+    },
+    "creditSum": {
+      "Min": 123,
+      "Max": 10000
+    },
+    "duration": {
+      "From": 12,
+      "To": 125
+    }
+  },
+  "default": {
+    "firstName": {
+      "Min": 4,
+      "Max": 60
+    },
+    "lastName": {
+      "Min": 4,
+      "Max": 60
+    },
+    "dateOfBirth": {
+      "From": "1/1/1930",
+      "To": "10/8/2019"
+    },
+    "creditSum": {
+      "Min": 120,
+      "Max": 50000
+    },
+    "duration": {
+      "From": 15,
+      "To": 300
+    }
+  }
 }

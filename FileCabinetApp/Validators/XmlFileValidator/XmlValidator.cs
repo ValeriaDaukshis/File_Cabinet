@@ -6,24 +6,24 @@ using System.Xml.Schema;
 namespace FileCabinetApp.Validators.XmlFileValidator
 {
     /// <summary>
-    /// XsdValidator.
+    ///     XsdValidator.
     /// </summary>
     /// <seealso cref="IXmlValidator" />
     public class XmlValidator : IXmlValidator
     {
         /// <summary>
-        /// Validates the XML.
+        ///     Validates the XML.
         /// </summary>
         /// <param name="validator">The validator.</param>
         /// <param name="fileName">Name of the file.</param>
         public void ValidateXml(string validator, string fileName)
         {
-            XmlSchemaSet schema = new XmlSchemaSet();
+            var schema = new XmlSchemaSet();
             schema.Add(string.Empty, validator);
 
-            using (XmlReader rd = XmlReader.Create(fileName))
+            using (var rd = XmlReader.Create(fileName))
             {
-                XDocument doc = XDocument.Load(rd);
+                var doc = XDocument.Load(rd);
                 doc.Validate(schema, ValidationEventHandler);
             }
         }
