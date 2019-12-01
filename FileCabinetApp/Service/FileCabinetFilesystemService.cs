@@ -288,7 +288,7 @@ namespace FileCabinetApp.Service
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray());
+            return new FileCabinetServiceSnapshot(this.GetRecords().ToArray()).MakeSnapshot();
         }
 
         /// <summary>

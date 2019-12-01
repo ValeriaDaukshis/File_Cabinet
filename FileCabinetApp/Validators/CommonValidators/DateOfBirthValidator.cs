@@ -42,7 +42,7 @@ namespace FileCabinetApp.Validators.CommonValidators
             DateTime dateOfBirth = record.DateOfBirth;
             if (dateOfBirth > this.maxDateOfBirth)
             {
-                throw new ArgumentException(nameof(dateOfBirth), $"Id #{record.Id} : Date of birth is upper than {this.maxDateOfBirth} ({nameof(dateOfBirth)})");
+                throw new ArgumentException($"Id #{record.Id}: Date of birth is upper than {this.maxDateOfBirth} ({nameof(dateOfBirth)})");
             }
 
             if (dateOfBirth < this.minDateOfBirth)

@@ -156,7 +156,7 @@ namespace FileCabinetApp.Service
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            return new FileCabinetServiceSnapshot(this.list.ToArray());
+            return new FileCabinetServiceSnapshot(this.list.ToArray()).MakeSnapshot();
         }
 
         /// <summary>
