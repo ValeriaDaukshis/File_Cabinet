@@ -1,19 +1,21 @@
 ﻿using System;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators.CommonValidators
 {
     /// <summary>
-    /// CreditSumValidator.
+    ///     CreditSumValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class CreditSumValidator : IRecordValidator
     {
-        private readonly decimal minCreditSum;
         private readonly decimal maxCreditSum;
 
+        private readonly decimal minCreditSum;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="CreditSumValidator"/> class.
+        ///     Initializes a new instance of the <see cref="CreditSumValidator" /> class.
         /// </summary>
         /// <param name="minCreditSum">The minimum credit sum.</param>
         /// <param name="maxCreditSum">The maximum credit sum.</param>
@@ -24,7 +26,7 @@ namespace FileCabinetApp.Validators.CommonValidators
         }
 
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         public void ValidateParameters(FileCabinetRecord record)
@@ -34,7 +36,7 @@ namespace FileCabinetApp.Validators.CommonValidators
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            decimal creditSum = record.CreditSum;
+            var creditSum = record.CreditSum;
             if (creditSum > this.maxCreditSum || creditSum < this.minCreditSum)
             {
                 throw new ArgumentException($"Id #{record.Id}: Credit sum is upper than {this.maxCreditSum} or under than {this.minCreditSum} BYN ({nameof(creditSum)})");

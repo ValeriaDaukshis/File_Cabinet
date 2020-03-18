@@ -4,14 +4,14 @@ using System.Linq;
 namespace FileCabinetApp.Memoization
 {
     /// <summary>
-    /// DataCachingKey.
+    ///     DataCachingKey.
     /// </summary>
     public class CachingKey
     {
         private IEnumerable<string> fields;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CachingKey"/> class.
+        ///     Initializes a new instance of the <see cref="CachingKey" /> class.
         /// </summary>
         /// <param name="fields">The fields.</param>
         public CachingKey(string[] fields)
@@ -20,10 +20,10 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Gets or sets the fields.
+        ///     Gets or sets the fields.
         /// </summary>
         /// <value>
-        /// The fields.
+        ///     The fields.
         /// </value>
         public IEnumerable<string> Fields
         {
@@ -38,11 +38,11 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Determines whether the specified <see cref="object" />, is equal to this instance.
+        ///     Determines whether the specified <see cref="object" />, is equal to this instance.
         /// </summary>
         /// <param name="obj">The <see cref="object" /> to compare with this instance.</param>
         /// <returns>
-        ///   <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
+        ///     <c>true</c> if the specified <see cref="object" /> is equal to this instance; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object obj)
         {
@@ -65,18 +65,7 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Returns a hash code for this instance.
-        /// </summary>
-        /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
-        /// </returns>
-        public override int GetHashCode()
-        {
-            return this.fields != null ? this.fields.GetHashCode() : 0;
-        }
-
-        /// <summary>
-        /// Equalses the specified other.
+        ///     Equalses the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns>true if other equals to DataCachingKey.</returns>
@@ -93,6 +82,17 @@ namespace FileCabinetApp.Memoization
             }
 
             return this.fields.SequenceEqual(other.fields);
+        }
+
+        /// <summary>
+        ///     Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>
+        ///     A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// </returns>
+        public override int GetHashCode()
+        {
+            return this.fields != null ? this.fields.GetHashCode() : 0;
         }
     }
 }

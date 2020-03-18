@@ -2,24 +2,28 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
+
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
 {
     /// <summary>
-    /// ServiceLogger.
+    ///     ServiceLogger.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Service.IFileCabinetService" />
+    /// <seealso cref="IFileCabinetService" />
     public sealed class ServiceLogger : IFileCabinetService, IDisposable
     {
-        private readonly IFileCabinetService service;
         private readonly string path;
+
+        private readonly IFileCabinetService service;
+
+        private bool disposed;
+
         private TextWriter writer;
-        private bool disposed = false;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceLogger"/> class.
+        ///     Initializes a new instance of the <see cref="ServiceLogger" /> class.
         /// </summary>
         /// <param name="service">The service.</param>
         /// <param name="path">The path.</param>
@@ -31,11 +35,11 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Creates the record.
+        ///     Creates the record.
         /// </summary>
         /// <param name="record">record.</param>
         /// <returns>
-        /// Id of created record.
+        ///     Id of created record.
         /// </returns>
         public int CreateRecord(FileCabinetRecord record)
         {
@@ -48,7 +52,16 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Edits the record.
+        ///     Dispose.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///     Edits the record.
         /// </summary>
         /// <param name="record">The record.</param>
         public void EditRecord(FileCabinetRecord record)
@@ -62,21 +75,10 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Gets the stat.
+        ///     Gets the records.
         /// </summary>
         /// <returns>
-        /// number of records.
-        /// </returns>
-        public (int, int) GetStat()
-        {
-            return this.MethodLogger(this.service.GetStat, "Stat");
-        }
-
-        /// <summary>
-        /// Gets the records.
-        /// </summary>
-        /// <returns>
-        /// All records.
+        ///     All records.
         /// </returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
@@ -84,10 +86,21 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Makes the snapshot.
+        ///     Gets the stat.
         /// </summary>
         /// <returns>
-        /// FileCabinetServiceSnapshot.
+        ///     number of records.
+        /// </returns>
+        public (int, int) GetStat()
+        {
+            return this.MethodLogger(this.service.GetStat, "Stat");
+        }
+
+        /// <summary>
+        ///     Makes the snapshot.
+        /// </summary>
+        /// <returns>
+        ///     FileCabinetServiceSnapshot.
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
@@ -95,19 +108,18 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Restores the specified snapshot.
+        ///     Purges the deleted records.
         /// </summary>
-        /// <param name="snapshot">The snapshot.</param>
         /// <returns>
-        /// count of restored records.
+        ///     count of deleted records and count of all records.
         /// </returns>
-        public int Restore(FileCabinetServiceSnapshot snapshot)
+        public (int, int) PurgeDeletedRecords()
         {
-            return this.MethodLogger(this.service.Restore, snapshot, "restore");
+            return this.MethodLogger(this.service.PurgeDeletedRecords, "purge");
         }
 
         /// <summary>
-        /// Removes the record.
+        ///     Removes the record.
         /// </summary>
         /// <param name="record">The record.</param>
         /// <returns>record id.</returns>
@@ -122,31 +134,28 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         }
 
         /// <summary>
-        /// Purges the deleted records.
+        ///     Restores the specified snapshot.
         /// </summary>
+        /// <param name="snapshot">The snapshot.</param>
         /// <returns>
-        /// count of deleted records and count of all records.
+        ///     count of restored records.
         /// </returns>
-        public (int, int) PurgeDeletedRecords()
+        public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            return this.MethodLogger(this.service.PurgeDeletedRecords, "purge");
-        }
-
-        /// <summary>
-        /// Dispose.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
+            return this.MethodLogger(this.service.Restore, snapshot, "restore");
         }
 
         private static string CreateText(string method)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append(DateTime.Now);
             builder.Append($" Calling {method}()");
             return builder.ToString();
+        }
+
+        private void Create()
+        {
+            this.writer = new StreamWriter(this.path);
         }
 
         private void Dispose(bool disposing)
@@ -164,15 +173,10 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
             this.disposed = true;
         }
 
-        private void Create()
-        {
-            this.writer = new StreamWriter(this.path);
-        }
-
         private TResult MethodLogger<TSource, TResult>(Func<TSource, TResult> method, TSource record, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
-            TResult result = method.Invoke(record);
+            var result = method.Invoke(record);
             this.writer.WriteLine($"{methodName}() returned '{result}'");
             this.writer.Flush();
             return result;
@@ -188,7 +192,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         private TResult MethodLogger<TResult>(Func<TResult> method, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
-            TResult result = method.Invoke();
+            var result = method.Invoke();
             this.writer.WriteLine($"{methodName}() returned '{result}'");
             this.writer.Flush();
             return result;
@@ -197,7 +201,7 @@ namespace FileCabinetApp.FileCabinetServiceWrappers.Logger
         private (TResult, TResult) MethodLogger<TResult>(Func<(TResult, TResult)> method, string methodName)
         {
             this.writer.WriteLine(CreateText(methodName));
-            (TResult result1, TResult result2) = method.Invoke();
+            var (result1, result2) = method.Invoke();
             this.writer.WriteLine($"{methodName}() returned '{result1}', '{result2}'");
             this.writer.Flush();
             return (result1, result2);

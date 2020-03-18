@@ -1,19 +1,21 @@
 ﻿using System;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators.CommonValidators
 {
     /// <summary>
-    /// LastNameValidator.
+    ///     LastNameValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class LastNameValidator : IRecordValidator
     {
-        private readonly int minLength;
         private readonly int maxLength;
 
+        private readonly int minLength;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="LastNameValidator"/> class.
+        ///     Initializes a new instance of the <see cref="LastNameValidator" /> class.
         /// </summary>
         /// <param name="minLength">The minimum length.</param>
         /// <param name="maxLength">The maximum length.</param>
@@ -24,13 +26,13 @@ namespace FileCabinetApp.Validators.CommonValidators
         }
 
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         /// <exception cref="ArgumentException">
-        /// lastName
-        /// or
-        /// lastName.
+        ///     lastName
+        ///     or
+        ///     lastName.
         /// </exception>
         public void ValidateParameters(FileCabinetRecord record)
         {
@@ -39,7 +41,7 @@ namespace FileCabinetApp.Validators.CommonValidators
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            string lastName = record.LastName;
+            var lastName = record.LastName;
 
             if (string.IsNullOrEmpty(lastName))
             {

@@ -3,13 +3,13 @@
 namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// ServiceCommandHandlerBase.
+    ///     ServiceCommandHandlerBase.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
+        ///     Initializes a new instance of the <see cref="ServiceCommandHandlerBase" /> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
         protected ServiceCommandHandlerBase(IFileCabinetService cabinetService)
@@ -18,10 +18,10 @@ namespace FileCabinetApp.CommandHandlers
         }
 
         /// <summary>
-        /// Gets or sets iFileCabinetService.
+        ///     Gets or sets iFileCabinetService.
         /// </summary>
         /// <value>
-        /// IFileCabinetService.
+        ///     IFileCabinetService.
         /// </value>
         protected IFileCabinetService CabinetService { get; set; }
     }

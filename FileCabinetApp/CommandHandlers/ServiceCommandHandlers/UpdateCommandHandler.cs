@@ -10,29 +10,29 @@ using FileCabinetApp.Service;
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// UpdateCommandHandler.
+    ///     UpdateCommandHandler.
     /// </summary>
     public class UpdateCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
+
         private readonly ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdateCommandHandler"/> class.
-        /// DeleteCommandHandler constructor.
+        ///     Initializes a new instance of the <see cref="UpdateCommandHandler" /> class.
+        ///     DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="modelWriter">console writer.</param>
-        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter)
-            : base(cabinetService)
+        public UpdateCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter) : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
             this.modelWriter = modelWriter;
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         /// <exception cref="ArgumentNullException">commandRequest.</exception>
@@ -54,40 +54,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
-        private static string CreateOutputText(int[] recordsId)
-        {
-            StringBuilder builder = new StringBuilder();
-            if (recordsId.Length == 0)
-            {
-                return "Records with this parameters not found";
-            }
-
-            if (recordsId.Length > 1)
-            {
-                builder.Append("Records ");
-            }
-            else
-            {
-                builder.Append("Record ");
-            }
-
-            for (int i = 0; i < recordsId.Length; i++)
-            {
-                builder.Append($"#{recordsId[i]} ");
-            }
-
-            if (recordsId.Length > 1)
-            {
-                builder.Append("were updated");
-            }
-            else
-            {
-                builder.Append("was updated");
-            }
-
-            return builder.ToString();
-        }
-
         private static void CheckConditionFieldsInput(string[] conditionFields)
         {
             if (conditionFields.Length < 2)
@@ -95,7 +61,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 throw new ArgumentException($"{nameof(conditionFields)} Not enough parameters after condition command 'where'. Use 'help' or 'syntax'");
             }
 
-            if (conditionFields.Length > 2 && (!conditionFields.Contains("and") && !conditionFields.Contains("or")))
+            if (conditionFields.Length > 2 && !conditionFields.Contains("and") && !conditionFields.Contains("or"))
             {
                 throw new ArgumentException($"{nameof(conditionFields)} parameters after 'where' don't have separator 'and(or)'. Use 'help' or 'syntax'");
             }
@@ -122,6 +88,40 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static string CreateOutputText(int[] recordsId)
+        {
+            var builder = new StringBuilder();
+            if (recordsId.Length == 0)
+            {
+                return "Records with this parameters not found";
+            }
+
+            if (recordsId.Length > 1)
+            {
+                builder.Append("Records ");
+            }
+            else
+            {
+                builder.Append("Record ");
+            }
+
+            for (var i = 0; i < recordsId.Length; i++)
+            {
+                builder.Append($"#{recordsId[i]} ");
+            }
+
+            if (recordsId.Length > 1)
+            {
+                builder.Append("were updated");
+            }
+            else
+            {
+                builder.Append("was updated");
+            }
+
+            return builder.ToString();
+        }
+
         private void Update(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -131,9 +131,9 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
 
             char[] separators = { '=', ',', ' ' };
-            string[] inputs = parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
-            string[] updatedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            string[] conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var inputs = parameters.Split("where", StringSplitOptions.RemoveEmptyEntries);
+            var updatedFields = inputs[0].Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var conditionFields = inputs[1].Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             try
             {
@@ -147,19 +147,19 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 Dictionary<string, string> conditions =
                     this.CommandHandlersExtensions.CreateDictionaryOfFields(conditionFields, conditionSeparator);
 
-                List<int> recordsId = new List<int>();
+                var recordsId = new List<int>();
 
                 // finds records that satisfy the condition
                 var records = this.expressionExtensions.FindSuitableRecords(
                     conditions.Values.ToArray(), conditions.Keys.ToArray(), conditionSeparator, typeof(FileCabinetRecord)).ToArray();
 
-                for (int i = 0; i < records.Length; i++)
+                for (var i = 0; i < records.Length; i++)
                 {
-                    FileCabinetRecord record = this.InputValidator.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
-                    int id = records[i].Id;
+                    var record = this.InputValidator.CheckInputFields(updates.Keys.ToArray(), updates.Values.ToArray(), records[i]);
+                    var id = records[i].Id;
                     if (updates.ContainsKey("Id"))
                     {
-                        string newId = updates["Id"];
+                        var newId = updates["Id"];
                         CheckUpdateId(id.ToString(Culture), newId);
                     }
 

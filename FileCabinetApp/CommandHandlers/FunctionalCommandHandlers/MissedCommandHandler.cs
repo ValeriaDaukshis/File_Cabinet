@@ -6,16 +6,17 @@ using System.Text;
 namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
     /// <summary>
-    /// MissedCommandHandler.
+    ///     MissedCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public class MissedCommandHandler : CommandHandlerBase
     {
         private static string[] commands;
+
         private static ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MissedCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="MissedCommandHandler" /> class.
         /// </summary>
         /// <param name="commands">The commands.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -26,7 +27,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
@@ -39,22 +40,14 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             PrintMissedCommandInfo(commandRequest.Command);
         }
 
-        private static void PrintMissedCommandInfo(string command)
-        {
-            var mostSimilarCommands = FindCommands(command);
-            modelWriter.LineWriter.Invoke(PrintCommands(mostSimilarCommands, command));
-        }
-
         private static IEnumerable<string> FindCommands(string command)
         {
             IEnumerable<string> mostSimilarCommands = new List<string>();
-            string parameter = command;
+            var parameter = command;
             while (!mostSimilarCommands.Any() && parameter.Length > 0)
             {
                 var parameter1 = parameter;
-                mostSimilarCommands = from n in commands
-                    where n.StartsWith(parameter1, StringComparison.InvariantCulture)
-                    select n;
+                mostSimilarCommands = from n in commands where n.StartsWith(parameter1, StringComparison.InvariantCulture) select n;
                 parameter = parameter.Substring(0, parameter.Length - 1);
             }
 
@@ -63,7 +56,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 
         private static string PrintCommands(IEnumerable<string> printedCommands, string command)
         {
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
             builder.Append($"There is no '{command}' command.\n");
             if (!printedCommands.Any())
             {
@@ -73,11 +66,11 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 
             if (printedCommands.Count() > 1)
             {
-                builder.Append($"The most similar commands are\n");
+                builder.Append("The most similar commands are\n");
             }
             else
             {
-                builder.Append($"The most similar command is\n");
+                builder.Append("The most similar command is\n");
             }
 
             foreach (var value in printedCommands)
@@ -86,6 +79,12 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
             }
 
             return builder.ToString();
+        }
+
+        private static void PrintMissedCommandInfo(string command)
+        {
+            var mostSimilarCommands = FindCommands(command);
+            modelWriter.LineWriter.Invoke(PrintCommands(mostSimilarCommands, command));
         }
     }
 }

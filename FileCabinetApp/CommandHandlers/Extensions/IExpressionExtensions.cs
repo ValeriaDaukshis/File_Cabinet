@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.CommandHandlers.Extensions
 {
     /// <summary>
-    /// IExpressionExtensions.
+    ///     IExpressionExtensions.
     /// </summary>
     public interface IExpressionExtensions
     {
         /// <summary>
-        /// Finds the suitable records.
+        ///     Finds the suitable records.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <param name="fieldName">Name of the field.</param>
@@ -20,7 +21,7 @@ namespace FileCabinetApp.CommandHandlers.Extensions
         IEnumerable<FileCabinetRecord> FindSuitableRecords(string[] parameter, string[] fieldName, string conditionSeparator, Type classType);
 
         /// <summary>
-        /// Finds the suitable records.
+        ///     Finds the suitable records.
         /// </summary>
         /// <param name="parameter">The parameter.</param>
         /// <param name="fieldName">Name of the field.</param>

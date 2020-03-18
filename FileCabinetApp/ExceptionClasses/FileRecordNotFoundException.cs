@@ -3,22 +3,21 @@
 namespace FileCabinetApp.ExceptionClasses
 {
     /// <summary>
-    /// FileRecordNotFound.
+    ///     FileRecordNotFound.
     /// </summary>
     public class FileRecordNotFoundException : Exception
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileRecordNotFoundException"/> class.
+        ///     Initializes a new instance of the <see cref="FileRecordNotFoundException" /> class.
         /// </summary>
         /// <param name="val">value.</param>
         public FileRecordNotFoundException(int val)
-            : base()
         {
             this.Value = val;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileRecordNotFoundException"/> class.
+        ///     Initializes a new instance of the <see cref="FileRecordNotFoundException" /> class.
         /// </summary>
         /// <param name="message">message.</param>
         public FileRecordNotFoundException(string message)
@@ -27,7 +26,7 @@ namespace FileCabinetApp.ExceptionClasses
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileRecordNotFoundException"/> class.
+        ///     Initializes a new instance of the <see cref="FileRecordNotFoundException" /> class.
         /// </summary>
         /// <param name="message">message.</param>
         /// <param name="innerException">inner Exception.</param>
@@ -37,17 +36,17 @@ namespace FileCabinetApp.ExceptionClasses
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileRecordNotFoundException"/> class.
+        ///     Initializes a new instance of the <see cref="FileRecordNotFoundException" /> class.
         /// </summary>
         public FileRecordNotFoundException()
         {
         }
 
         /// <summary>
-        /// Gets value.
+        ///     Gets value.
         /// </summary>
         /// <value>
-        /// Value.
+        ///     Value.
         /// </value>
         public int Value { get; }
     }

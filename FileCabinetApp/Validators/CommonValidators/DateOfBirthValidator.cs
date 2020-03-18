@@ -1,19 +1,21 @@
 ﻿using System;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators.CommonValidators
 {
     /// <summary>
-    /// DateOfBirthValidator.
+    ///     DateOfBirthValidator.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.Validators.IRecordValidator" />
+    /// <seealso cref="IRecordValidator" />
     public class DateOfBirthValidator : IRecordValidator
     {
-        private readonly DateTime minDateOfBirth;
         private readonly DateTime maxDateOfBirth;
 
+        private readonly DateTime minDateOfBirth;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
+        ///     Initializes a new instance of the <see cref="DateOfBirthValidator" /> class.
         /// </summary>
         /// <param name="minDateOfBirth">The minimum date of birth.</param>
         /// <param name="maxDateOfBirth">The maximum date of birth.</param>
@@ -24,13 +26,13 @@ namespace FileCabinetApp.Validators.CommonValidators
         }
 
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         /// <exception cref="ArgumentException">
-        /// dateOfBirth
-        /// or
-        /// dateOfBirth.
+        ///     dateOfBirth
+        ///     or
+        ///     dateOfBirth.
         /// </exception>
         public void ValidateParameters(FileCabinetRecord record)
         {
@@ -39,7 +41,7 @@ namespace FileCabinetApp.Validators.CommonValidators
                 throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
             }
 
-            DateTime dateOfBirth = record.DateOfBirth;
+            var dateOfBirth = record.DateOfBirth;
             if (dateOfBirth > this.maxDateOfBirth)
             {
                 throw new ArgumentException(nameof(dateOfBirth), $"Id #{record.Id} : Date of birth is upper than {this.maxDateOfBirth} ({nameof(dateOfBirth)})");

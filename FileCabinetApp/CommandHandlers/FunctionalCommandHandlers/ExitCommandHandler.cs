@@ -1,21 +1,21 @@
 ﻿using System;
-using FileCabinetApp.CommandHandlers.ServiceCommandHandlers;
-using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
 {
     /// <summary>
-    /// ExitCommandHandler.
+    ///     ExitCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.CommandHandlerBase" />
+    /// <seealso cref="CommandHandlerBase" />
     public class ExitCommandHandler : CommandHandlerBase
     {
-        private readonly Action<bool> isRunning;
-        private readonly ModelWriters modelWriter;
         private readonly IDisposable dispose;
 
+        private readonly Action<bool> isRunning;
+
+        private readonly ModelWriters modelWriter;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="ExitCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="ExitCommandHandler" /> class.
         /// </summary>
         /// <param name="isRunning">The is running.</param>
         /// <param name="dispose">Dispose.</param>
@@ -28,7 +28,7 @@ namespace FileCabinetApp.CommandHandlers.FunctionalCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)

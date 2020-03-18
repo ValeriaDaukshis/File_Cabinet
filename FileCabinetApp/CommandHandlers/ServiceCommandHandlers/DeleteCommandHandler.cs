@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Security;
@@ -8,36 +7,35 @@ using System.Reflection;
 using System.Text;
 using FileCabinetApp.CommandHandlers.Extensions;
 using FileCabinetApp.ExceptionClasses;
-using FileCabinetApp.Memoization;
 using FileCabinetApp.Records;
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// DeleteCommandHandler.
+    ///     DeleteCommandHandler.
     /// </summary>
     public class DeleteCommandHandler : ServiceCommandHandlerBase
     {
         private readonly IExpressionExtensions expressionExtensions;
+
         private readonly ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
-        /// DeleteCommandHandler constructor.
+        ///     Initializes a new instance of the <see cref="DeleteCommandHandler" /> class.
+        ///     DeleteCommandHandler constructor.
         /// </summary>
         /// <param name="cabinetService">fileCabinetService.</param>
         /// <param name="expressionExtensions">expressionExtensions.</param>
         /// <param name="modelWriter">console writer.</param>
-        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter)
-            : base(cabinetService)
+        public DeleteCommandHandler(IFileCabinetService cabinetService, IExpressionExtensions expressionExtensions, ModelWriters modelWriter) : base(cabinetService)
         {
             this.expressionExtensions = expressionExtensions;
             this.modelWriter = modelWriter;
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         /// <exception cref="ArgumentNullException">commandRequest.</exception>
@@ -59,6 +57,18 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
         }
 
+        private static string ChangeFieldCase(string value)
+        {
+            value = value.ToLower(Culture);
+            if (!FieldsCaseDictionary.ContainsKey(value))
+            {
+                throw new ArgumentException($"No field with name {nameof(value)}");
+            }
+
+            value = FieldsCaseDictionary[value];
+            return value;
+        }
+
         private static string CreateOutputText(int[] recordsId)
         {
             if (recordsId.Length == 0)
@@ -66,7 +76,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return "No records found";
             }
 
-            StringBuilder builder = new StringBuilder();
+            var builder = new StringBuilder();
 
             if (recordsId.Length > 1)
             {
@@ -77,7 +87,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 builder.Append("Record ");
             }
 
-            for (int i = 0; i < recordsId.Length; i++)
+            for (var i = 0; i < recordsId.Length; i++)
             {
                 builder.Append($"#{recordsId[i]} ");
             }
@@ -94,18 +104,6 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             return builder.ToString();
         }
 
-        private static string ChangeFieldCase(string value)
-        {
-            value = value.ToLower(Culture);
-            if (!FieldsCaseDictionary.ContainsKey(value))
-            {
-                throw new ArgumentException($"No field with name {nameof(value)}");
-            }
-
-            value = FieldsCaseDictionary[value];
-            return value;
-        }
-
         private void Delete(string parameters)
         {
             if (string.IsNullOrEmpty(parameters))
@@ -115,7 +113,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
             }
 
             char[] separator = { ' ', '=' };
-            string[] inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+            var inputs = parameters.Split(separator, StringSplitOptions.RemoveEmptyEntries);
             if (inputs.Length < 3)
             {
                 this.modelWriter.LineWriter.Invoke("Not enough parameters after command 'delete'. Use 'help' or 'syntax'");
@@ -128,8 +126,8 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
                 return;
             }
 
-            string fieldName = ChangeFieldCase(inputs[1]);
-            string parameter = inputs[2];
+            var fieldName = ChangeFieldCase(inputs[1]);
+            var parameter = inputs[2];
             if (parameter[0] == '\'' || parameter[0] == '"')
             {
                 parameter = parameter.Substring(1, parameter.Length - 2);
@@ -137,11 +135,10 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
             try
             {
-                List<int> recordsId = new List<int>();
-                var records = this.expressionExtensions
-                    .FindSuitableRecords(parameter, fieldName, typeof(FileCabinetRecord)).ToArray();
+                var recordsId = new List<int>();
+                var records = this.expressionExtensions.FindSuitableRecords(parameter, fieldName, typeof(FileCabinetRecord)).ToArray();
 
-                for (int i = 0; i < records.Length; i++)
+                for (var i = 0; i < records.Length; i++)
                 {
                     recordsId.Add(this.CabinetService.RemoveRecord(records[i]));
                 }

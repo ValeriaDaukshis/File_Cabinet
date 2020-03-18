@@ -1,18 +1,19 @@
 ﻿using System;
+
 using FileCabinetApp.Service;
 
 namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 {
     /// <summary>
-    /// StatCommandHandler.
+    ///     StatCommandHandler.
     /// </summary>
-    /// <seealso cref="FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase" />
+    /// <seealso cref="ServiceCommandHandlerBase" />
     public class StatCommandHandler : ServiceCommandHandlerBase
     {
         private readonly ModelWriters modelWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StatCommandHandler"/> class.
+        ///     Initializes a new instance of the <see cref="StatCommandHandler" /> class.
         /// </summary>
         /// <param name="cabinetService">The file cabinet service.</param>
         /// <param name="modelWriter">console writer.</param>
@@ -23,7 +24,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
         }
 
         /// <summary>
-        /// Handles the specified command request.
+        ///     Handles the specified command request.
         /// </summary>
         /// <param name="commandRequest">The command request.</param>
         public override void Handle(AppCommandRequest commandRequest)
@@ -45,7 +46,7 @@ namespace FileCabinetApp.CommandHandlers.ServiceCommandHandlers
 
         private void Stat(string parameters)
         {
-            (int purgedRecords, int recordsCount) = this.CabinetService.GetStat();
+            var (purgedRecords, recordsCount) = this.CabinetService.GetStat();
             this.modelWriter.LineWriter.Invoke($"{recordsCount} record(s), where {purgedRecords} are purged.");
         }
     }

@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Printer
 {
     /// <summary>
-    /// TablePrinter.
+    ///     TablePrinter.
     /// </summary>
     public class DefaultTablePrinter : ITablePrinter
     {
-        private static string angle = "+";
-        private static string wall = "|";
-        private static string border = "-";
+        private const string Angle = "+";
+
+        private const string Border = "-";
+
+        private const string Wall = "|";
+
         private readonly Action<string> consoleWriter;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultTablePrinter"/> class.
+        ///     Initializes a new instance of the <see cref="DefaultTablePrinter" /> class.
         /// </summary>
         /// <param name="consoleWriter">The console writer.</param>
         public DefaultTablePrinter(Action<string> consoleWriter)
@@ -27,7 +31,7 @@ namespace FileCabinetApp.Printer
         }
 
         /// <summary>
-        /// Prints the specified records.
+        ///     Prints the specified records.
         /// </summary>
         /// <param name="record">The records.</param>
         /// <param name="fields">The fields.</param>
@@ -49,7 +53,7 @@ namespace FileCabinetApp.Printer
                 return;
             }
 
-            string horizontalBorder = CreateHorizontalBorder(record, fields);
+            var horizontalBorder = CreateHorizontalBorder(record, fields);
             this.consoleWriter.Invoke(horizontalBorder);
             this.consoleWriter.Invoke(CreateHeader(fields, horizontalBorder));
             this.consoleWriter.Invoke(horizontalBorder);
@@ -62,69 +66,9 @@ namespace FileCabinetApp.Printer
             this.consoleWriter.Invoke(horizontalBorder);
         }
 
-        private static string PrintRecord(FileCabinetRecord record, string[] fields, string horizontalBorder)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(wall);
-            string[] recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < fields.Length; i++)
-            {
-                var value = record.GetType().GetProperty(fields[i])?.GetValue(record, null);
-                if (value is null)
-                {
-                    continue;
-                }
-
-                builder.Append(" ");
-                string stringValue = value.ToString();
-                if (value is DateTime time)
-                {
-                    stringValue = time.ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
-                }
-
-                int horizontalBorderLength = recordsLength[i].Length - stringValue.Length - 2;
-                if (value is string || value is char)
-                {
-                    builder.Append(PrintStringValues(stringValue, horizontalBorderLength));
-                }
-                else if (value is DateTime)
-                {
-                    builder.Append(PrintDateTimeValue(stringValue, horizontalBorderLength));
-                }
-                else
-                {
-                    builder.Append(PrintDigitValues(value, horizontalBorderLength));
-                }
-
-                builder.Append(" ");
-                builder.Append(wall);
-            }
-
-            return builder.ToString();
-        }
-
-        private static string CreateHorizontalBorder(IEnumerable<FileCabinetRecord> record, string[] fields)
-        {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(angle);
-            for (int i = 0; i < fields.Length; i++)
-            {
-                builder.Append(border);
-                for (int j = 0; j < CheckRecordLength(record, fields[i]); j++)
-                {
-                    builder.Append(border);
-                }
-
-                builder.Append(border);
-                builder.Append(angle);
-            }
-
-            return builder.ToString();
-        }
-
         private static int CheckRecordLength(IEnumerable<FileCabinetRecord> records, string field)
         {
-            int maxLength = field.Length;
+            var maxLength = field.Length;
             foreach (var record in records)
             {
                 var value = record.GetType().GetProperty(field)?.GetValue(record, null);
@@ -151,41 +95,61 @@ namespace FileCabinetApp.Printer
 
         private static string CreateHeader(string[] fields, string horizontalBorder)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(wall);
-            string[] recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
-            for (int i = 0; i < fields.Length; i++)
+            var builder = new StringBuilder();
+            builder.Append(Wall);
+            var recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < fields.Length; i++)
             {
                 builder.Append(" ");
                 builder.Append(fields[i]);
                 builder.Append(" ");
-                for (int j = 0; j < recordsLength[i].Length - fields[i].Length - 2; j++)
+                for (var j = 0; j < recordsLength[i].Length - fields[i].Length - 2; j++)
                 {
                     builder.Append(" ");
                 }
 
-                builder.Append(wall);
+                builder.Append(Wall);
             }
 
             return builder.ToString();
         }
 
-        private static string PrintStringValues(string values, int horizontalBorderLength)
+        private static string CreateHorizontalBorder(IEnumerable<FileCabinetRecord> record, string[] fields)
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Append(values);
-            for (int j = 0; j < horizontalBorderLength; j++)
+            var builder = new StringBuilder();
+            builder.Append(Angle);
+            for (var i = 0; i < fields.Length; i++)
+            {
+                builder.Append(Border);
+                for (var j = 0; j < CheckRecordLength(record, fields[i]); j++)
+                {
+                    builder.Append(Border);
+                }
+
+                builder.Append(Border);
+                builder.Append(Angle);
+            }
+
+            return builder.ToString();
+        }
+
+        private static string PrintDateTimeValue(string values, int horizontalBorderLength)
+        {
+            var builder = new StringBuilder();
+            for (var j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
+
+            builder.Append($"{values}");
 
             return builder.ToString();
         }
 
         private static string PrintDigitValues(object values, int horizontalBorderLength)
         {
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < horizontalBorderLength; j++)
+            var builder = new StringBuilder();
+            for (var j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
@@ -196,15 +160,55 @@ namespace FileCabinetApp.Printer
             return builder.ToString();
         }
 
-        private static string PrintDateTimeValue(string values, int horizontalBorderLength)
+        private static string PrintRecord(FileCabinetRecord record, string[] fields, string horizontalBorder)
         {
-            StringBuilder builder = new StringBuilder();
-            for (int j = 0; j < horizontalBorderLength; j++)
+            var builder = new StringBuilder();
+            builder.Append(Wall);
+            var recordsLength = horizontalBorder.Split("+", StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < fields.Length; i++)
+            {
+                var value = record.GetType().GetProperty(fields[i])?.GetValue(record, null);
+                if (value is null)
+                {
+                    continue;
+                }
+
+                builder.Append(" ");
+                var stringValue = value.ToString();
+                if (value is DateTime time)
+                {
+                    stringValue = time.ToString("yyyy-MMMM-dd", CultureInfo.InvariantCulture);
+                }
+
+                var horizontalBorderLength = recordsLength[i].Length - stringValue.Length - 2;
+                if (value is string || value is char)
+                {
+                    builder.Append(PrintStringValues(stringValue, horizontalBorderLength));
+                }
+                else if (value is DateTime)
+                {
+                    builder.Append(PrintDateTimeValue(stringValue, horizontalBorderLength));
+                }
+                else
+                {
+                    builder.Append(PrintDigitValues(value, horizontalBorderLength));
+                }
+
+                builder.Append(" ");
+                builder.Append(Wall);
+            }
+
+            return builder.ToString();
+        }
+
+        private static string PrintStringValues(string values, int horizontalBorderLength)
+        {
+            var builder = new StringBuilder();
+            builder.Append(values);
+            for (var j = 0; j < horizontalBorderLength; j++)
             {
                 builder.Append(" ");
             }
-
-            builder.Append($"{values}");
 
             return builder.ToString();
         }

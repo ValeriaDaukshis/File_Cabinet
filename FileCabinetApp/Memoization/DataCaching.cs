@@ -1,18 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Memoization
 {
     /// <summary>
-    /// DataCaching.
+    ///     DataCaching.
     /// </summary>
     public class DataCaching
     {
         private readonly Dictionary<CachingKey, IEnumerable<FileCabinetRecord>> cacheDictionary;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DataCaching"/> class.
+        ///     Initializes a new instance of the <see cref="DataCaching" /> class.
         /// </summary>
         public DataCaching()
         {
@@ -20,17 +21,7 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Gets the value by key.
-        /// </summary>
-        /// <param name="fields">The fields.</param>
-        /// <returns>value by key.</returns>
-        public IEnumerable<FileCabinetRecord> GetValueByKey(string[] fields)
-        {
-            return this.cacheDictionary[this.cacheDictionary.Keys.First(t => t.Equals(new CachingKey(fields)))];
-        }
-
-        /// <summary>
-        /// Adds the specified key.
+        ///     Adds the specified key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="records">The records.</param>
@@ -40,11 +31,19 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Determines whether this instance contains the object.
+        ///     Clears this instance.
+        /// </summary>
+        public void Clear()
+        {
+            this.cacheDictionary.Clear();
+        }
+
+        /// <summary>
+        ///     Determines whether this instance contains the object.
         /// </summary>
         /// <param name="fields">The fields.</param>
         /// <returns>
-        ///   <c>true</c> if [contains] [the specified fields]; otherwise, <c>false</c>.
+        ///     <c>true</c> if [contains] [the specified fields]; otherwise, <c>false</c>.
         /// </returns>
         public bool Contains(string[] fields)
         {
@@ -59,11 +58,13 @@ namespace FileCabinetApp.Memoization
         }
 
         /// <summary>
-        /// Clears this instance.
+        ///     Gets the value by key.
         /// </summary>
-        public void Clear()
+        /// <param name="fields">The fields.</param>
+        /// <returns>value by key.</returns>
+        public IEnumerable<FileCabinetRecord> GetValueByKey(string[] fields)
         {
-            this.cacheDictionary.Clear();
+            return this.cacheDictionary[this.cacheDictionary.Keys.First(t => t.Equals(new CachingKey(fields)))];
         }
     }
 }

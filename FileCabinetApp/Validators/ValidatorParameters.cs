@@ -1,52 +1,51 @@
-﻿using System;
-using FileCabinetApp.Validators.ValidationModel;
+﻿using FileCabinetApp.Validators.ValidationModel;
 using FileCabinetApp.Validators.ValidationParameters;
 
 namespace FileCabinetApp.Validators
 {
     /// <summary>
-    /// ValidatorParameters.
+    ///     ValidatorParameters.
     /// </summary>
     public class ValidatorParameters
     {
         /// <summary>
-        /// Gets or sets the last name criterions.
+        ///     Gets or sets the credit sum criterions.
         /// </summary>
         /// <value>
-        /// The last name criterions.
+        ///     The credit sum criterions.
         /// </value>
-        public LastName LastName { get;  set; }
+        public CreditSum CreditSum { get; set; }
 
         /// <summary>
-        /// Gets or sets the first name criterions.
+        ///     Gets or sets the date of birth criterions.
         /// </summary>
         /// <value>
-        /// The first name criterions.
+        ///     The date of birth criterions.
         /// </value>
-        public FirstName FirstName { get;  set; }
+        public DateOfBirth DateOfBirth { get; set; }
 
         /// <summary>
-        /// Gets or sets the duration criterions.
+        ///     Gets or sets the duration criterions.
         /// </summary>
         /// <value>
-        /// The duration criterions.
+        ///     The duration criterions.
         /// </value>
-        public Duration Duration { get;  set; }
+        public Duration Duration { get; set; }
 
         /// <summary>
-        /// Gets or sets the credit sum criterions.
+        ///     Gets or sets the first name criterions.
         /// </summary>
         /// <value>
-        /// The credit sum criterions.
+        ///     The first name criterions.
         /// </value>
-        public CreditSum CreditSum { get;  set; }
+        public FirstName FirstName { get; set; }
 
         /// <summary>
-        /// Gets or sets the date of birth criterions.
+        ///     Gets or sets the last name criterions.
         /// </summary>
         /// <value>
-        /// The date of birth criterions.
+        ///     The last name criterions.
         /// </value>
-        public DateOfBirth DateOfBirth { get;  set; }
+        public LastName LastName { get; set; }
     }
 }

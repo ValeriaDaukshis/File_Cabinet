@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<records>
+  <record id="1">
+    <name first="FirstName0" last="LastName0" />
+    <gender>70</gender>
+    <dateOfBirth>1956</dateOfBirth>
+    <creditSum>28312</creditSum>
+    <duration>151</duration>
+  </record>
+  <record id="2">
+    <name first="FirstName1" last="LastName1" />
+    <gender>77</gender>
+    <dateOfBirth>04/22/1976</dateOfBirth>
+    <creditSum>35495</creditSum>
+    <duration>164.5</duration>
+  </record>
+  <record id="3">
+    <name first="FirstName2" last="LastName2" />
+    <gender>77</gender>
+    <dateOfBirth>04/01/2017</dateOfBirth>
+    <creditSum>43489</creditSum>
+    <duration>74</duration>
+  </record>
+  <record id="4">
+    <name first="FirstName3" last="LastName3" />
+    <gender>77</gender>
+    <dateOfBirth>03/21/1999</dateOfBirth>
+    <creditSum>44164</creditSum>
+    <duration>298</duration>
+  </record>
+  <record id="5">
+    <name first="FirstName4" last="LastName4" />
+    <gender>77</gender>
+    <dateOfBirth>09/18/1960</dateOfBirth>
+    <creditSum>5258</creditSum>
+    <duration>289</duration>
+  </record>
+  <record id="6">
+    <name first="FirstName5" last="LastName5" />
+    <gender>70</gender>
+    <dateOfBirth>08/05/2010</dateOfBirth>
+    <creditSum>34332</creditSum>
+    <duration>154</duration>
+  </record>
+  <record id="7">
+    <name first="FirstName6" last="LastName6" />
+    <gender>77</gender>
+    <dateOfBirth>05/08/1989</dateOfBirth>
+    <creditSum>19125</creditSum>
+    <duration>211</duration>
+  </record>
+  <record id="8">
+    <name first="FirstName7" last="LastName7" />
+    <gender>77</gender>
+    <dateOfBirth>04/02/1967</dateOfBirth>
+    <creditSum>12823</creditSum>
+    <duration>112</duration>
+  </record>
+  <record id="9">
+    <name first="FirstName8" last="LastName8" />
+    <gender>77</gender>
+    <dateOfBirth>02/07/1966</dateOfBirth>
+    <creditSum>42965</creditSum>
+    <duration>126</duration>
+  </record>
+  <record id="10">
+    <name first="FirstName9" last="LastName9" />
+    <gender>77</gender>
+    <dateOfBirth>09/24/1977</dateOfBirth>
+    <creditSum>21532</creditSum>
+    <duration>282</duration>
+  </record>
+</records>

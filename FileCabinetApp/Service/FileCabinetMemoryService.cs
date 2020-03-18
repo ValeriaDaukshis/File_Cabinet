@@ -2,24 +2,29 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
 using FileCabinetApp.Records;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Service
 {
     /// <summary>
-    /// FileCabinetService.
+    ///     FileCabinetService.
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
-        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
-        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
+        private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>();
+
+        private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetMemoryService" /> class.
         /// </summary>
         /// <param name="validator">the validator.</param>
         public FileCabinetMemoryService(IRecordValidator validator)
@@ -28,7 +33,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Creates the record.
+        ///     Creates the record.
         /// </summary>
         /// <param name="record">The file cabinet record.</param>
         /// <returns>id of created record.</returns>
@@ -50,52 +55,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// RemoveRecord.
-        /// </summary>
-        /// <param name="record">record.</param>
-        /// <returns>record id.</returns>
-        public int RemoveRecord(FileCabinetRecord record)
-        {
-            if (record is null)
-            {
-                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
-            }
-
-            int id = record.Id;
-
-            int position = this.list.FindIndex(x => x.Id == record.Id);
-            this.list.RemoveAt(position);
-
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
-            }
-
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
-            }
-
-            return id;
-        }
-
-        /// <summary>
-        /// Purges the deleted records.
-        /// </summary>
-        /// <returns>count of deleted records and count of all records.</returns>
-        public (int, int) PurgeDeletedRecords()
-        {
-            int countOfRecords = this.list.Count;
-            return (0, countOfRecords);
-        }
-
-        /// <summary>
-        /// Edits the record.
+        ///     Edits the record.
         /// </summary>
         /// <param name="fileCabinetRecord">The file cabinet record.</param>
         public void EditRecord(FileCabinetRecord fileCabinetRecord)
@@ -105,7 +65,7 @@ namespace FileCabinetApp.Service
                 throw new ArgumentNullException(nameof(fileCabinetRecord), $"{nameof(fileCabinetRecord)} is null");
             }
 
-            FileCabinetRecord record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
+            var record = this.list.Find(x => x.Id == fileCabinetRecord.Id);
 
             if (record.Id != fileCabinetRecord.Id)
             {
@@ -130,12 +90,12 @@ namespace FileCabinetApp.Service
                 this.AddValueToDictionary(fileCabinetRecord.DateOfBirth, this.dateOfBirthDictionary, fileCabinetRecord);
             }
 
-            int position = this.list.FindIndex(x => x.Id == fileCabinetRecord.Id);
+            var position = this.list.FindIndex(x => x.Id == fileCabinetRecord.Id);
             this.list[position] = fileCabinetRecord;
         }
 
         /// <summary>
-        /// Gets the records.
+        ///     Gets the records.
         /// </summary>
         /// <returns>Array of records.</returns>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
@@ -149,10 +109,19 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Makes the snapshot.
+        ///     Gets the stat.
+        /// </summary>
+        /// <returns>count of records.</returns>
+        public (int, int) GetStat()
+        {
+            return (0, this.list.Count);
+        }
+
+        /// <summary>
+        ///     Makes the snapshot.
         /// </summary>
         /// <returns>
-        /// FileCabinetServiceSnapshot.
+        ///     FileCabinetServiceSnapshot.
         /// </returns>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
@@ -160,7 +129,52 @@ namespace FileCabinetApp.Service
         }
 
         /// <summary>
-        /// Restore.
+        ///     Purges the deleted records.
+        /// </summary>
+        /// <returns>count of deleted records and count of all records.</returns>
+        public (int, int) PurgeDeletedRecords()
+        {
+            var countOfRecords = this.list.Count;
+            return (0, countOfRecords);
+        }
+
+        /// <summary>
+        ///     RemoveRecord.
+        /// </summary>
+        /// <param name="record">record.</param>
+        /// <returns>record id.</returns>
+        public int RemoveRecord(FileCabinetRecord record)
+        {
+            if (record is null)
+            {
+                throw new ArgumentNullException(nameof(record), $"{nameof(record)} is null");
+            }
+
+            var id = record.Id;
+
+            var position = this.list.FindIndex(x => x.Id == record.Id);
+            this.list.RemoveAt(position);
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.RemoveValueFromDictionary(record.FirstName, this.firstNameDictionary, record);
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.RemoveValueFromDictionary(record.LastName, this.lastNameDictionary, record);
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.RemoveValueFromDictionary(record.DateOfBirth, this.dateOfBirthDictionary, record);
+            }
+
+            return id;
+        }
+
+        /// <summary>
+        ///     Restore.
         /// </summary>
         /// <param name="snapshot">snapshot.</param>
         /// <returns>records count.</returns>
@@ -171,7 +185,7 @@ namespace FileCabinetApp.Service
                 throw new ArgumentNullException(nameof(snapshot), $"{nameof(snapshot)} is null");
             }
 
-            IList<FileCabinetRecord> readRecords = snapshot.ReadRecords;
+            var readRecords = snapshot.ReadRecords;
 
             foreach (var record in readRecords)
             {
@@ -193,15 +207,6 @@ namespace FileCabinetApp.Service
             return readRecords.Count;
         }
 
-        /// <summary>
-        /// Gets the stat.
-        /// </summary>
-        /// <returns>count of records.</returns>
-        public (int, int) GetStat()
-        {
-            return (0, this.list.Count);
-        }
-
         private void AddValueToDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
         {
             if (dictionary.ContainsKey(value))
@@ -212,14 +217,6 @@ namespace FileCabinetApp.Service
             {
                 dictionary.Add(value, new List<FileCabinetRecord>());
                 dictionary[value].Add(record);
-            }
-        }
-
-        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
-        {
-            if (dictionary.ContainsKey(value))
-            {
-                dictionary[value].Remove(record);
             }
         }
 
@@ -238,6 +235,14 @@ namespace FileCabinetApp.Service
             }
 
             return maxId + 1;
+        }
+
+        private void RemoveValueFromDictionary<T>(T value, Dictionary<T, List<FileCabinetRecord>> dictionary, FileCabinetRecord record)
+        {
+            if (dictionary.ContainsKey(value))
+            {
+                dictionary[value].Remove(record);
+            }
         }
     }
 }

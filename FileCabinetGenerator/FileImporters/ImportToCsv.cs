@@ -34,7 +34,7 @@ namespace FileCabinetGenerator.FileImporters
                 throw new ArgumentNullException($"{nameof(record)} is null");
             }
 
-            WriteHeader();
+            this.WriteHeader();
 
             for (int i = 0; i < record.Record.Count; i++)
             {

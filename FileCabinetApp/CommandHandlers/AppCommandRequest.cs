@@ -1,23 +1,23 @@
 ﻿namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
-    /// AppCommandRequest.
+    ///     AppCommandRequest.
     /// </summary>
     public class AppCommandRequest
     {
         /// <summary>
-        /// Gets or sets the command.
+        ///     Gets or sets the command.
         /// </summary>
         /// <value>
-        /// The command.
+        ///     The command.
         /// </value>
         public string Command { get; set; }
 
         /// <summary>
-        /// Gets or sets the parameters.
+        ///     Gets or sets the parameters.
         /// </summary>
         /// <value>
-        /// The parameters.
+        ///     The parameters.
         /// </value>
         public string Parameters { get; set; }
     }

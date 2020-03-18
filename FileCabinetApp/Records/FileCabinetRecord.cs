@@ -4,13 +4,13 @@ using System.Xml.Serialization;
 namespace FileCabinetApp.Records
 {
     /// <summary>
-    /// FileCabinetRecord.
+    ///     FileCabinetRecord.
     /// </summary>
     [XmlRoot("addressBook")]
     public class FileCabinetRecord
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetRecord" /> class.
         /// </summary>
         /// <param name="firstName">first name.</param>
         /// <param name="lastName">last name.</param>
@@ -29,7 +29,7 @@ namespace FileCabinetApp.Records
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetRecord"/> class.
+        ///     Initializes a new instance of the <see cref="FileCabinetRecord" /> class.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <param name="firstName">The first name.</param>
@@ -39,72 +39,72 @@ namespace FileCabinetApp.Records
         /// <param name="credit">The credit.</param>
         /// <param name="duration">The duration.</param>
         public FileCabinetRecord(int id, string firstName, string lastName, char gender, DateTime dateOfBirth, decimal credit, short duration)
-        : this(firstName, lastName, gender, dateOfBirth, credit, duration)
+            : this(firstName, lastName, gender, dateOfBirth, credit, duration)
         {
             this.Id = id;
         }
 
         /// <summary>
-        /// Gets or sets the identifier.
+        ///     Gets or sets the identifier.
         /// </summary>
         /// <value>
-        /// The identifier.
+        ///     The identifier.
         /// </value>
         [XmlElement("records")]
-        public int Id { get;  set; }
+        public int Id { get; set; }
 
         /// <summary>
-        /// Gets the first name.
+        ///     Gets the gender.
         /// </summary>
         /// <value>
-        /// The first name.
-        /// </value>
-        [XmlAttribute("first")]
-        public string FirstName { get; private set; }
-
-        /// <summary>
-        /// Gets the last name.
-        /// </summary>
-        /// <value>
-        /// The last name.
-        /// </value>
-        [XmlAttribute("last")]
-        public string LastName { get; private set; }
-
-        /// <summary>
-        /// Gets the gender.
-        /// </summary>
-        /// <value>
-        /// The gender.
+        ///     The gender.
         /// </value>
         [XmlElement("gender")]
-        public char Gender { get; private set; }
+        public char Gender { get; }
 
         /// <summary>
-        /// Gets the date of birth.
+        ///     Gets the date of birth.
         /// </summary>
         /// <value>
-        /// The date of birth.
+        ///     The date of birth.
         /// </value>
         [XmlElement("dateOfBirth")]
-        public DateTime DateOfBirth { get; private set; }
+        public DateTime DateOfBirth { get; }
 
         /// <summary>
-        /// Gets credit sum.
+        ///     Gets credit sum.
         /// </summary>
         /// <value>
-        /// Credit sum.
+        ///     Credit sum.
         /// </value>
         [XmlElement("creditSum")]
-        public decimal CreditSum { get; private set; }
+        public decimal CreditSum { get; }
 
         /// <summary>
-        /// Gets duration.
+        ///     Gets duration.
         /// </summary>
         /// <value>
-        /// The duration.
+        ///     The duration.
         /// </value>
         [XmlElement("duration")]
-        public short Duration { get; private set; }
+        public short Duration { get; }
+
+        /// <summary>
+        ///     Gets the first name.
+        /// </summary>
+        /// <value>
+        ///     The first name.
+        /// </value>
+        [XmlAttribute("first")]
+        public string FirstName { get; }
+
+        /// <summary>
+        ///     Gets the last name.
+        /// </summary>
+        /// <value>
+        ///     The last name.
+        /// </value>
+        [XmlAttribute("last")]
+        public string LastName { get; }
     }
 }

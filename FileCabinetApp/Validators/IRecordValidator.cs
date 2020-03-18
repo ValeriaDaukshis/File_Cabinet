@@ -1,15 +1,14 @@
-﻿using System;
-using FileCabinetApp.Records;
+﻿using FileCabinetApp.Records;
 
 namespace FileCabinetApp.Validators
 {
     /// <summary>
-    /// IRecordValidator.
+    ///     IRecordValidator.
     /// </summary>
     public interface IRecordValidator
     {
         /// <summary>
-        /// Validates the parameters.
+        ///     Validates the parameters.
         /// </summary>
         /// <param name="record">The record.</param>
         void ValidateParameters(FileCabinetRecord record);
